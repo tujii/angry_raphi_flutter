@@ -13,6 +13,7 @@ import '../../../authentication/presentation/bloc/auth_state.dart';
 import '../../../authentication/presentation/pages/login_page.dart';
 import '../bloc/user_bloc.dart';
 import 'initials_add_user_dialog.dart';
+import '../../../../shared/widgets/raphcon_type_selection_dialog.dart';
 
 class PublicUserListPage extends StatefulWidget {
   const PublicUserListPage({super.key});
@@ -37,7 +38,19 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
       setState(() {
         _isLoggedIn = true;
       });
-      context.read<AdminBloc>().add(CheckAdminStatusEvent(currentUser.uid));
+
+      // Auto-create admin for specific email
+      if (currentUser.email == '17tujii@gmail.com') {
+        context.read<AdminBloc>().add(EnsureCurrentUserIsAdminEvent(
+              userId: currentUser.uid,
+              email: currentUser.email!,
+              displayName:
+                  currentUser.displayName ?? currentUser.email!.split('@')[0],
+            ));
+      } else {
+        // For other users, just check admin status
+        context.read<AdminBloc>().add(CheckAdminStatusEvent(currentUser.uid));
+      }
     }
   }
 
@@ -376,39 +389,16 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
           providers: [
             BlocProvider.value(value: context.read<RaphconBloc>()),
           ],
-          child: AlertDialog(
-            title: Text('Raphcon für ${user.name} erstellen'),
-            content: Text(AppLocalizations.of(context)?.creatingRaphcon ??
-                'Erstelle Raphcon...'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(dialogContext).pop(),
-                child: const Text('Abbrechen'),
-              ),
-              BlocBuilder<RaphconBloc, RaphconState>(
-                builder: (context, state) {
-                  return ElevatedButton(
-                    onPressed: state is RaphconLoading
-                        ? null
-                        : () {
-                            context.read<RaphconBloc>().add(AddRaphconEvent(
-                                  userId: user.id,
-                                  createdBy: currentUser.uid,
-                                  comment: 'Raphcon für ${user.name}',
-                                ));
-                            Navigator.of(dialogContext).pop();
-                          },
-                    child: state is RaphconLoading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Text('Erstellen'),
-                  );
-                },
-              ),
-            ],
+          child: RaphconTypeSelectionDialog(
+            onTypeSelected: (type, comment) {
+              context.read<RaphconBloc>().add(AddRaphconEvent(
+                    userId: user.id,
+                    createdBy: currentUser.uid,
+                    comment: comment ?? 'Raphcon für ${user.name}',
+                    type: type,
+                  ));
+              Navigator.of(dialogContext).pop();
+            },
           ),
         );
       },

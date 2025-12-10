@@ -9,6 +9,7 @@ import '../../../admin/presentation/bloc/admin_bloc.dart';
 import '../../../raphcon_management/presentation/bloc/raphcon_bloc.dart';
 import '../bloc/user_bloc.dart';
 import 'initials_add_user_dialog.dart';
+import '../../../../shared/widgets/raphcon_type_selection_dialog.dart';
 
 class AdminUserListPage extends StatefulWidget {
   const AdminUserListPage({super.key});
@@ -231,27 +232,16 @@ class _AdminUserListPageState extends State<AdminUserListPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-              '${AppLocalizations.of(context)!.creatingRaphcon} ${user.name}'),
-          content: Text(AppLocalizations.of(context)!.creatingRaphcon),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(AppLocalizations.of(context)!.cancel),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                context.read<RaphconBloc>().add(AddRaphconEvent(
-                      userId: user.id,
-                      createdBy: currentUser.uid,
-                      comment: 'Raphcon für ${user.name}',
-                    ));
-                Navigator.of(context).pop();
-              },
-              child: Text(AppLocalizations.of(context)!.add),
-            ),
-          ],
+        return RaphconTypeSelectionDialog(
+          onTypeSelected: (type, comment) {
+            context.read<RaphconBloc>().add(AddRaphconEvent(
+                  userId: user.id,
+                  createdBy: currentUser.uid,
+                  comment: comment ?? 'Raphcon für ${user.name}',
+                  type: type,
+                ));
+            Navigator.of(context).pop();
+          },
         );
       },
     );
