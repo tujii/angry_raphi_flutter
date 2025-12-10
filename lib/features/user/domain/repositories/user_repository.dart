@@ -7,5 +7,4 @@ abstract class UserRepository {
   Future<bool> addUser(User user);
   Future<bool> updateUserRaphcons(String userId, int newCount);
   Future<bool> deleteUser(String userId);
-  Future<void> addSampleData();
 }

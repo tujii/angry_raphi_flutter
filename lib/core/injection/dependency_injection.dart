@@ -42,15 +42,12 @@ void setupDependencyInjection() {
     () => DeleteUserUseCase(getIt<UserRepository>()),
   );
 
-  getIt.registerLazySingleton<AddSampleDataUseCase>(
-    () => AddSampleDataUseCase(getIt<UserRepository>()),
-  );
+
 
   // Presentation layer (BLoC)
   getIt.registerFactory<UserBloc>(
     () => UserBloc(
       getUsersUseCase: getIt<GetUsersUseCase>(),
-      addSampleDataUseCase: getIt<AddSampleDataUseCase>(),
     ),
   );
 }

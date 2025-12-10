@@ -57,13 +57,7 @@ class UserListPage extends StatelessWidget {
         ],
       ),
       body: BlocConsumer<UserBloc, UserState>(
-        listener: (context, state) {
-          if (state is SampleDataAdded) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Beispiel-Daten hinzugefügt!')),
-            );
-          }
-        },
+        listener: (context, state) {},
         builder: (context, state) {
           if (state is UserLoading) {
             return _buildLoadingState();
@@ -242,7 +236,7 @@ class UserListPage extends StatelessWidget {
           TextButton(
             onPressed: () {
               Navigator.of(dialogContext).pop();
-              context.read<UserBloc>().add(AddSampleDataEvent());
+              // Sample data functionality removed
             },
             child: const Text('Beispiel-Daten'),
           ),

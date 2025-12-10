@@ -56,13 +56,4 @@ class DeleteUserUseCase {
   }
 }
 
-/// Use case for adding sample data (for demo purposes)
-class AddSampleDataUseCase {
-  final UserRepository _repository;
 
-  const AddSampleDataUseCase(this._repository);
-
-  Future<void> execute() async {
-    return await _repository.addSampleData();
-  }
-}

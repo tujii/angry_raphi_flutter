@@ -292,10 +292,6 @@
   "@close": {
     "description": "Close button text"
   },
-  "sampleDataAdded": "Sample data added!",
-  "@sampleDataAdded": {
-    "description": "Sample data added message"
-  },
   "loadingUsers2": "Loading users...",
   "@loadingUsers2": {
     "description": "Loading users message alternative"

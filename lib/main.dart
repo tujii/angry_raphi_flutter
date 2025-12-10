@@ -98,10 +98,8 @@ class AngryRaphiApp extends StatelessWidget {
               final repository =
                   FirestoreUserRepository(FirebaseFirestore.instance);
               final getUsersUseCase = GetUsersUseCase(repository);
-              final addSampleDataUseCase = AddSampleDataUseCase(repository);
               return UserBloc(
                 getUsersUseCase: getUsersUseCase,
-                addSampleDataUseCase: addSampleDataUseCase,
               )..add(LoadUsersEvent());
             },
           ),

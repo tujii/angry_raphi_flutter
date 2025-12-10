@@ -74,16 +74,12 @@ class SampleDataAdded extends UserState {}
 // BLoC
 class UserBloc extends Bloc<UserEvent, UserState> {
   final GetUsersUseCase _getUsersUseCase;
-  final AddSampleDataUseCase _addSampleDataUseCase;
 
   UserBloc({
     required GetUsersUseCase getUsersUseCase,
-    required AddSampleDataUseCase addSampleDataUseCase,
   })  : _getUsersUseCase = getUsersUseCase,
-        _addSampleDataUseCase = addSampleDataUseCase,
         super(UserInitial()) {
     on<LoadUsersEvent>(_onLoadUsers);
-    on<AddSampleDataEvent>(_onAddSampleData);
     on<RefreshUsersEvent>(_onRefreshUsers);
     on<AddUserEvent>(_onAddUser);
     on<DeleteUserEvent>(_onDeleteUser);
@@ -100,17 +96,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
   }
 
-  Future<void> _onAddSampleData(
-      AddSampleDataEvent event, Emitter<UserState> emit) async {
-    try {
-      await _addSampleDataUseCase.execute();
-      emit(SampleDataAdded());
-      // Reload users after adding sample data
-      add(LoadUsersEvent());
-    } catch (e) {
-      emit(UserError('failedToAddUser: ${e.toString()}'));
-    }
-  }
+
 
   Future<void> _onRefreshUsers(
       RefreshUsersEvent event, Emitter<UserState> emit) async {
