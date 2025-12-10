@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 import 'package:flutter/foundation.dart';
 import '../../../../core/constants/firebase_constants.dart';
 import '../../../../core/errors/exceptions.dart';
+import '../../../../services/registered_users_service.dart';
 import '../models/user_model.dart';
 
 abstract class AuthRemoteDataSource {
@@ -19,11 +20,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final FirebaseAuth _firebaseAuth;
   final GoogleSignIn _googleSignIn;
   final FirebaseFirestore _firestore;
+  final RegisteredUsersService _registeredUsersService;
 
   AuthRemoteDataSourceImpl(
     this._firebaseAuth,
     this._googleSignIn,
     this._firestore,
+    this._registeredUsersService,
   );
 
   @override
@@ -51,8 +54,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           isAdmin,
         );
 
-        // Note: We don't save auth users to the 'users' collection
-        // The 'users' collection is for app-specific users with initials
+        // Save user to registeredUsers collection for tracking
+        await _registeredUsersService.saveRegisteredUser(userCredential.user!);
 
         return userModel;
       } else {
@@ -92,8 +95,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           isAdmin,
         );
 
-        // Note: We don't save auth users to the 'users' collection
-        // The 'users' collection is for app-specific users with initials
+        // Save user to registeredUsers collection for tracking
+        await _registeredUsersService.saveRegisteredUser(userCredential.user!);
 
         return userModel;
       }

@@ -28,6 +28,7 @@ import 'features/raphcon_management/presentation/bloc/raphcon_bloc.dart';
 import 'features/authentication/data/repositories/auth_repository_impl.dart';
 import 'features/authentication/data/datasources/auth_remote_datasource.dart';
 import 'features/authentication/domain/usecases/sign_in_with_google.dart';
+import 'services/registered_users_service.dart';
 import 'features/authentication/domain/usecases/sign_out.dart';
 import 'features/authentication/domain/usecases/get_current_user.dart';
 import 'features/authentication/presentation/bloc/auth_bloc.dart';
@@ -171,10 +172,14 @@ class AngryRaphiApp extends StatelessWidget {
               final connectivity = Connectivity();
               final networkInfo = NetworkInfoImpl(connectivity);
 
+              // Create RegisteredUsersService
+              final registeredUsersService = RegisteredUsersService(firestore);
+
               final authDataSource = AuthRemoteDataSourceImpl(
                 firebaseAuth,
                 googleSignIn,
                 firestore,
+                registeredUsersService,
               );
 
               final authRepository = AuthRepositoryImpl(

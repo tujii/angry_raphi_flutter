@@ -649,5 +649,41 @@
   "errorRaphconIdNotFound": "Error: Raphcon ID not found",
   "@errorRaphconIdNotFound": {
     "description": "Error message when raphcon ID is not found for deletion"
+  },
+  "adminSettings": "Admin Settings",
+  "@adminSettings": {
+    "description": "Admin settings page title"
+  },
+  "configuredAdminsCSV": "Configured Admins (CSV)",
+  "@configuredAdminsCSV": {
+    "description": "CSV admins section title"
+  },
+  "activeAdminsFirebase": "Active Admins (Firebase)",
+  "@activeAdminsFirebase": {
+    "description": "Firebase admins section title"
+  },
+  "promoteUserToAdmin": "Promote User to Admin",
+  "@promoteUserToAdmin": {
+    "description": "Promote user section title"
+  },
+  "selectAndPromoteUser": "Select and promote user",
+  "@selectAndPromoteUser": {
+    "description": "Button text to select and promote user"
+  },
+  "removeAdmin": "Remove Admin",
+  "@removeAdmin": {
+    "description": "Remove admin button text"
+  },
+  "searchUser": "Search user",
+  "@searchUser": {
+    "description": "Search user placeholder text"
+  },
+  "enterEmailAddress": "Enter email address",
+  "@enterEmailAddress": {
+    "description": "Enter email dialog title"
+  },
+  "emailAddress": "Email address",
+  "@emailAddress": {
+    "description": "Email address field label"
   }
 }

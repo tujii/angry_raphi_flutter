@@ -55,6 +55,7 @@ import 'package:angry_raphi/features/raphcon_management/presentation/bloc/raphco
     as _i36;
 import 'package:angry_raphi/injection_container_module.dart' as _i1023;
 import 'package:angry_raphi/services/admin_service.dart' as _i76;
+import 'package:angry_raphi/services/registered_users_service.dart' as _i451;
 import 'package:cloud_firestore/cloud_firestore.dart' as _i974;
 import 'package:connectivity_plus/connectivity_plus.dart' as _i895;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
@@ -95,10 +96,13 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i446.AddAdmin(gh<_i618.AdminRepository>()));
     gh.factory<_i42.RaphconsRemoteDataSource>(
         () => _i42.RaphconsRemoteDataSourceImpl(gh<_i974.FirebaseFirestore>()));
+    gh.factory<_i451.RegisteredUsersService>(
+        () => _i451.RegisteredUsersService(gh<_i974.FirebaseFirestore>()));
     gh.factory<_i306.AuthRemoteDataSource>(() => _i306.AuthRemoteDataSourceImpl(
           gh<_i59.FirebaseAuth>(),
           gh<_i116.GoogleSignIn>(),
           gh<_i974.FirebaseFirestore>(),
+          gh<_i451.RegisteredUsersService>(),
         ));
     gh.factory<_i938.AuthRepository>(() => _i271.AuthRepositoryImpl(
           remoteDataSource: gh<_i306.AuthRemoteDataSource>(),

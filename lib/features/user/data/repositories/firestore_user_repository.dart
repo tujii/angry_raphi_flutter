@@ -17,16 +17,42 @@ class FirestoreUserRepository implements UserRepository {
       final QuerySnapshot querySnapshot = await _firestore
           .collection(_usersCollection)
           .where('isActive', isEqualTo: true)
-          .orderBy('raphconCount', descending: true) // Sort at DB level
           .limit(50) // Limit for performance
-          .get(const GetOptions(source: Source.cache)); // Try cache first
+          .get(const GetOptions(
+              source: Source.server)); // Force server read for fresh data
 
       final users = <User>[];
+
+      // Prepare to calculate actual raphcon counts
+      final raphconCountsMap = <String, int>{};
+      
+      // Get all raphcons to calculate accurate counts
+      try {
+        final allRaphcons = await _firestore
+            .collection('raphcons')
+            .where('isActive', isEqualTo: true)
+            .get(const GetOptions(source: Source.server));
+        
+        // Count raphcons per user
+        for (final raphconDoc in allRaphcons.docs) {
+          final userId = raphconDoc.data()['userId'] as String?;
+          if (userId != null) {
+            raphconCountsMap[userId] = (raphconCountsMap[userId] ?? 0) + 1;
+          }
+        }
+      } catch (e) {
+        // If raphcon counting fails, continue with stored counts
+        print('Warning: Could not calculate real-time raphcon counts: $e');
+      }
 
       for (final doc in querySnapshot.docs) {
         final data = doc.data() as Map<String, dynamic>;
 
         final initials = data['initials'] as String? ?? '';
+        final storedRaphconCount = data['raphconCount'] as int? ?? 0;
+        
+        // Use real-time count if available, otherwise use stored count
+        final actualRaphconCount = raphconCountsMap[doc.id] ?? storedRaphconCount;
 
         // Skip auth users (they don't have initials and are not app users)
         if (initials.isEmpty || initials.length < 3) {
@@ -37,7 +63,7 @@ class FirestoreUserRepository implements UserRepository {
           id: doc.id,
           initials: initials,
           avatarUrl: data['avatarUrl'],
-          raphconCount: data['raphconCount'] as int? ?? 0,
+          raphconCount: actualRaphconCount,
           createdAt:
               (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
           lastRaphconAt: (data['lastRaphconAt'] as Timestamp?)?.toDate(),
@@ -45,6 +71,9 @@ class FirestoreUserRepository implements UserRepository {
         );
         users.add(user);
       }
+
+      // Sort by actual raphcon count (descending)
+      users.sort((a, b) => b.raphconCount.compareTo(a.raphconCount));
 
       return users;
     } catch (e) {
@@ -92,15 +121,40 @@ class FirestoreUserRepository implements UserRepository {
     return _firestore
         .collection(_usersCollection)
         .where('isActive', isEqualTo: true)
-        .orderBy('raphconCount', descending: true) // Sort at DB level
         .limit(50)
         .snapshots(includeMetadataChanges: false) // Ignore metadata changes
-        .map((usersSnapshot) {
+        .asyncMap((usersSnapshot) async {
       final users = <User>[];
+
+      // Prepare to calculate actual raphcon counts
+      final raphconCountsMap = <String, int>{};
+      
+      // Get all raphcons to calculate accurate counts
+      try {
+        final allRaphcons = await _firestore
+            .collection('raphcons')
+            .where('isActive', isEqualTo: true)
+            .get(const GetOptions(source: Source.server));
+        
+        // Count raphcons per user
+        for (final raphconDoc in allRaphcons.docs) {
+          final userId = raphconDoc.data()['userId'] as String?;
+          if (userId != null) {
+            raphconCountsMap[userId] = (raphconCountsMap[userId] ?? 0) + 1;
+          }
+        }
+      } catch (e) {
+        // If raphcon counting fails, continue with stored counts
+        print('Warning: Could not calculate real-time raphcon counts: $e');
+      }
 
       for (final doc in usersSnapshot.docs) {
         final data = doc.data();
         final initials = data['initials'] as String? ?? '';
+        final storedRaphconCount = data['raphconCount'] as int? ?? 0;
+        
+        // Use real-time count if available, otherwise use stored count
+        final actualRaphconCount = raphconCountsMap[doc.id] ?? storedRaphconCount;
 
         // Skip auth users (they don't have initials and are not app users)
         if (initials.isEmpty || initials.length < 3) {
@@ -111,7 +165,7 @@ class FirestoreUserRepository implements UserRepository {
           id: doc.id,
           initials: initials,
           avatarUrl: data['avatarUrl'],
-          raphconCount: data['raphconCount'] as int? ?? 0,
+          raphconCount: actualRaphconCount,
           createdAt:
               (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
           lastRaphconAt: (data['lastRaphconAt'] as Timestamp?)?.toDate(),
@@ -120,6 +174,9 @@ class FirestoreUserRepository implements UserRepository {
         users.add(user);
       }
 
+      // Sort by actual raphcon count (descending)
+      users.sort((a, b) => b.raphconCount.compareTo(a.raphconCount));
+      
       return users;
     });
   }

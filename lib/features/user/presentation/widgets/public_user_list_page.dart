@@ -20,6 +20,7 @@ import '../../../../shared/widgets/raphcon_type_selection_dialog.dart';
 import '../../../../shared/widgets/raphcon_statistics_bottom_sheet.dart';
 import '../../../../shared/widgets/raphcon_detail_bottom_sheet.dart';
 import '../../../../services/admin_config_service.dart';
+import '../../../admin/presentation/pages/admin_settings_page.dart';
 
 class PublicUserListPage extends StatefulWidget {
   const PublicUserListPage({super.key});
@@ -64,17 +65,21 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
       // Check if user is admin from CSV configuration
       final isAdminUser = await AdminConfigService.isAdmin(currentUser.email!);
 
-      if (isAdminUser) {
-        final displayName =
-            await AdminConfigService.getAdminDisplayName(currentUser.email!);
-        context.read<AdminBloc>().add(EnsureCurrentUserIsAdminEvent(
-              userId: currentUser.uid,
-              email: currentUser.email!,
-              displayName: currentUser.displayName ?? displayName,
-            ));
-      } else {
-        // For other users, just check admin status
-        context.read<AdminBloc>().add(CheckAdminStatusEvent(currentUser.uid));
+      if (mounted) {
+        if (isAdminUser) {
+          final displayName =
+              await AdminConfigService.getAdminDisplayName(currentUser.email!);
+          if (mounted) {
+            context.read<AdminBloc>().add(EnsureCurrentUserIsAdminEvent(
+                  userId: currentUser.uid,
+                  email: currentUser.email!,
+                  displayName: currentUser.displayName ?? displayName,
+                ));
+          }
+        } else {
+          // For other users, just check admin status
+          context.read<AdminBloc>().add(CheckAdminStatusEvent(currentUser.uid));
+        }
       }
     }
   }
@@ -135,11 +140,10 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                     if (value == 'logout') {
                       context.read<AuthBloc>().add(AuthSignOutRequested());
                     } else if (value == 'settings') {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text(AppLocalizations.of(context)
-                                    ?.settingsComingSoon2 ??
-                                'Einstellungen kommen bald')),
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const AdminSettingsPage(),
+                        ),
                       );
                     }
                   },

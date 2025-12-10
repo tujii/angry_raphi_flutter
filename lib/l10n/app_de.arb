@@ -191,5 +191,14 @@
   "createdBy": "Erstellt von: {name}",
   "noComment": "Kein Kommentar",
   "confirmDeleteRaphcon": "Raphcon löschen",
-  "confirmDeleteRaphconMessage": "Sind Sie sicher, dass Sie diesen Eintrag löschen möchten?"
+  "confirmDeleteRaphconMessage": "Sind Sie sicher, dass Sie diesen Eintrag löschen möchten?",
+  "adminSettings": "Admin Einstellungen",
+  "configuredAdminsCSV": "Konfigurierte Admins (CSV)",
+  "activeAdminsFirebase": "Aktive Admins (Firebase)",
+  "promoteUserToAdmin": "User zu Admin befördern",
+  "selectAndPromoteUser": "User auswählen und befördern",
+  "removeAdmin": "Admin entfernen",
+  "searchUser": "User suchen",
+  "enterEmailAddress": "E-Mail-Adresse eingeben",
+  "emailAddress": "E-Mail-Adresse"
 }

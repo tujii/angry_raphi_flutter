@@ -13,15 +13,30 @@ class RaphconModel extends RaphconEntity {
   });
 
   factory RaphconModel.fromMap(Map<String, dynamic> map, String id) {
-    return RaphconModel(
-      id: id,
-      userId: map['userId'] as String,
-      createdBy: map['createdBy'] as String,
-      createdAt: (map['createdAt'] as dynamic).toDate(),
-      comment: map['comment'] as String?,
-      type: RaphconType.fromString(map['type'] as String? ?? 'other'),
-      isActive: map['isActive'] as bool? ?? true,
-    );
+    try {
+      final createdAtData = map['createdAt'];
+      DateTime createdAt;
+      
+      if (createdAtData is DateTime) {
+        createdAt = createdAtData;
+      } else if (createdAtData != null) {
+        createdAt = createdAtData.toDate();
+      } else {
+        createdAt = DateTime.now();
+      }
+      
+      return RaphconModel(
+        id: id,
+        userId: map['userId'] as String,
+        createdBy: map['createdBy'] as String,
+        createdAt: createdAt,
+        comment: map['comment'] as String?,
+        type: RaphconType.fromString(map['type'] as String? ?? 'other'),
+        isActive: map['isActive'] as bool? ?? true,
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toMap() {
