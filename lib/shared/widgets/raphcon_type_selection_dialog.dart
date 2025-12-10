@@ -36,36 +36,40 @@ class _RaphconTypeSelectionDialogState
 
     return AlertDialog(
       title: Text(localizations.selectProblemType),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              localizations.whatKindOfProblem,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey[600],
-                  ),
-            ),
-            const SizedBox(height: 16),
-
-            // Problem Type Selection Grid
-            _buildProblemTypeGrid(localizations),
-
-            const SizedBox(height: 24),
-
-            // Optional comment field
-            TextField(
-              controller: _commentController,
-              decoration: InputDecoration(
-                labelText: '${localizations.descriptionOptional}',
-                border: const OutlineInputBorder(),
-                hintText: 'z.B. "Maus klickt nicht richtig"',
+      content: SizedBox(
+        width: 450,
+        height: 550,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                localizations.whatKindOfProblem,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.grey[600],
+                    ),
               ),
-              maxLines: 2,
-              maxLength: 200,
-            ),
-          ],
+              const SizedBox(height: 16),
+
+              // Problem Type Selection Grid
+              _buildProblemTypeGrid(localizations),
+
+              const SizedBox(height: 24),
+
+              // Optional comment field
+              TextField(
+                controller: _commentController,
+                decoration: InputDecoration(
+                  labelText: '${localizations.descriptionOptional}',
+                  border: const OutlineInputBorder(),
+                  hintText: 'z.B. "Maus klickt nicht richtig"',
+                ),
+                maxLines: 2,
+                maxLength: 200,
+              ),
+            ],
+          ),
         ),
       ),
       actions: [

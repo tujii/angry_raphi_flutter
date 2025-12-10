@@ -365,8 +365,13 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
         return BlocProvider.value(
           value: context.read<AuthBloc>(),
           child: Dialog(
-            child: Container(
-              constraints: const BoxConstraints(maxWidth: 400, maxHeight: 600),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                minWidth: 300,
+                maxWidth: 400,
+                minHeight: 200,
+                maxHeight: 600,
+              ),
               child: const LoginPage(isDialog: true),
             ),
           ),

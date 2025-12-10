@@ -39,115 +39,118 @@ class _InitialsAddUserDialogState extends State<InitialsAddUserDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(AppLocalizations.of(context)!.addPersonWithInitials),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              AppLocalizations.of(context)!.initialsFormat,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey[600],
-                  ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                // First Initial Field
-                Expanded(
-                  child: TextFormField(
-                    controller: _firstInitialController,
-                    focusNode: _firstInitialFocus,
-                    decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.firstInitial,
-                      border: const OutlineInputBorder(),
-                      counterText: '', // Hide character counter
+      content: SizedBox(
+        width: 350,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                AppLocalizations.of(context)!.initialsFormat,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.grey[600],
                     ),
-                    maxLength: 1,
-                    textCapitalization: TextCapitalization.characters,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]')),
-                      UpperCaseTextFormatter(),
-                    ],
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return AppLocalizations.of(context)!
-                            .pleaseEnterFirstInitial;
-                      }
-                      if (!RegExp(r'^[A-Z]$').hasMatch(value.trim())) {
-                        return AppLocalizations.of(context)!
-                            .initialMustBeLetter;
-                      }
-                      return null;
-                    },
-                    onFieldSubmitted: (_) {
-                      _secondInitialFocus.requestFocus();
-                    },
-                    autofocus: true,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                // Dot separator
-                Text(
-                  '.',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  // First Initial Field
+                  Expanded(
+                    child: TextFormField(
+                      controller: _firstInitialController,
+                      focusNode: _firstInitialFocus,
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.firstInitial,
+                        border: const OutlineInputBorder(),
+                        counterText: '', // Hide character counter
+                      ),
+                      maxLength: 1,
+                      textCapitalization: TextCapitalization.characters,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]')),
+                        UpperCaseTextFormatter(),
+                      ],
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return AppLocalizations.of(context)!
+                              .pleaseEnterFirstInitial;
+                        }
+                        if (!RegExp(r'^[A-Z]$').hasMatch(value.trim())) {
+                          return AppLocalizations.of(context)!
+                              .initialMustBeLetter;
+                        }
+                        return null;
+                      },
+                      onFieldSubmitted: (_) {
+                        _secondInitialFocus.requestFocus();
+                      },
+                      autofocus: true,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
-                ),
-                const SizedBox(width: 16),
-                // Second Initial Field
-                Expanded(
-                  child: TextFormField(
-                    controller: _secondInitialController,
-                    focusNode: _secondInitialFocus,
-                    decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.secondInitial,
-                      border: const OutlineInputBorder(),
-                      counterText: '', // Hide character counter
-                    ),
-                    maxLength: 1,
-                    textCapitalization: TextCapitalization.characters,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]')),
-                      UpperCaseTextFormatter(),
-                    ],
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return AppLocalizations.of(context)!
-                            .pleaseEnterSecondInitial;
-                      }
-                      if (!RegExp(r'^[A-Z]$').hasMatch(value.trim())) {
-                        return AppLocalizations.of(context)!
-                            .initialMustBeLetter;
-                      }
-                      return null;
-                    },
-                    onFieldSubmitted: (_) {
-                      _submitForm();
-                    },
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              AppLocalizations.of(context)!.enterTwoInitials,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.grey[500],
-                    fontStyle: FontStyle.italic,
+                  const SizedBox(width: 16),
+                  // Dot separator
+                  Text(
+                    '.',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
-            ),
-          ],
+                  const SizedBox(width: 16),
+                  // Second Initial Field
+                  Expanded(
+                    child: TextFormField(
+                      controller: _secondInitialController,
+                      focusNode: _secondInitialFocus,
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.secondInitial,
+                        border: const OutlineInputBorder(),
+                        counterText: '', // Hide character counter
+                      ),
+                      maxLength: 1,
+                      textCapitalization: TextCapitalization.characters,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z]')),
+                        UpperCaseTextFormatter(),
+                      ],
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return AppLocalizations.of(context)!
+                              .pleaseEnterSecondInitial;
+                        }
+                        if (!RegExp(r'^[A-Z]$').hasMatch(value.trim())) {
+                          return AppLocalizations.of(context)!
+                              .initialMustBeLetter;
+                        }
+                        return null;
+                      },
+                      onFieldSubmitted: (_) {
+                        _submitForm();
+                      },
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                AppLocalizations.of(context)!.enterTwoInitials,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.grey[500],
+                      fontStyle: FontStyle.italic,
+                    ),
+              ),
+            ],
+          ),
         ),
       ),
       actions: [
