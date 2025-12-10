@@ -14,6 +14,7 @@ import '../../../authentication/presentation/pages/login_page.dart';
 import '../bloc/user_bloc.dart';
 import 'initials_add_user_dialog.dart';
 import '../../../../shared/widgets/raphcon_type_selection_dialog.dart';
+import '../../../../shared/widgets/raphcon_statistics_bottom_sheet.dart';
 
 class PublicUserListPage extends StatefulWidget {
   const PublicUserListPage({super.key});
@@ -61,6 +62,14 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
       appBar: AppBar(
         title: Row(
           children: [
+            Container(
+              margin: const EdgeInsets.only(right: 8),
+              child: Image.asset(
+                'assets/images/icon-removebg.png',
+                width: 40,
+                height: 40,
+              ),
+            ),
             const Text(AppConstants.appName),
             if (_isAdmin)
               Container(
@@ -114,17 +123,19 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                           Icon(Icons.person_add),
                           SizedBox(width: 8),
                           Text(AppLocalizations.of(context)?.addUser ??
+                              AppLocalizations.of(context)?.addUser ??
                               'Benutzer hinzufügen'),
                         ],
                       ),
                     ),
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 'settings',
                       child: Row(
                         children: [
                           Icon(Icons.settings),
                           SizedBox(width: 8),
-                          Text('Einstellungen'),
+                          Text(AppLocalizations.of(context)?.settings ??
+                              'Einstellungen'),
                         ],
                       ),
                     ),
@@ -135,6 +146,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                           Icon(Icons.logout),
                           SizedBox(width: 8),
                           Text(AppLocalizations.of(context)?.signOut ??
+                              AppLocalizations.of(context)?.signOut ??
                               'Abmelden'),
                         ],
                       ),
@@ -268,9 +280,10 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                   color: AppConstants.primaryColor,
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'Melden Sie sich als Admin an, um Benutzer zu verwalten und Raphcons zu erstellen.',
+                    AppLocalizations.of(context)?.loginAsAdmin ??
+                        'Melden Sie sich als Admin an, um Benutzer zu verwalten und Raphcons zu erstellen.',
                     style: TextStyle(
                       color: AppConstants.primaryColor,
                       fontWeight: FontWeight.w500,
@@ -299,6 +312,9 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                 onNameTapped:
                     _isAdmin ? () => _createRaphcon(users[index]) : null,
                 onLoginRequired: () => _showLoginDialog(context),
+                onShowStatistics: !_isAdmin
+                    ? () => _showStatisticsBottomSheet(users[index])
+                    : null,
               );
             },
           ),
@@ -331,7 +347,8 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
             onPressed: () {
               context.read<UserBloc>().add(RefreshUsersEvent());
             },
-            child: const Text('Erneut versuchen'),
+            child: Text(AppLocalizations.of(context)?.tryAgainButton ??
+                'Erneut versuchen'),
           ),
         ],
       ),
@@ -408,6 +425,39 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
       },
     );
   }
+
+  void _showStatisticsBottomSheet(user_entity.User user) {
+    final context = this.context; // Capture context
+
+    // Load statistics for the user
+    context.read<RaphconBloc>().add(LoadUserRaphconStatisticsEvent(user.id));
+
+    // Listen for the result and show the bottom sheet
+    final subscription = context.read<RaphconBloc>().stream.listen((state) {
+      if (state is UserRaphconStatisticsLoaded && context.mounted) {
+        RaphconStatisticsBottomSheet.show(
+          context: context,
+          userName: user.name,
+          statistics: state.statistics,
+        );
+      } else if (state is RaphconError && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context)
+                      ?.errorLoadingStatistics(state.message) ??
+                  'Fehler beim Laden der Statistiken: ${state.message}',
+            ),
+          ),
+        );
+      }
+    });
+
+    // Cancel subscription after a short delay to prevent memory leaks
+    Future.delayed(const Duration(seconds: 5), () {
+      subscription.cancel();
+    });
+  }
 }
 
 class PublicUserCard extends StatelessWidget {
@@ -416,6 +466,7 @@ class PublicUserCard extends StatelessWidget {
   final bool isLoggedIn;
   final VoidCallback? onNameTapped;
   final VoidCallback? onLoginRequired;
+  final VoidCallback? onShowStatistics;
 
   const PublicUserCard({
     super.key,
@@ -424,6 +475,7 @@ class PublicUserCard extends StatelessWidget {
     required this.isLoggedIn,
     this.onNameTapped,
     this.onLoginRequired,
+    this.onShowStatistics,
   });
 
   @override
@@ -469,29 +521,9 @@ class PublicUserCard extends StatelessWidget {
                     onTap: () {
                       if (isAdmin) {
                         onNameTapped?.call();
-                      } else if (!isLoggedIn) {
-                        // Show login hint for guests
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text(
-                                'Melden Sie sich an, um Raphcons zu erstellen'),
-                            action: SnackBarAction(
-                              label: AppLocalizations.of(context)?.login ??
-                                  'Anmelden',
-                              onPressed: () => onLoginRequired?.call(),
-                            ),
-                          ),
-                        );
-                        onLoginRequired?.call();
                       } else {
-                        // Show admin required hint for logged in non-admins
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                                AppLocalizations.of(context)?.adminRequired ??
-                                    'Admin-Berechtigung erforderlich'),
-                          ),
-                        );
+                        // Show statistics for all non-admin users
+                        onShowStatistics?.call();
                       }
                     },
                     child: Text(
@@ -516,16 +548,43 @@ class PublicUserCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'Raphcons: ${user.raphconCount}',
+                        AppLocalizations.of(context)
+                                ?.raphconsCount(user.raphconCount) ??
+                            'Raphcons: ${user.raphconCount}',
                         style: TextStyle(
                           color: Colors.grey[600],
                           fontSize: 12,
                         ),
                       ),
+                      const SizedBox(width: 8),
+                      GestureDetector(
+                        onTap: onShowStatistics,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: AppConstants.primaryColor
+                                .withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            AppLocalizations.of(context)?.showDetails ??
+                                AppLocalizations.of(context)?.showDetails ??
+                                'Details anzeigen',
+                            style: const TextStyle(
+                              color: AppConstants.primaryColor,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   Text(
-                    'Erstellt: ${_formatDate(user.createdAt)}',
+                    AppLocalizations.of(context)?.createdTimeAgo(
+                            _formatDate(user.createdAt, context)) ??
+                        'Erstellt: ${_formatDate(user.createdAt, context)}',
                     style: TextStyle(
                       color: Colors.grey[500],
                       fontSize: 10,
@@ -545,16 +604,25 @@ class PublicUserCard extends StatelessWidget {
     );
   }
 
-  String _formatDate(DateTime date) {
+  String _formatDate(DateTime date, BuildContext context) {
     final now = DateTime.now();
     final difference = now.difference(date);
 
     if (difference.inDays > 0) {
-      return 'vor ${difference.inDays} Tag${difference.inDays == 1 ? '' : 'en'}';
+      return difference.inDays == 1
+          ? (AppLocalizations.of(context)?.daysAgoSingular(difference.inDays) ??
+              'vor ${difference.inDays} Tag')
+          : (AppLocalizations.of(context)?.daysAgoPlural(difference.inDays) ??
+              'vor ${difference.inDays} Tagen');
     } else if (difference.inHours > 0) {
-      return 'vor ${difference.inHours} Stunde${difference.inHours == 1 ? '' : 'n'}';
+      return difference.inHours == 1
+          ? (AppLocalizations.of(context)
+                  ?.hoursAgoSingular(difference.inHours) ??
+              'vor ${difference.inHours} Stunde')
+          : (AppLocalizations.of(context)?.hoursAgoPlural(difference.inHours) ??
+              'vor ${difference.inHours} Stunden');
     } else {
-      return 'gerade eben';
+      return AppLocalizations.of(context)?.justCreated ?? 'gerade eben';
     }
   }
 
@@ -573,7 +641,8 @@ class PublicUserCard extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(),
-                child: const Text('Abbrechen'),
+                child: Text(
+                    AppLocalizations.of(context)?.cancelButton ?? 'Abbrechen'),
               ),
               BlocBuilder<UserBloc, UserState>(
                 builder: (context, state) {

@@ -4,6 +4,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../domain/entities/raphcon_entity.dart';
 import '../../domain/usecases/add_raphcon.dart';
+import '../../domain/usecases/get_user_raphcon_statistics.dart';
 import '../../domain/repositories/raphcons_repository.dart';
 import '../../../../core/enums/raphcon_type.dart';
 
@@ -39,6 +40,15 @@ class LoadUserRaphconsEvent extends RaphconEvent {
   List<Object> get props => [userId];
 }
 
+class LoadUserRaphconStatisticsEvent extends RaphconEvent {
+  final String userId;
+
+  LoadUserRaphconStatisticsEvent(this.userId);
+
+  @override
+  List<Object> get props => [userId];
+}
+
 // States
 abstract class RaphconState extends Equatable {
   @override
@@ -67,6 +77,15 @@ class UserRaphconsLoaded extends RaphconState {
   List<Object> get props => [raphcons];
 }
 
+class UserRaphconStatisticsLoaded extends RaphconState {
+  final Map<RaphconType, int> statistics;
+
+  UserRaphconStatisticsLoaded(this.statistics);
+
+  @override
+  List<Object> get props => [statistics];
+}
+
 class RaphconError extends RaphconState {
   final String message;
 
@@ -80,10 +99,13 @@ class RaphconError extends RaphconState {
 @injectable
 class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
   final AddRaphcon _addRaphcon;
+  final GetUserRaphconStatistics _getUserRaphconStatistics;
 
-  RaphconBloc(this._addRaphcon) : super(RaphconInitial()) {
+  RaphconBloc(this._addRaphcon, this._getUserRaphconStatistics)
+      : super(RaphconInitial()) {
     on<AddRaphconEvent>(_onAddRaphcon);
     on<LoadUserRaphconsEvent>(_onLoadUserRaphcons);
+    on<LoadUserRaphconStatisticsEvent>(_onLoadUserRaphconStatistics);
   }
 
   Future<void> _onAddRaphcon(
@@ -114,5 +136,18 @@ class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
 
     // TODO: Implement when getUserRaphcons use case is created
     emit(UserRaphconsLoaded([]));
+  }
+
+  Future<void> _onLoadUserRaphconStatistics(
+    LoadUserRaphconStatisticsEvent event,
+    Emitter<RaphconState> emit,
+  ) async {
+    emit(RaphconLoading());
+
+    final result = await _getUserRaphconStatistics(event.userId);
+    result.fold(
+      (failure) => emit(RaphconError(failure.message)),
+      (statistics) => emit(UserRaphconStatisticsLoaded(statistics)),
+    );
   }
 }

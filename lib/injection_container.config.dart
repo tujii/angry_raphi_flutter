@@ -45,12 +45,10 @@ import 'package:angry_raphi/features/raphcon_management/domain/repositories/raph
     as _i158;
 import 'package:angry_raphi/features/raphcon_management/domain/usecases/add_raphcon.dart'
     as _i661;
+import 'package:angry_raphi/features/raphcon_management/domain/usecases/get_user_raphcon_statistics.dart'
+    as _i717;
 import 'package:angry_raphi/features/raphcon_management/presentation/bloc/raphcon_bloc.dart'
     as _i36;
-import 'package:angry_raphi/features/user_management/domain/repositories/users_repository.dart'
-    as _i177;
-import 'package:angry_raphi/features/user_management/domain/usecases/save_person.dart'
-    as _i80;
 import 'package:angry_raphi/injection_container_module.dart' as _i1023;
 import 'package:angry_raphi/services/admin_service.dart' as _i76;
 import 'package:cloud_firestore/cloud_firestore.dart' as _i974;
@@ -98,8 +96,6 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i116.GoogleSignIn>(),
           gh<_i974.FirebaseFirestore>(),
         ));
-    gh.factory<_i80.SavePerson>(
-        () => _i80.SavePerson(gh<_i177.UsersRepository>()));
     gh.factory<_i938.AuthRepository>(() => _i271.AuthRepositoryImpl(
           remoteDataSource: gh<_i306.AuthRemoteDataSource>(),
           networkInfo: gh<_i582.NetworkInfo>(),
@@ -108,6 +104,8 @@ extension GetItInjectableX on _i174.GetIt {
           remoteDataSource: gh<_i42.RaphconsRemoteDataSource>(),
           networkInfo: gh<_i582.NetworkInfo>(),
         ));
+    gh.factory<_i717.GetUserRaphconStatistics>(
+        () => _i717.GetUserRaphconStatistics(gh<_i158.RaphconsRepository>()));
     gh.factory<_i661.AddRaphcon>(
         () => _i661.AddRaphcon(gh<_i158.RaphconsRepository>()));
     gh.factory<_i456.SignOut>(() => _i456.SignOut(gh<_i938.AuthRepository>()));
@@ -123,8 +121,10 @@ extension GetItInjectableX on _i174.GetIt {
           adminRepository: gh<_i618.AdminRepository>(),
           firebaseAuth: gh<_i59.FirebaseAuth>(),
         ));
-    gh.factory<_i36.RaphconBloc>(
-        () => _i36.RaphconBloc(gh<_i661.AddRaphcon>()));
+    gh.factory<_i36.RaphconBloc>(() => _i36.RaphconBloc(
+          gh<_i661.AddRaphcon>(),
+          gh<_i717.GetUserRaphconStatistics>(),
+        ));
     gh.factory<_i670.AuthBloc>(() => _i670.AuthBloc(
           gh<_i153.SignInWithGoogle>(),
           gh<_i456.SignOut>(),

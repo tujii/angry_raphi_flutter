@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../domain/entities/user.dart';
 
@@ -30,7 +31,7 @@ class UserCard extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-          'Mitglied seit ${_formatDate(user.createdAt)}',
+          AppLocalizations.of(context)?.memberSince(_formatDate(user.createdAt)) ?? 'Mitglied seit ${_formatDate(user.createdAt)}',
           style: const TextStyle(
             color: AppConstants.subtitleColor,
             fontSize: 12,
@@ -41,7 +42,7 @@ class UserCard extends StatelessWidget {
           // TODO: Navigation zu User Details
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('${user.name} Details - Coming Soon!'),
+              content: Text(AppLocalizations.of(context)?.comingSoon ?? '${user.name} Details - Coming Soon!'),
               backgroundColor: AppConstants.primaryColor,
             ),
           );

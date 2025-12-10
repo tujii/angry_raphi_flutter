@@ -499,5 +499,122 @@
   "whatKindOfProblem": "What kind of problem?",
   "@whatKindOfProblem": {
     "description": "What kind of problem question"
+  },
+  "showDetails": "Show Details",
+  "@showDetails": {
+    "description": "Button to show problem details"
+  },
+  "problemStatisticsFor": "Problems for {userName}",
+  "@problemStatisticsFor": {
+    "description": "Problem statistics header with user name",
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      }
+    }
+  },
+  "sortedByType": "Sorted by problem type",
+  "@sortedByType": {
+    "description": "Subtitle for problem statistics"
+  },
+  "totalCount": "Total count:",
+  "@totalCount": {
+    "description": "Total count label"
+  },
+  "problems": "problems",
+  "@problems": {
+    "description": "Problems plural"
+  },
+  "noProblemsReported": "No problems reported!",
+  "@noProblemsReported": {
+    "description": "Message when user has no problems"
+  },
+  "noTechnicalProblemsYet": "This user has not reported any technical problems yet.",
+  "@noTechnicalProblemsYet": {
+    "description": "Explanation for users with no problems"
+  },
+  "errorLoadingStatistics": "Error loading statistics: {message}",
+  "@errorLoadingStatistics": {
+    "description": "Error message when statistics fail to load",
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "tryAgainButton": "Try Again",
+  "@tryAgainButton": {
+    "description": "Try again button text"
+  },
+  "cancelButton": "Cancel",
+  "@cancelButton": {
+    "description": "Cancel button text"
+  },
+  "createdTimeAgo": "Created: {timeAgo}",
+  "@createdTimeAgo": {
+    "description": "Created time ago text",
+    "placeholders": {
+      "timeAgo": {
+        "type": "String"
+      }
+    }
+  },
+  "daysAgoSingular": "{days} day ago",
+  "@daysAgoSingular": {
+    "description": "Days ago singular",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "daysAgoPlural": "{days} days ago",
+  "@daysAgoPlural": {
+    "description": "Days ago plural",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgoSingular": "{hours} hour ago",
+  "@hoursAgoSingular": {
+    "description": "Hours ago singular",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgoPlural": "{hours} hours ago",
+  "@hoursAgoPlural": {
+    "description": "Hours ago plural",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "justCreated": "just now",
+  "@justCreated": {
+    "description": "Just created text"
+  },
+  "raphconsCount": "Raphcons: {count}",
+  "@raphconsCount": {
+    "description": "Raphcons count text",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "memberSince": "Member since {date}",
+  "@memberSince": {
+    "description": "Member since text",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -343,7 +343,7 @@ class AdminUserCard extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Abbrechen'),
+              child: Text(AppLocalizations.of(context)?.cancel ?? 'Abbrechen'),
             ),
             ElevatedButton(
               onPressed: () {
