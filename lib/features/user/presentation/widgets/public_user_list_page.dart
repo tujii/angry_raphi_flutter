@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -35,12 +36,14 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
   bool _isAdmin = false;
   bool _isLoggedIn = false;
   String _appVersion = '1.0.0';
+  String _whatsNewContent = 'Bewerte Personen mit Raphcons';
 
   @override
   void initState() {
     super.initState();
     _checkAuthAndAdminStatus();
     _loadAppVersion();
+    _loadWhatsNewContent();
   }
 
   Future<void> _loadAppVersion() async {
@@ -53,6 +56,20 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
       // Fallback to hardcoded version if package info fails
       setState(() {
         _appVersion = '1.0.1';
+      });
+    }
+  }
+
+  Future<void> _loadWhatsNewContent() async {
+    try {
+      final content = await rootBundle.loadString('whatsnew.md');
+      setState(() {
+        _whatsNewContent = content.trim();
+      });
+    } catch (e) {
+      // Keep default value if file can't be loaded
+      setState(() {
+        _whatsNewContent = 'Bewerte Personen mit Raphcons';
       });
     }
   }
@@ -532,8 +549,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                     const SizedBox(height: 8),
                     // App description
                     Text(
-                      AppLocalizations.of(context)?.subtitle ??
-                          'Bewerte Personen mit Raphcons',
+                      _whatsNewContent,
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey[600],
