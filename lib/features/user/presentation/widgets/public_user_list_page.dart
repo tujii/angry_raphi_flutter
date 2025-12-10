@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/enums/raphcon_type.dart';
@@ -29,11 +30,27 @@ class PublicUserListPage extends StatefulWidget {
 class _PublicUserListPageState extends State<PublicUserListPage> {
   bool _isAdmin = false;
   bool _isLoggedIn = false;
+  String _appVersion = '1.0.0';
 
   @override
   void initState() {
     super.initState();
     _checkAuthAndAdminStatus();
+    _loadAppVersion();
+  }
+  
+  Future<void> _loadAppVersion() async {
+    try {
+      final packageInfo = await PackageInfo.fromPlatform();
+      setState(() {
+        _appVersion = packageInfo.version;
+      });
+    } catch (e) {
+      // Fallback to hardcoded version if package info fails
+      setState(() {
+        _appVersion = '1.0.1';
+      });
+    }
   }
 
   void _checkAuthAndAdminStatus() {
@@ -227,15 +244,36 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
         ),
       ),
       floatingActionButton: _isAdmin
-          ? FloatingActionButton(
-              onPressed: () => _showAddUserDialog(context),
-              backgroundColor: AppConstants.primaryColor,
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
+          ? Tooltip(
+              message: AppLocalizations.of(context)?.addUser ?? 'Benutzer hinzufügen',
+              child: Focus(
+                child: Material(
+                  elevation: 6.0,
+                  shape: const CircleBorder(),
+                  color: AppConstants.primaryColor,
+                  child: InkWell(
+                    onTap: () => _showAddUserDialog(context),
+                    customBorder: const CircleBorder(),
+                    splashColor: Colors.white.withValues(alpha: 0.3),
+                    highlightColor: Colors.white.withValues(alpha: 0.1),
+                    focusColor: Colors.white.withValues(alpha: 0.2),
+                    hoverColor: AppConstants.primaryColor.withValues(alpha: 0.8),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 150),
+                      width: 56.0,
+                      height: 56.0,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                        size: 24.0,
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              tooltip: AppLocalizations.of(context)?.addUser ??
-                  'Benutzer hinzufügen',
             )
           : null,
     );
@@ -461,7 +499,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        'Version 1.0.0',
+                        'Version $_appVersion',
                         style: const TextStyle(
                           fontSize: 12,
                           color: AppConstants.primaryColor,

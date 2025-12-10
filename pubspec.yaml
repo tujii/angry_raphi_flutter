@@ -28,6 +28,7 @@ dependencies:
   # Network & Utils
   dartz: ^0.10.1
   equatable: ^2.0.5
+  package_info_plus: ^8.0.0
   connectivity_plus: ^6.0.5
   
   # UI & UX

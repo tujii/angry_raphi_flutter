@@ -73,10 +73,10 @@ class RaphconStatisticsBottomSheet extends StatelessWidget {
           // Divider
           const Divider(height: 1),
 
-          // Statistics list
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Flexible(
+          // Statistics list  
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
               child: _buildStatisticsList(context, localizations),
             ),
           ),
@@ -279,7 +279,8 @@ class RaphconStatisticsBottomSheet extends StatelessWidget {
             child: Container(
               height: MediaQuery.of(context).size.height * 0.7,
               child: GestureDetector(
-                onTap: () {}, // Verhindert dass Taps auf dem Sheet das Sheet schließen
+                onTap:
+                    () {}, // Verhindert dass Taps auf dem Sheet das Sheet schließen
                 child: RaphconStatisticsBottomSheet(
                   userName: userName,
                   statistics: statistics,

@@ -43,37 +43,27 @@ class RaphconDetailBottomSheet extends StatefulWidget {
   }) {
     final userBloc = context.read<UserBloc>();
     final raphconBloc = context.read<RaphconBloc>();
-    return showModalBottomSheet<void>(
+    return showDialog<void>(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      isDismissible: true,
-      enableDrag: true,
-      builder: (context) => GestureDetector(
-        onTap: () => Navigator.of(context).pop(),
+      barrierDismissible: true,
+      builder: (context) => Dialog(
+        insetPadding: const EdgeInsets.all(16),
         child: Container(
-          color: Colors.transparent,
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.8,
+            maxWidth: MediaQuery.of(context).size.width * 0.9,
+          ),
           child: MultiBlocProvider(
             providers: [
               BlocProvider<UserBloc>.value(value: userBloc),
               BlocProvider<RaphconBloc>.value(value: raphconBloc),
             ],
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.7,
-                child: GestureDetector(
-                  onTap:
-                      () {}, // Verhindert dass Taps auf dem Sheet das Sheet schließen
-                  child: RaphconDetailBottomSheet(
-                    userName: userName,
-                    type: type,
-                    raphcons: raphcons,
-                    isAdmin: isAdmin,
-                    onBackPressed: onBackPressed,
-                  ),
-                ),
-              ),
+            child: RaphconDetailBottomSheet(
+              userName: userName,
+              type: type,
+              raphcons: raphcons,
+              isAdmin: isAdmin,
+              onBackPressed: onBackPressed,
             ),
           ),
         ),
@@ -291,10 +281,10 @@ class _RaphconDetailBottomSheetState extends State<RaphconDetailBottomSheet> {
             // Divider
             const Divider(height: 1),
 
-            // Raphcons list
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Flexible(
+            // Raphcons list  
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8.0),
                 child: _buildRaphconsList(context, localizations),
               ),
             ),
