@@ -112,9 +112,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
               if (authState is AuthAuthenticated && _isAdmin) {
                 return PopupMenuButton<String>(
                   onSelected: (value) {
-                    if (value == 'add_user') {
-                      _showAddUserDialog(context);
-                    } else if (value == 'logout') {
+                    if (value == 'logout') {
                       context.read<AuthBloc>().add(AuthSignOutRequested());
                     } else if (value == 'settings') {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -126,18 +124,6 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                     }
                   },
                   itemBuilder: (context) => [
-                    PopupMenuItem(
-                      value: 'add_user',
-                      child: Row(
-                        children: [
-                          Icon(Icons.person_add),
-                          SizedBox(width: 8),
-                          Text(AppLocalizations.of(context)?.addUser ??
-                              AppLocalizations.of(context)?.addUser ??
-                              'Benutzer hinzufügen'),
-                        ],
-                      ),
-                    ),
                     PopupMenuItem(
                       value: 'settings',
                       child: Row(
@@ -240,6 +226,18 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
           },
         ),
       ),
+      floatingActionButton: _isAdmin
+          ? FloatingActionButton(
+              onPressed: () => _showAddUserDialog(context),
+              backgroundColor: AppConstants.primaryColor,
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+              tooltip: AppLocalizations.of(context)?.addUser ??
+                  'Benutzer hinzufügen',
+            )
+          : null,
     );
   }
 
