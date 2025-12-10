@@ -712,22 +712,15 @@ class PublicUserCard extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      if (isAdmin) {
-                        onNameTapped?.call();
-                      } else {
-                        // Show statistics for all non-admin users
-                        onShowStatistics?.call();
-                      }
+                      // Show statistics for all users
+                      onShowStatistics?.call();
                     },
                     child: Text(
                       user.name,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: isAdmin
-                            ? AppConstants.primaryColor
-                            : Colors.black87,
-                        decoration: isAdmin ? TextDecoration.underline : null,
+                        color: Colors.black87,
                       ),
                     ),
                   ),
@@ -785,11 +778,18 @@ class PublicUserCard extends StatelessWidget {
                 ],
               ),
             ),
-            if (isAdmin)
+            if (isAdmin) ...[
+              IconButton(
+                icon: const Icon(Icons.add_circle, color: AppConstants.primaryColor),
+                onPressed: onNameTapped,
+                tooltip: AppLocalizations.of(context)?.add ?? 'Hinzufügen',
+              ),
               IconButton(
                 icon: const Icon(Icons.delete, color: Colors.red),
                 onPressed: () => _confirmDelete(context),
+                tooltip: AppLocalizations.of(context)?.delete ?? 'Löschen',
               ),
+            ],
           ],
         ),
       ),
