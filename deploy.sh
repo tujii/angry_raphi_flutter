@@ -64,9 +64,9 @@ else
     exit 1
 fi
 
-# Step 5: Deploy to Firebase
-print_status "Deploying to Firebase Hosting..."
-firebase deploy --only hosting
+# Step 5: Deploy to Firebase (Hosting + Firestore Rules)
+print_status "Deploying to Firebase (Hosting + Firestore)..."
+firebase deploy --only hosting,firestore
 
 if [ $? -eq 0 ]; then
     print_success "🎉 Deployment completed successfully!"

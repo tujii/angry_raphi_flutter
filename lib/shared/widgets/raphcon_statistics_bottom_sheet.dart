@@ -74,8 +74,11 @@ class RaphconStatisticsBottomSheet extends StatelessWidget {
           const Divider(height: 1),
 
           // Statistics list
-          Flexible(
-            child: _buildStatisticsList(context, localizations),
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Flexible(
+              child: _buildStatisticsList(context, localizations),
+            ),
           ),
 
           // Footer with total
@@ -267,15 +270,25 @@ class RaphconStatisticsBottomSheet extends StatelessWidget {
       backgroundColor: Colors.transparent,
       isDismissible: true,
       enableDrag: true,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.7,
-        minChildSize: 0.3,
-        maxChildSize: 0.9,
-        builder: (context, scrollController) => RaphconStatisticsBottomSheet(
-          userName: userName,
-          statistics: statistics,
-          isAdmin: isAdmin,
-          onTypeSelected: onTypeSelected,
+      builder: (context) => GestureDetector(
+        onTap: () => Navigator.of(context).pop(),
+        child: Container(
+          color: Colors.transparent,
+          child: DraggableScrollableSheet(
+            initialChildSize: 0.7,
+            minChildSize: 0.3,
+            maxChildSize: 0.9,
+            builder: (context, scrollController) => GestureDetector(
+              onTap:
+                  () {}, // Verhindert dass Taps auf dem Sheet das Sheet schließen
+              child: RaphconStatisticsBottomSheet(
+                userName: userName,
+                statistics: statistics,
+                isAdmin: isAdmin,
+                onTypeSelected: onTypeSelected,
+              ),
+            ),
+          ),
         ),
       ),
     );

@@ -39,10 +39,11 @@ service cloud.firestore {
       allow read: if true; // Everyone can read raphcons count
       allow create: if isAuthenticated() && isValidRaphcon(request.resource.data);
       allow update, delete: if isAdmin();
-    }    // Admins Collection - Only Admins can read/write
+    }
+    
+    // Admins Collection - Anyone can read display names, only Admins can write
     match /admins/{adminId} {
-      allow read: if isAuthenticated() && 
-                     (request.auth.uid == adminId || isAdmin());
+      allow read: if true; // Allow anyone to read admin display names
       allow write: if isAdmin();
     }
     

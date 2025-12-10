@@ -104,10 +104,12 @@ class AngryRaphiApp extends StatelessWidget {
               final getUsersUseCase = GetUsersUseCase(repository);
               final getUsersStreamUseCase = GetUsersStreamUseCase(repository);
               final addUserUseCase = AddUserUseCase(repository);
+              final deleteUserUseCase = DeleteUserUseCase(repository);
               return UserBloc(
                 getUsersUseCase: getUsersUseCase,
                 getUsersStreamUseCase: getUsersStreamUseCase,
                 addUserUseCase: addUserUseCase,
+                deleteUserUseCase: deleteUserUseCase,
               );
             },
           ),

@@ -49,21 +49,31 @@ class RaphconDetailBottomSheet extends StatefulWidget {
       backgroundColor: Colors.transparent,
       isDismissible: true,
       enableDrag: true,
-      builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider<UserBloc>.value(value: userBloc),
-          BlocProvider<RaphconBloc>.value(value: raphconBloc),
-        ],
-        child: DraggableScrollableSheet(
-          initialChildSize: 0.7,
-          minChildSize: 0.3,
-          maxChildSize: 0.9,
-          builder: (context, scrollController) => RaphconDetailBottomSheet(
-            userName: userName,
-            type: type,
-            raphcons: raphcons,
-            isAdmin: isAdmin,
-            onBackPressed: onBackPressed,
+      builder: (context) => GestureDetector(
+        onTap: () => Navigator.of(context).pop(),
+        child: Container(
+          color: Colors.transparent,
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider<UserBloc>.value(value: userBloc),
+              BlocProvider<RaphconBloc>.value(value: raphconBloc),
+            ],
+            child: DraggableScrollableSheet(
+              initialChildSize: 0.7,
+              minChildSize: 0.3,
+              maxChildSize: 0.9,
+              builder: (context, scrollController) => GestureDetector(
+                onTap:
+                    () {}, // Verhindert dass Taps auf dem Sheet das Sheet schließen
+                child: RaphconDetailBottomSheet(
+                  userName: userName,
+                  type: type,
+                  raphcons: raphcons,
+                  isAdmin: isAdmin,
+                  onBackPressed: onBackPressed,
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -281,8 +291,11 @@ class _RaphconDetailBottomSheetState extends State<RaphconDetailBottomSheet> {
             const Divider(height: 1),
 
             // Raphcons list
-            Flexible(
-              child: _buildRaphconsList(context, localizations),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Flexible(
+                child: _buildRaphconsList(context, localizations),
+              ),
             ),
 
             // Footer with count

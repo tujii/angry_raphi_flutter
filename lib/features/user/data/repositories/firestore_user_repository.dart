@@ -176,10 +176,27 @@ class FirestoreUserRepository implements UserRepository {
   @override
   Future<bool> deleteUser(String userId) async {
     try {
-      await _firestore.collection(_usersCollection).doc(userId).delete();
+      // First, delete all raphcons for this user
+      final raphconQuery = await _firestore
+          .collection('raphcons')
+          .where('userId', isEqualTo: userId)
+          .get();
+
+      // Delete all raphcons in a batch
+      final batch = _firestore.batch();
+      for (final doc in raphconQuery.docs) {
+        batch.delete(doc.reference);
+      }
+
+      // Add user deletion to the batch
+      batch.delete(_firestore.collection(_usersCollection).doc(userId));
+
+      // Execute all deletions atomically
+      await batch.commit();
+      
       return true;
     } catch (e) {
-      throw Exception('Failed to delete user: $e');
+      throw Exception('Failed to delete user and raphcons: $e');
     }
   }
 }

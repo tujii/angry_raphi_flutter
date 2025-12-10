@@ -52,6 +52,7 @@ void setupDependencyInjection() {
       getUsersUseCase: getIt<GetUsersUseCase>(),
       getUsersStreamUseCase: getIt<GetUsersStreamUseCase>(),
       addUserUseCase: getIt<AddUserUseCase>(),
+      deleteUserUseCase: getIt<DeleteUserUseCase>(),
     ),
   );
 }

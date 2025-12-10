@@ -683,10 +683,13 @@ class PublicUserCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       elevation: 4,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
+      child: InkWell(
+        onTap: isAdmin ? null : onShowStatistics, // Nur für nicht-Admins klickbar
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
             CircleAvatar(
               backgroundColor: AppConstants.primaryColor,
               radius: 30,
@@ -801,7 +804,8 @@ class PublicUserCard extends StatelessWidget {
                 tooltip: AppLocalizations.of(context)?.delete ?? 'Löschen',
               ),
             ],
-          ],
+          ]
+        ),
         ),
       ),
     );

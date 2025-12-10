@@ -81,6 +81,15 @@ class UserError extends UserState {
   List<Object> get props => [message];
 }
 
+class UserDeleted extends UserState {
+  final String userId;
+
+  const UserDeleted(this.userId);
+
+  @override
+  List<Object> get props => [userId];
+}
+
 class SampleDataAdded extends UserState {}
 
 // BLoC
@@ -88,6 +97,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   final GetUsersUseCase _getUsersUseCase;
   final GetUsersStreamUseCase _getUsersStreamUseCase;
   final AddUserUseCase _addUserUseCase;
+  final DeleteUserUseCase _deleteUserUseCase;
 
   StreamSubscription<List<User>>? _usersStreamSubscription;
 
@@ -95,9 +105,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     required GetUsersUseCase getUsersUseCase,
     required GetUsersStreamUseCase getUsersStreamUseCase,
     required AddUserUseCase addUserUseCase,
+    required DeleteUserUseCase deleteUserUseCase,
   })  : _getUsersUseCase = getUsersUseCase,
         _getUsersStreamUseCase = getUsersStreamUseCase,
         _addUserUseCase = addUserUseCase,
+        _deleteUserUseCase = deleteUserUseCase,
         super(UserInitial()) {
     on<LoadUsersEvent>(_onLoadUsers);
     on<StartUsersStreamEvent>(_onStartUsersStream);
@@ -184,10 +196,13 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       DeleteUserEvent event, Emitter<UserState> emit) async {
     emit(UserLoading());
     try {
-      // TODO: Implement actual user deletion with repository
-      // For now, just show a message and reload users
-      emit(const UserError('deleteUser'));
-      add(LoadUsersEvent());
+      final success = await _deleteUserUseCase.execute(event.userId);
+      if (success) {
+        emit(UserDeleted(event.userId));
+        add(LoadUsersEvent()); // Reload users to update the list
+      } else {
+        emit(const UserError('failedToDeleteUser'));
+      }
     } catch (e) {
       emit(UserError('failedToDeleteUser: ${e.toString()}'));
     }
