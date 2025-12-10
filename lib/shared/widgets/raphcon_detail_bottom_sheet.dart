@@ -6,10 +6,11 @@ import '../../core/constants/app_constants.dart';
 import '../../core/enums/raphcon_type.dart';
 import '../../features/raphcon_management/domain/entities/raphcon_entity.dart';
 import '../../features/raphcon_management/presentation/bloc/raphcon_bloc.dart';
+import '../../features/user/presentation/bloc/user_bloc.dart';
 
 /// Detailed bottom sheet that shows individual raphcon entries for a specific type
 /// Allows admins to delete individual raphcons
-class RaphconDetailBottomSheet extends StatelessWidget {
+class RaphconDetailBottomSheet extends StatefulWidget {
   final String userName;
   final RaphconType type;
   final List<RaphconEntity> raphcons;
@@ -26,125 +27,167 @@ class RaphconDetailBottomSheet extends StatelessWidget {
   });
 
   @override
+  State<RaphconDetailBottomSheet> createState() =>
+      _RaphconDetailBottomSheetState();
+}
+
+class _RaphconDetailBottomSheetState extends State<RaphconDetailBottomSheet> {
+  final Map<String, String> _userNameCache = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserNames();
+  }
+
+  void _loadUserNames() {
+    // Load all users to cache their names
+    context.read<UserBloc>().add(LoadUsersEvent());
+  }
+
+  String _getCreatorDisplayName(String createdBy) {
+    if (createdBy.isEmpty) return '';
+
+    // Check cache first
+    if (_userNameCache.containsKey(createdBy)) {
+      return _userNameCache[createdBy]!;
+    }
+
+    // Return email/ID as fallback
+    return createdBy;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
 
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
+    return BlocListener<UserBloc, UserState>(
+      listener: (context, state) {
+        if (state is UserLoaded) {
+          setState(() {
+            for (final user in state.users) {
+              _userNameCache[user.id] = user.name;
+            }
+          });
+        }
+      },
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20),
+          ),
         ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Handle bar
-          Container(
-            margin: const EdgeInsets.only(top: 8),
-            height: 4,
-            width: 40,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-
-          // Header with back button
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                IconButton(
-                  onPressed: onBackPressed,
-                  icon: const Icon(Icons.arrow_back),
-                  color: AppConstants.primaryColor,
-                ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        type.getDisplayName(localizations),
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: AppConstants.textColor,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        localizations.problemStatisticsFor(userName),
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: AppConstants.subtitleColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 48), // Balance the back button
-              ],
-            ),
-          ),
-
-          // Divider
-          const Divider(height: 1),
-
-          // Raphcons list
-          Flexible(
-            child: _buildRaphconsList(context, localizations),
-          ),
-
-          // Footer with count
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppConstants.primaryColor.withValues(alpha: 0.1),
-              borderRadius: const BorderRadius.vertical(
-                bottom: Radius.circular(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Handle bar
+            Container(
+              margin: const EdgeInsets.only(top: 8),
+              height: 4,
+              width: 40,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
               ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  localizations.totalCount,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  '${raphcons.length}',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+
+            // Header with back button
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: widget.onBackPressed,
+                    icon: const Icon(Icons.arrow_back),
                     color: AppConstants.primaryColor,
                   ),
-                ),
-              ],
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text(
+                          widget.type.getDisplayName(localizations),
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: AppConstants.textColor,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          localizations.problemStatisticsFor(widget.userName),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: AppConstants.subtitleColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 48), // Balance the back button
+                ],
+              ),
             ),
-          ),
-        ],
+
+            // Divider
+            const Divider(height: 1),
+
+            // Raphcons list
+            Flexible(
+              child: _buildRaphconsList(context, localizations),
+            ),
+
+            // Footer with count
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppConstants.primaryColor.withValues(alpha: 0.1),
+                borderRadius: const BorderRadius.vertical(
+                  bottom: Radius.circular(20),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    localizations.totalCount,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    '${widget.raphcons.length}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppConstants.primaryColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildRaphconsList(
       BuildContext context, AppLocalizations localizations) {
-    if (raphcons.isEmpty) {
+    if (widget.raphcons.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(32),
         child: Column(
           children: [
             Icon(
-              _getIconForType(type),
+              _getIconForType(widget.type),
               size: 64,
               color: Colors.grey,
             ),
             const SizedBox(height: 16),
             Text(
-              'Keine Einträge für diesen Typ',
+              localizations.noEntriesForThisType,
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
@@ -157,7 +200,7 @@ class RaphconDetailBottomSheet extends StatelessWidget {
     }
 
     // Sort by creation date (newest first)
-    final sortedRaphcons = List<RaphconEntity>.from(raphcons)
+    final sortedRaphcons = List<RaphconEntity>.from(widget.raphcons)
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
     return ListView.builder(
@@ -177,13 +220,13 @@ class RaphconDetailBottomSheet extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
-                _getIconForType(type),
+                _getIconForType(widget.type),
                 color: AppConstants.primaryColor,
                 size: 24,
               ),
             ),
             title: Text(
-              raphcon.comment ?? 'Kein Kommentar',
+              raphcon.comment ?? localizations.noComment,
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
@@ -201,7 +244,8 @@ class RaphconDetailBottomSheet extends StatelessWidget {
                 ),
                 if (raphcon.createdBy.isNotEmpty)
                   Text(
-                    'Erstellt von: ${raphcon.createdBy}',
+                    localizations
+                        .createdBy(_getCreatorDisplayName(raphcon.createdBy)),
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey[500],
@@ -209,7 +253,7 @@ class RaphconDetailBottomSheet extends StatelessWidget {
                   ),
               ],
             ),
-            trailing: isAdmin
+            trailing: widget.isAdmin
                 ? IconButton(
                     onPressed: () => _confirmDelete(context, raphcon),
                     icon: const Icon(
@@ -293,7 +337,7 @@ class RaphconDetailBottomSheet extends StatelessWidget {
 
                   // Show success message and close bottom sheet
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
+                    const SnackBar(
                       content: Text('Raphcon wurde gelöscht'),
                       backgroundColor: Colors.green,
                     ),
@@ -302,7 +346,7 @@ class RaphconDetailBottomSheet extends StatelessWidget {
                 } else {
                   Navigator.of(dialogContext).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
+                    const SnackBar(
                       content: Text('Fehler: Raphcon ID nicht gefunden'),
                       backgroundColor: Colors.red,
                     ),

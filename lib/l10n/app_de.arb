@@ -148,6 +148,8 @@
   "initialMustBeLetter": "Buchstabe muss ein gültiger Buchstabe sein",
   "initials": "Initialen",
   "enterTwoInitials": "Geben Sie zwei Initialen ein (z.B. M.M.)",
+  "raphconDeleted": "Raphcon wurde gelöscht",
+  "errorRaphconIdNotFound": "Fehler: Raphcon ID nicht gefunden",
   "initialsFormat": "Format: Erster Buchstabe + Zweiter Buchstabe",
   "ratePersonsWithRaphcons": "Bewerte Personen mit Raphcons",
   "termsOfService": "Nutzungsbedingungen",
