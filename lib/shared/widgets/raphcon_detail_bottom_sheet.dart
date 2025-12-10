@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/enums/raphcon_type.dart';
 import '../../features/raphcon_management/domain/entities/raphcon_entity.dart';
+import '../../features/raphcon_management/presentation/bloc/raphcon_bloc.dart';
 
 /// Detailed bottom sheet that shows individual raphcon entries for a specific type
 /// Allows admins to delete individual raphcons
@@ -281,8 +283,31 @@ class RaphconDetailBottomSheet extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                // TODO: Add delete event when it exists
-                Navigator.of(dialogContext).pop();
+                // Check if ID is not null before deleting
+                if (raphcon.id != null) {
+                  // Dispatch delete event to BLoC
+                  context
+                      .read<RaphconBloc>()
+                      .add(DeleteRaphconEvent(raphcon.id!));
+                  Navigator.of(dialogContext).pop();
+
+                  // Show success message and close bottom sheet
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Raphcon wurde gelöscht'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                  Navigator.of(context).pop(); // Close bottom sheet
+                } else {
+                  Navigator.of(dialogContext).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Fehler: Raphcon ID nicht gefunden'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
@@ -16,6 +17,7 @@ import '../bloc/user_bloc.dart';
 import 'initials_add_user_dialog.dart';
 import '../../../../shared/widgets/raphcon_type_selection_dialog.dart';
 import '../../../../shared/widgets/raphcon_statistics_bottom_sheet.dart';
+import '../../../../shared/widgets/raphcon_detail_bottom_sheet.dart';
 
 class PublicUserListPage extends StatefulWidget {
   const PublicUserListPage({super.key});
@@ -441,7 +443,6 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
           statistics: state.statistics,
           isAdmin: _isAdmin,
           onTypeSelected: (type) {
-            // TODO: Load detailed raphcons for this type and show detail sheet
             _showDetailBottomSheet(context, user, type);
           },
         );
@@ -466,14 +467,43 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
 
   void _showDetailBottomSheet(
       BuildContext context, user_entity.User user, RaphconType type) {
-    // TODO: Implement loading of detailed raphcons for this type
-    // For now, show placeholder
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content:
-            Text('Detail-Ansicht für ${type.name} wird bald verfügbar sein'),
-      ),
-    );
+    // Load detailed raphcons for this type
+    context.read<RaphconBloc>().add(LoadUserRaphconsByTypeEvent(user.id, type));
+
+    // Listen for the result and show the detail bottom sheet
+    StreamSubscription<RaphconState>? subscription;
+    subscription = context.read<RaphconBloc>().stream.listen((state) {
+      if (state is UserRaphconsByTypeLoaded && context.mounted) {
+        subscription?.cancel();
+        Navigator.of(context).pop(); // Close statistics sheet first
+        RaphconDetailBottomSheet.show(
+          context: context,
+          userName: user.name,
+          type: type,
+          raphcons: state.raphcons,
+          isAdmin: _isAdmin,
+          onBackPressed: () {
+            Navigator.of(context).pop(); // Close detail sheet
+            // Show statistics sheet again
+            _showStatisticsBottomSheet(user);
+          },
+        );
+      } else if (state is RaphconError && context.mounted) {
+        subscription?.cancel();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Fehler beim Laden der Details: ${state.message}',
+            ),
+          ),
+        );
+      }
+    });
+
+    // Auto-cancel subscription after timeout to prevent memory leaks
+    Timer(const Duration(seconds: 10), () {
+      subscription?.cancel();
+    });
   }
 }
 

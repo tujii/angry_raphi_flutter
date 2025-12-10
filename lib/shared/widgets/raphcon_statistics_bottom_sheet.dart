@@ -3,7 +3,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/enums/raphcon_type.dart';
-import 'raphcon_detail_bottom_sheet.dart';
 
 /// Scrollable bottom sheet that displays raphcon statistics by type
 /// Shown to non-authenticated users when they tap on a user tile

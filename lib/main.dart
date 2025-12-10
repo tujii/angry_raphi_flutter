@@ -22,6 +22,8 @@ import 'features/raphcon_management/data/repositories/raphcons_repository_impl.d
 import 'features/raphcon_management/data/datasources/raphcons_remote_datasource.dart';
 import 'features/raphcon_management/domain/usecases/add_raphcon.dart';
 import 'features/raphcon_management/domain/usecases/get_user_raphcon_statistics.dart';
+import 'features/raphcon_management/domain/usecases/get_user_raphcons_by_type.dart';
+import 'features/raphcon_management/domain/usecases/delete_raphcon.dart';
 import 'features/raphcon_management/presentation/bloc/raphcon_bloc.dart';
 import 'features/authentication/data/repositories/auth_repository_impl.dart';
 import 'features/authentication/data/datasources/auth_remote_datasource.dart';
@@ -137,8 +139,12 @@ class AngryRaphiApp extends StatelessWidget {
               final addRaphcon = AddRaphcon(raphconRepository);
               final getUserRaphconStatistics =
                   GetUserRaphconStatistics(raphconRepository);
+              final getUserRaphconsByType =
+                  GetUserRaphconsByType(raphconRepository);
+              final deleteRaphcon = DeleteRaphcon(raphconRepository);
 
-              return RaphconBloc(addRaphcon, getUserRaphconStatistics);
+              return RaphconBloc(addRaphcon, getUserRaphconStatistics,
+                  getUserRaphconsByType, deleteRaphcon);
             },
           ),
           BlocProvider(

@@ -7,6 +7,8 @@ import '../models/raphcon_model.dart';
 
 abstract class RaphconsRemoteDataSource {
   Future<List<RaphconModel>> getUserRaphcons(String userId);
+  Future<List<RaphconModel>> getUserRaphconsByType(
+      String userId, RaphconType type);
   Future<List<RaphconModel>> getAllRaphcons();
   Future<void> addRaphcon(
       String userId, String createdBy, String? comment, RaphconType type);
@@ -33,6 +35,26 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
           .toList();
     } catch (e) {
       throw ServerException('Failed to get user raphcons: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<List<RaphconModel>> getUserRaphconsByType(
+      String userId, RaphconType type) async {
+    try {
+      final querySnapshot = await firestore
+          .collection('raphcons')
+          .where('userId', isEqualTo: userId)
+          .where('type', isEqualTo: type.name)
+          .orderBy('createdAt', descending: true)
+          .get();
+
+      return querySnapshot.docs
+          .map((doc) => RaphconModel.fromMap(doc.data(), doc.id))
+          .toList();
+    } catch (e) {
+      throw ServerException(
+          'Failed to get user raphcons by type: ${e.toString()}');
     }
   }
 

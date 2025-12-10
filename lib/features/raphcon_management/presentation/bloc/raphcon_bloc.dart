@@ -5,6 +5,8 @@ import 'package:injectable/injectable.dart';
 import '../../domain/entities/raphcon_entity.dart';
 import '../../domain/usecases/add_raphcon.dart';
 import '../../domain/usecases/get_user_raphcon_statistics.dart';
+import '../../domain/usecases/get_user_raphcons_by_type.dart';
+import '../../domain/usecases/delete_raphcon.dart';
 import '../../domain/repositories/raphcons_repository.dart';
 import '../../../../core/enums/raphcon_type.dart';
 
@@ -49,6 +51,25 @@ class LoadUserRaphconStatisticsEvent extends RaphconEvent {
   List<Object> get props => [userId];
 }
 
+class LoadUserRaphconsByTypeEvent extends RaphconEvent {
+  final String userId;
+  final RaphconType type;
+
+  LoadUserRaphconsByTypeEvent(this.userId, this.type);
+
+  @override
+  List<Object> get props => [userId, type];
+}
+
+class DeleteRaphconEvent extends RaphconEvent {
+  final String raphconId;
+
+  DeleteRaphconEvent(this.raphconId);
+
+  @override
+  List<Object> get props => [raphconId];
+}
+
 // States
 abstract class RaphconState extends Equatable {
   @override
@@ -68,13 +89,22 @@ class RaphconAdded extends RaphconState {
   List<Object> get props => [message];
 }
 
-class UserRaphconsLoaded extends RaphconState {
-  final List<RaphconEntity> raphcons;
+class RaphconDeleted extends RaphconState {
+  final String deletedRaphconId;
 
-  UserRaphconsLoaded(this.raphcons);
+  RaphconDeleted(this.deletedRaphconId);
 
   @override
-  List<Object> get props => [raphcons];
+  List<Object> get props => [deletedRaphconId];
+}
+
+class RaphconDeletionError extends RaphconState {
+  final String message;
+
+  RaphconDeletionError(this.message);
+
+  @override
+  List<Object> get props => [message];
 }
 
 class UserRaphconStatisticsLoaded extends RaphconState {
@@ -84,6 +114,16 @@ class UserRaphconStatisticsLoaded extends RaphconState {
 
   @override
   List<Object> get props => [statistics];
+}
+
+class UserRaphconsByTypeLoaded extends RaphconState {
+  final List<RaphconEntity> raphcons;
+  final RaphconType type;
+
+  UserRaphconsByTypeLoaded(this.raphcons, this.type);
+
+  @override
+  List<Object> get props => [raphcons, type];
 }
 
 class RaphconError extends RaphconState {
@@ -100,12 +140,17 @@ class RaphconError extends RaphconState {
 class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
   final AddRaphcon _addRaphcon;
   final GetUserRaphconStatistics _getUserRaphconStatistics;
+  final GetUserRaphconsByType _getUserRaphconsByType;
+  final DeleteRaphcon _deleteRaphcon;
 
-  RaphconBloc(this._addRaphcon, this._getUserRaphconStatistics)
+  RaphconBloc(this._addRaphcon, this._getUserRaphconStatistics,
+      this._getUserRaphconsByType, this._deleteRaphcon)
       : super(RaphconInitial()) {
     on<AddRaphconEvent>(_onAddRaphcon);
     on<LoadUserRaphconsEvent>(_onLoadUserRaphcons);
     on<LoadUserRaphconStatisticsEvent>(_onLoadUserRaphconStatistics);
+    on<LoadUserRaphconsByTypeEvent>(_onLoadUserRaphconsByType);
+    on<DeleteRaphconEvent>(_onDeleteRaphcon);
   }
 
   Future<void> _onAddRaphcon(
@@ -135,7 +180,7 @@ class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
     emit(RaphconLoading());
 
     // TODO: Implement when getUserRaphcons use case is created
-    emit(UserRaphconsLoaded([]));
+    emit(UserRaphconsByTypeLoaded([], RaphconType.other));
   }
 
   Future<void> _onLoadUserRaphconStatistics(
@@ -148,6 +193,32 @@ class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
     result.fold(
       (failure) => emit(RaphconError(failure.message)),
       (statistics) => emit(UserRaphconStatisticsLoaded(statistics)),
+    );
+  }
+
+  Future<void> _onLoadUserRaphconsByType(
+    LoadUserRaphconsByTypeEvent event,
+    Emitter<RaphconState> emit,
+  ) async {
+    emit(RaphconLoading());
+
+    final result = await _getUserRaphconsByType(event.userId, event.type);
+    result.fold(
+      (failure) => emit(RaphconError(failure.message)),
+      (raphcons) => emit(UserRaphconsByTypeLoaded(raphcons, event.type)),
+    );
+  }
+
+  Future<void> _onDeleteRaphcon(
+    DeleteRaphconEvent event,
+    Emitter<RaphconState> emit,
+  ) async {
+    emit(RaphconLoading());
+
+    final result = await _deleteRaphcon(event.raphconId);
+    result.fold(
+      (failure) => emit(RaphconDeletionError(failure.message)),
+      (_) => emit(RaphconDeleted(event.raphconId)),
     );
   }
 }

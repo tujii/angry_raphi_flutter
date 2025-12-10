@@ -4,6 +4,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/network/network_info.dart';
+import '../../../../core/enums/raphcon_type.dart';
 import '../../domain/entities/raphcon_entity.dart';
 import '../../domain/repositories/raphcons_repository.dart';
 import '../datasources/raphcons_remote_datasource.dart';
@@ -24,6 +25,24 @@ class RaphconsRepositoryImpl implements RaphconsRepository {
     if (await networkInfo.isConnected) {
       try {
         final raphconModels = await remoteDataSource.getUserRaphcons(userId);
+        return Right(raphconModels);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(e.message));
+      } catch (e) {
+        return Left(ServerFailure(e.toString()));
+      }
+    } else {
+      return const Left(NetworkFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<RaphconEntity>>> getUserRaphconsByType(
+      String userId, RaphconType type) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final raphconModels =
+            await remoteDataSource.getUserRaphconsByType(userId, type);
         return Right(raphconModels);
       } on ServerException catch (e) {
         return Left(ServerFailure(e.message));

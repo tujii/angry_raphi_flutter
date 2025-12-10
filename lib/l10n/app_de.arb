@@ -84,14 +84,56 @@
   "settingsComingSoon2": "Einstellungen kommen bald!",
   "mustBeLoggedIn": "Sie müssen angemeldet sein",
   "createRaphconFor": "Raphcon für {name} erstellen",
+  "@createRaphconFor": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "loginFailed": "Anmeldung fehlgeschlagen",
   "adminRequired": "Admin-Berechtigung erforderlich",
   "loginToCreateRaphcons": "Melden Sie sich an, um Raphcons zu erstellen",
   "createdAgo": "Erstellt: {timeAgo}",
+  "@createdAgo": {
+    "placeholders": {
+      "timeAgo": {
+        "type": "String"
+      }
+    }
+  },
   "dayAgo": "vor {days} Tag",
+  "@dayAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "daysAgo": "vor {days} Tagen",
+  "@daysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "hourAgo": "vor {hours} Stunde",
+  "@hourAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
   "hoursAgo": "vor {hours} Stunden",
+  "@hoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
   "justNow": "gerade eben",
   "pleaseEnterName": "Bitte geben Sie einen Namen ein",
   "nameMaxLength": "Name darf maximal 50 Zeichen haben",

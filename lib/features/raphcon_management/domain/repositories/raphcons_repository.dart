@@ -20,6 +20,8 @@ class AddRaphconParams {
 
 abstract class RaphconsRepository {
   Future<Either<Failure, List<RaphconEntity>>> getUserRaphcons(String userId);
+  Future<Either<Failure, List<RaphconEntity>>> getUserRaphconsByType(
+      String userId, RaphconType type);
   Future<Either<Failure, List<RaphconEntity>>> getAllRaphcons();
   Future<Either<Failure, void>> addRaphcon(AddRaphconParams params);
   Future<Either<Failure, void>> deleteRaphcon(String raphconId);
