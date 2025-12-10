@@ -33,15 +33,6 @@ class AddRaphconEvent extends RaphconEvent {
   List<Object> get props => [userId, createdBy, comment ?? '', type];
 }
 
-class LoadUserRaphconsEvent extends RaphconEvent {
-  final String userId;
-
-  LoadUserRaphconsEvent(this.userId);
-
-  @override
-  List<Object> get props => [userId];
-}
-
 class LoadUserRaphconStatisticsEvent extends RaphconEvent {
   final String userId;
 
@@ -147,7 +138,6 @@ class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
       this._getUserRaphconsByType, this._deleteRaphcon)
       : super(RaphconInitial()) {
     on<AddRaphconEvent>(_onAddRaphcon);
-    on<LoadUserRaphconsEvent>(_onLoadUserRaphcons);
     on<LoadUserRaphconStatisticsEvent>(_onLoadUserRaphconStatistics);
     on<LoadUserRaphconsByTypeEvent>(_onLoadUserRaphconsByType);
     on<DeleteRaphconEvent>(_onDeleteRaphcon);
@@ -171,16 +161,6 @@ class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
       (failure) => emit(RaphconError(failure.message)),
       (_) => emit(RaphconAdded('raphconCreated')),
     );
-  }
-
-  Future<void> _onLoadUserRaphcons(
-    LoadUserRaphconsEvent event,
-    Emitter<RaphconState> emit,
-  ) async {
-    emit(RaphconLoading());
-
-    // TODO: Implement when getUserRaphcons use case is created
-    emit(UserRaphconsByTypeLoaded([], RaphconType.other));
   }
 
   Future<void> _onLoadUserRaphconStatistics(

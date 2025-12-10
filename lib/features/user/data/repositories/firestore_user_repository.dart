@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/user_repository.dart';
 
@@ -42,7 +43,7 @@ class FirestoreUserRepository implements UserRepository {
         }
       } catch (e) {
         // If raphcon counting fails, continue with stored counts
-        print('Warning: Could not calculate real-time raphcon counts: $e');
+        debugPrint('Warning: Could not calculate real-time raphcon counts: $e');
       }
 
       for (final doc in querySnapshot.docs) {
@@ -146,7 +147,7 @@ class FirestoreUserRepository implements UserRepository {
         }
       } catch (e) {
         // If raphcon counting fails, continue with stored counts
-        print('Warning: Could not calculate real-time raphcon counts: $e');
+        debugPrint('Warning: Could not calculate real-time raphcon counts: $e');
       }
 
       for (final doc in usersSnapshot.docs) {

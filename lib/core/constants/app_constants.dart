@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppConstants {
   static const String appName = 'AngryRaphi';
+  static const String appVersion = '1.0.1';
   static const Color primaryColor = Color(0xFF8B0000); // Dark Red
   static const Color secondaryColor = Color(0xFF4CAF50); // Green
   static const Color backgroundColor = Color(0xFFF5F5F5);

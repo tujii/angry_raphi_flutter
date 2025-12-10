@@ -375,7 +375,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
     showDialog(
       context: context,
       builder: (context) => Dialog(
-        child: Container(
+        child: SizedBox(
           width: ResponsiveHelper.isMobile(context)
               ? MediaQuery.of(context).size.width * 0.9
               : 800,

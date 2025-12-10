@@ -358,7 +358,12 @@
   },
   "createRaphconFor": "Create raphcon for {name}",
   "@createRaphconFor": {
-    "description": "Create raphcon for user message"
+    "description": "Create raphcon for user message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "loginFailed": "Login failed",
   "@loginFailed": {
@@ -374,23 +379,48 @@
   },
   "createdAgo": "Created: {timeAgo}",
   "@createdAgo": {
-    "description": "Created time ago message"
+    "description": "Created time ago message",
+    "placeholders": {
+      "timeAgo": {
+        "type": "String"
+      }
+    }
   },
   "dayAgo": "{days} day ago",
   "@dayAgo": {
-    "description": "Day ago message"
+    "description": "Day ago message",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
   },
   "daysAgo": "{days} days ago",
   "@daysAgo": {
-    "description": "Days ago message"
+    "description": "Days ago message",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
   },
   "hourAgo": "{hours} hour ago",
   "@hourAgo": {
-    "description": "Hour ago message"
+    "description": "Hour ago message",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
   },
   "hoursAgo": "{hours} hours ago",
   "@hoursAgo": {
-    "description": "Hours ago message"
+    "description": "Hours ago message",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
   },
   "justNow": "just now",
   "@justNow": {
@@ -685,5 +715,210 @@
   "emailAddress": "Email address",
   "@emailAddress": {
     "description": "Email address field label"
+  },
+  "termsOfServiceTitle": "Terms of Service for AngryRaphi",
+  "@termsOfServiceTitle": {
+    "description": "Terms of Service page title"
+  },
+  "privacyPolicyTitle": "Privacy Policy for AngryRaphi",
+  "@privacyPolicyTitle": {
+    "description": "Privacy Policy page title"
+  },
+  "lastUpdated": "Last updated: {date}",
+  "@lastUpdated": {
+    "description": "Last updated date text",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "termsSection1Title": "1. Scope",
+  "@termsSection1Title": {
+    "description": "Terms section 1 title"
+  },
+  "termsSection1Content": "These Terms of Service govern the use of the AngryRaphi app (\"the App\"), a system for rating persons using \"Raphcons\". By using the App, you agree to these terms.",
+  "@termsSection1Content": {
+    "description": "Terms section 1 content"
+  },
+  "termsSection2Title": "2. Service Description",
+  "@termsSection2Title": {
+    "description": "Terms section 2 title"
+  },
+  "termsSection2Content": "AngryRaphi is an application for humorous rating of persons in closed groups. Users can:\n\n• Add persons to the rating list\n• Assign Raphcons (ratings) for various problem areas\n• View statistics and rankings\n• Use additional administrative functions as an administrator",
+  "@termsSection2Content": {
+    "description": "Terms section 2 content"
+  },
+  "termsSection3Title": "3. User Accounts and Access",
+  "@termsSection3Title": {
+    "description": "Terms section 3 title"
+  },
+  "termsSection3Content": "Access to the App is via Google authentication. You are responsible for:\n\n• Keeping your login credentials confidential\n• All activities under your account\n• Notification in case of unauthorized use",
+  "@termsSection3Content": {
+    "description": "Terms section 3 content"
+  },
+  "termsSection4Title": "4. Appropriate Use",
+  "@termsSection4Title": {
+    "description": "Terms section 4 title"
+  },
+  "termsSection4Content": "You commit to appropriate use of the App:\n\n• No insults or discrimination\n• Respectful treatment of other users\n• No abusive use of the rating function\n• Respect for others' privacy",
+  "termsSection5Title": "5. Privacy",
+  "termsSection5Content": "Your privacy is important to us. Details on data collection and processing can be found in our Privacy Policy, which is an integral part of these Terms of Service.",
+  "termsSection6Title": "6. Intellectual Property",
+  "termsSection6Content": "All App content, including design, code and graphics, is protected by copyright. Use is only permitted within the intended use of the App.",
+  "termsSection7Title": "7. Disclaimer",
+  "termsSection7Content": "The App is provided \"as is\". We assume no warranty for:\n\n• Continuous availability\n• Error-free software\n• Suitability for specific purposes\n• Damages from App usage",
+  "termsSection8Title": "8. Changes to Terms",
+  "termsSection8Content": "We reserve the right to change these Terms of Service at any time. Changes will be announced in the App and take effect upon continued use.",
+  "termsSection9Title": "9. Termination",
+  "termsSection9Content": "You can delete your account at any time. We reserve the right to suspend or delete accounts in case of violations of these terms.",
+  "termsSection10Title": "10. Applicable Law",
+  "termsSection10Content": "These Terms of Service are governed by the laws of Switzerland. Place of jurisdiction is Olten, Switzerland.\n\n**IMPORTANT NOTE:** AngryRaphi is purely a fun app with no serious intent. For any issues, please contact us first before taking legal action.",
+  "contactTitle": "Contact",
+  "termsContactContent": "For questions about these Terms of Service, please contact:\n\nInthusan Gunasiri\nAarauerstrasse 132\n4600 Olten, Switzerland\nE-Mail: inthusan@hotmail.de\n\nApp: AngryRaphi v{version}",
+  "@termsContactContent": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "privacySection1Title": "1. Controller",
+  "privacySection1Content": "Responsible for data processing in the AngryRaphi app:\n\nInthusan Gunasiri\nAarauerstrasse 132\n4600 Olten, Switzerland\nE-Mail: inthusan@hotmail.de\n\n**NOTE:** This is a fun app with no commercial intentions.",
+  "privacySection2Title": "2. Collected Data",
+  "privacySection2Content": "We collect and process the following data:\n\n**Authentication Data:**\n• Google Account information (name, email, profile picture)\n• Unique user ID\n\n**App Usage Data:**\n• Created persons and their names/initials\n• Raphcon ratings with timestamp\n• Admin status and permissions\n\n**Technical Data:**\n• Device information\n• App usage statistics\n• Crash reports (anonymized)",
+  "privacySection3Title": "3. Purpose of Data Processing",
+  "privacySection3Content": "Data processing serves the following purposes:\n\n• **App Functions:** Authentication, user management\n• **Person Ratings:** Storage and display of Raphcons\n• **Administration:** Management of users and permissions\n• **App Improvement:** Analysis of usage patterns\n• **Security:** Protection against abuse",
+  "privacySection4Title": "4. Legal Basis",
+  "privacySection4Content": "Processing is based on:\n\n• **Art. 6 para. 1 lit. b GDPR:** Contract performance\n• **Art. 6 para. 1 lit. f GDPR:** Legitimate interests\n• **Art. 6 para. 1 lit. a GDPR:** Consent (where required)",
+  "privacySection5Title": "5. Data Storage and Security",
+  "privacySection5Content": "**Storage Location:**\nYour data is stored in Google Firebase/Firestore, which complies with EU data protection standards.\n\n**Security Measures:**\n• Encrypted data transmission (HTTPS)\n• Secure authentication via Google\n• Regular security updates\n• Access control via Firebase Security Rules",
+  "privacySection6Title": "6. Data Sharing",
+  "privacySection6Content": "Your data is only shared:\n\n• With Google Firebase (as technical service provider)\n• When legally required\n• With your explicit consent\n\nNo commercial sharing takes place.",
+  "privacySection7Title": "7. Storage Duration",
+  "privacySection7Content": "**User Account:** Until deletion by you\n**Raphcon Data:** Until manual deletion\n**Log Data:** 30 days\n**Crash Reports:** 90 days (anonymized)",
+  "privacySection8Title": "8. Your Rights",
+  "privacySection8Content": "You have the following rights regarding your data:\n\n• **Access:** Information about stored data\n• **Rectification:** Correction of incorrect data\n• **Erasure:** Removal of your data\n• **Restriction:** Limitation of processing\n• **Data Portability:** Export of your data\n• **Objection:** Objection to processing\n\nContact us at: privacy@angryraphi.app",
+  "privacySection9Title": "9. Google Services",
+  "privacySection9Content": "The App uses Google services:\n\n• **Firebase Authentication:** Secure login\n• **Cloud Firestore:** Data storage\n• **Firebase Storage:** Image storage\n\nGoogle's Privacy Policy applies to these services: https://policies.google.com/privacy",
+  "privacySection10Title": "10. Minors",
+  "privacySection10Content": "The App is not intended for persons under 16 years old. We do not knowingly collect data from minors.",
+  "privacySection11Title": "11. Changes",
+  "privacySection11Content": "This Privacy Policy may be updated. Changes will be announced in the App.",
+  "privacyContactTitle": "Privacy Contact",
+  "privacyContactContent": "For privacy questions:\n\nInthusan Gunasiri\nE-Mail: inthusan@hotmail.de\nSubject: \"AngryRaphi Privacy\"\n\nPlease contact us first before reaching out to supervisory authorities. This app is just for fun!",
+  "@termsSection4Content": {
+    "description": "termsSection4Content text"
+  },
+  "@termsSection5Title": {
+    "description": "termsSection5Title text"
+  },
+  "@termsSection5Content": {
+    "description": "termsSection5Content text"
+  },
+  "@termsSection6Title": {
+    "description": "termsSection6Title text"
+  },
+  "@termsSection6Content": {
+    "description": "termsSection6Content text"
+  },
+  "@termsSection7Title": {
+    "description": "termsSection7Title text"
+  },
+  "@termsSection7Content": {
+    "description": "termsSection7Content text"
+  },
+  "@termsSection8Title": {
+    "description": "termsSection8Title text"
+  },
+  "@termsSection8Content": {
+    "description": "termsSection8Content text"
+  },
+  "@termsSection9Title": {
+    "description": "termsSection9Title text"
+  },
+  "@termsSection9Content": {
+    "description": "termsSection9Content text"
+  },
+  "@termsSection10Title": {
+    "description": "termsSection10Title text"
+  },
+  "@termsSection10Content": {
+    "description": "termsSection10Content text"
+  },
+  "@contactTitle": {
+    "description": "contactTitle text"
+  },
+  "@privacySection1Title": {
+    "description": "privacySection1Title text"
+  },
+  "@privacySection1Content": {
+    "description": "privacySection1Content text"
+  },
+  "@privacySection2Title": {
+    "description": "privacySection2Title text"
+  },
+  "@privacySection2Content": {
+    "description": "privacySection2Content text"
+  },
+  "@privacySection3Title": {
+    "description": "privacySection3Title text"
+  },
+  "@privacySection3Content": {
+    "description": "privacySection3Content text"
+  },
+  "@privacySection4Title": {
+    "description": "privacySection4Title text"
+  },
+  "@privacySection4Content": {
+    "description": "privacySection4Content text"
+  },
+  "@privacySection5Title": {
+    "description": "privacySection5Title text"
+  },
+  "@privacySection5Content": {
+    "description": "privacySection5Content text"
+  },
+  "@privacySection6Title": {
+    "description": "privacySection6Title text"
+  },
+  "@privacySection6Content": {
+    "description": "privacySection6Content text"
+  },
+  "@privacySection7Title": {
+    "description": "privacySection7Title text"
+  },
+  "@privacySection7Content": {
+    "description": "privacySection7Content text"
+  },
+  "@privacySection8Title": {
+    "description": "privacySection8Title text"
+  },
+  "@privacySection8Content": {
+    "description": "privacySection8Content text"
+  },
+  "@privacySection9Title": {
+    "description": "privacySection9Title text"
+  },
+  "@privacySection9Content": {
+    "description": "privacySection9Content text"
+  },
+  "@privacySection10Title": {
+    "description": "privacySection10Title text"
+  },
+  "@privacySection10Content": {
+    "description": "privacySection10Content text"
+  },
+  "@privacySection11Title": {
+    "description": "privacySection11Title text"
+  },
+  "@privacySection11Content": {
+    "description": "privacySection11Content text"
+  },
+  "@privacyContactTitle": {
+    "description": "privacyContactTitle text"
+  },
+  "@privacyContactContent": {
+    "description": "privacyContactContent text"
   }
 }

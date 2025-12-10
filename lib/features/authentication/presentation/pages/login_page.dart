@@ -6,6 +6,8 @@ import '../../../../core/constants/app_constants.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
+import 'terms_of_service_page.dart';
+import 'privacy_policy_page.dart';
 
 class LoginPage extends StatelessWidget {
   final bool isDialog;
@@ -196,7 +198,11 @@ class LoginPage extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                // TODO: Navigate to Terms
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const TermsOfServicePage(),
+                  ),
+                );
               },
               child: Text(
                 AppLocalizations.of(context)!.termsOfService,
@@ -214,7 +220,11 @@ class LoginPage extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                // TODO: Navigate to Privacy Policy
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const PrivacyPolicyPage(),
+                  ),
+                );
               },
               child: Text(
                 AppLocalizations.of(context)!.privacyPolicy,
