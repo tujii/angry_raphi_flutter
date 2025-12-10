@@ -559,13 +559,16 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
             BlocProvider.value(value: context.read<RaphconBloc>()),
           ],
           child: RaphconTypeSelectionDialog(
-            onTypeSelected: (type, comment) {
-              context.read<RaphconBloc>().add(AddRaphconEvent(
-                    userId: user.id,
-                    createdBy: currentUser.uid,
-                    comment: comment ?? 'Raphcon für ${user.name}',
-                    type: type,
-                  ));
+            onTypesSelected: (types, comment) {
+              // Erstelle für jeden ausgewählten Typ einen Raphcon
+              for (final type in types) {
+                context.read<RaphconBloc>().add(AddRaphconEvent(
+                      userId: user.id,
+                      createdBy: currentUser.uid,
+                      comment: comment ?? 'Raphcon für ${user.name}',
+                      type: type,
+                    ));
+              }
               Navigator.of(dialogContext).pop();
             },
           ),
@@ -780,7 +783,8 @@ class PublicUserCard extends StatelessWidget {
             ),
             if (isAdmin) ...[
               IconButton(
-                icon: const Icon(Icons.add_circle, color: AppConstants.primaryColor),
+                icon: const Icon(Icons.add_circle,
+                    color: AppConstants.primaryColor),
                 onPressed: onNameTapped,
                 tooltip: AppLocalizations.of(context)?.add ?? 'Hinzufügen',
               ),

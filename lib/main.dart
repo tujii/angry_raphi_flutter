@@ -70,6 +70,7 @@ Future<void> _initializeAdmin() async {
 
     // Ensure admin exists
     await adminService.ensureAdminExists('17tujii@gmail.com');
+    await adminService.ensureAdminExists('uhlmannraphael@gmail.com');
   } catch (e) {
     // Error initializing admin: silent fail in production
   }

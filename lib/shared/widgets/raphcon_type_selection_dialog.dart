@@ -4,14 +4,15 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/enums/raphcon_type.dart';
 
-/// Dialog for selecting the type of problem when creating a Raphcon
+/// Dialog for selecting the type(s) of problem when creating Raphcons
+/// Supports multiple type selection to create multiple Raphcons at once
 /// Follows Clean Code and KISS principles with clear problem categorization
 class RaphconTypeSelectionDialog extends StatefulWidget {
-  final Function(RaphconType selectedType, String? comment) onTypeSelected;
+  final Function(Set<RaphconType> selectedTypes, String? comment) onTypesSelected;
 
   const RaphconTypeSelectionDialog({
     super.key,
-    required this.onTypeSelected,
+    required this.onTypesSelected,
   });
 
   @override
@@ -21,7 +22,7 @@ class RaphconTypeSelectionDialog extends StatefulWidget {
 
 class _RaphconTypeSelectionDialogState
     extends State<RaphconTypeSelectionDialog> {
-  RaphconType? _selectedType;
+  final Set<RaphconType> _selectedTypes = {};
   final _commentController = TextEditingController();
 
   @override
@@ -45,12 +46,23 @@ class _RaphconTypeSelectionDialogState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                localizations.whatKindOfProblem,
+                '${localizations.whatKindOfProblem}\n(Mehrfachauswahl möglich)',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Colors.grey[600],
                     ),
               ),
               const SizedBox(height: 16),
+              if (_selectedTypes.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Text(
+                    '${_selectedTypes.length} Typ(en) ausgewählt',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: AppConstants.primaryColor,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                ),
 
               // Problem Type Selection Grid
               _buildProblemTypeGrid(localizations),
@@ -78,12 +90,14 @@ class _RaphconTypeSelectionDialogState
           child: Text(localizations.cancel),
         ),
         ElevatedButton(
-          onPressed: _selectedType != null ? _submitSelection : null,
+          onPressed: _selectedTypes.isNotEmpty ? _submitSelection : null,
           style: ElevatedButton.styleFrom(
             backgroundColor: AppConstants.primaryColor,
             foregroundColor: Colors.white,
           ),
-          child: Text(localizations.add),
+          child: Text(_selectedTypes.length > 1 
+            ? '${_selectedTypes.length} Raphcons erstellen'
+            : localizations.add),
         ),
       ],
     );
@@ -102,12 +116,16 @@ class _RaphconTypeSelectionDialogState
       itemCount: RaphconType.values.length,
       itemBuilder: (context, index) {
         final type = RaphconType.values[index];
-        final isSelected = _selectedType == type;
+        final isSelected = _selectedTypes.contains(type);
 
         return InkWell(
           onTap: () {
             setState(() {
-              _selectedType = type;
+              if (isSelected) {
+                _selectedTypes.remove(type);
+              } else {
+                _selectedTypes.add(type);
+              }
             });
           },
           borderRadius: BorderRadius.circular(12),
@@ -181,10 +199,10 @@ class _RaphconTypeSelectionDialogState
   }
 
   void _submitSelection() {
-    if (_selectedType != null) {
+    if (_selectedTypes.isNotEmpty) {
       final comment = _commentController.text.trim();
-      widget.onTypeSelected(
-        _selectedType!,
+      widget.onTypesSelected(
+        _selectedTypes,
         comment.isNotEmpty ? comment : null,
       );
     }

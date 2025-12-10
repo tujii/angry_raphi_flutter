@@ -232,13 +232,16 @@ class _AdminUserListPageState extends State<AdminUserListPage> {
       context: context,
       builder: (BuildContext context) {
         return RaphconTypeSelectionDialog(
-          onTypeSelected: (type, comment) {
-            context.read<RaphconBloc>().add(AddRaphconEvent(
-                  userId: user.id,
-                  createdBy: currentUser.uid,
-                  comment: comment ?? 'Raphcon für ${user.name}',
-                  type: type,
-                ));
+          onTypesSelected: (types, comment) {
+            // Erstelle für jeden ausgewählten Typ einen Raphcon
+            for (final type in types) {
+              context.read<RaphconBloc>().add(AddRaphconEvent(
+                    userId: user.id,
+                    createdBy: currentUser.uid,
+                    comment: comment ?? 'Raphcon für ${user.name}',
+                    type: type,
+                  ));
+            }
             Navigator.of(context).pop();
           },
         );
