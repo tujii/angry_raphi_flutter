@@ -43,21 +43,26 @@ class GoogleSignInButton extends StatelessWidget {
                     ),
                   )
                 else ...[
-                  // Google Icon (placeholder - in a real app you'd use the Google logo)
-                  Container(
+                  // Google Icon
+                  Image.asset(
+                    'assets/images/google_logo.png',
                     width: 20,
                     height: 20,
-                    decoration: BoxDecoration(
-                      color: AppConstants.primaryColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'G',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: AppConstants.primaryColor,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'G',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),

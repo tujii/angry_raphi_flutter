@@ -79,7 +79,7 @@ class UserCard extends StatelessWidget {
           // Avatar
           CircleAvatar(
             radius: 16,
-            backgroundColor: AppConstants.primaryColor.withOpacity(0.1),
+            backgroundColor: AppConstants.primaryColor.withValues(alpha: 0.2),
             child: Text(
               user.name.substring(0, 1).toUpperCase(),
               style: const TextStyle(

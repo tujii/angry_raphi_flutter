@@ -123,5 +123,277 @@
   "raphcons": "Raphcons",
   "@raphcons": {
     "description": "Raphcons label"
+  },
+  "login": "Login",
+  "@login": {
+    "description": "Login button text"
+  },
+  "adminLogin": "Admin Login",
+  "@adminLogin": {
+    "description": "Admin login title"
+  },
+  "loginRequired": "Login Required",
+  "@loginRequired": {
+    "description": "Login required title"
+  },
+  "loginToManage": "Please log in to manage users",
+  "@loginToManage": {
+    "description": "Login to manage users message"
+  },
+  "notAdmin": "Not Authorized",
+  "@notAdmin": {
+    "description": "Not admin title"
+  },
+  "notAdminMessage": "You don't have permission to perform this action.",
+  "@notAdminMessage": {
+    "description": "Not admin message"
+  },
+  "loginSuccess": "Login Successful",
+  "@loginSuccess": {
+    "description": "Login success message"
+  },
+  "loginError": "Login Error",
+  "@loginError": {
+    "description": "Login error title"
+  },
+  "signInCancelled": "Sign in cancelled",
+  "@signInCancelled": {
+    "description": "Sign in cancelled message"
+  },
+  "noInternetConnection": "No internet connection",
+  "@noInternetConnection": {
+    "description": "No internet connection error"
+  },
+  "networkRequestFailed": "Network request failed",
+  "@networkRequestFailed": {
+    "description": "Network request failed error"
+  },
+  "tooManyRequests": "Too many requests. Please try again later.",
+  "@tooManyRequests": {
+    "description": "Too many requests error"
+  },
+  "userDisabled": "User account disabled",
+  "@userDisabled": {
+    "description": "User disabled error"
+  },
+  "userNotFound": "User not found",
+  "@userNotFound": {
+    "description": "User not found error"
+  },
+  "operationNotAllowed": "Operation not allowed",
+  "@operationNotAllowed": {
+    "description": "Operation not allowed error"
+  },
+  "invalidCredential": "Invalid credentials",
+  "@invalidCredential": {
+    "description": "Invalid credential error"
+  },
+  "credentialAlreadyInUse": "Credentials already in use",
+  "@credentialAlreadyInUse": {
+    "description": "Credential already in use error"
+  },
+  "invalidEmail": "Invalid email address",
+  "@invalidEmail": {
+    "description": "Invalid email error"
+  },
+  "wrongPassword": "Wrong password",
+  "@wrongPassword": {
+    "description": "Wrong password error"
+  },
+  "weakPassword": "Password too weak",
+  "@weakPassword": {
+    "description": "Weak password error"
+  },
+  "emailAlreadyInUse": "Email already in use",
+  "@emailAlreadyInUse": {
+    "description": "Email already in use error"
+  },
+  "enterName": "Enter name",
+  "@enterName": {
+    "description": "Enter name hint"
+  },
+  "nameRequired": "Name is required",
+  "@nameRequired": {
+    "description": "Name required validation"
+  },
+  "addingUser": "Adding user...",
+  "@addingUser": {
+    "description": "Adding user loading message"
+  },
+  "userAdded": "User added",
+  "@userAdded": {
+    "description": "User added success message"
+  },
+  "failedToAddUser": "Failed to add user",
+  "@failedToAddUser": {
+    "description": "Failed to add user error"
+  },
+  "creatingRaphcon": "Creating raphcon...",
+  "@creatingRaphcon": {
+    "description": "Creating raphcon loading message"
+  },
+  "raphconCreated": "Raphcon created! 🎉",
+  "@raphconCreated": {
+    "description": "Raphcon created success message"
+  },
+  "failedToCreateRaphcon": "Failed to create raphcon",
+  "@failedToCreateRaphcon": {
+    "description": "Failed to create raphcon error"
+  },
+  "confirmDeleteUser": "Confirm Delete User",
+  "@confirmDeleteUser": {
+    "description": "Confirm delete user title"
+  },
+  "confirmDeleteUserMessage": "Are you sure you want to delete this user? This action cannot be undone.",
+  "@confirmDeleteUserMessage": {
+    "description": "Confirm delete user message"
+  },
+  "deletingUser": "Deleting user...",
+  "@deletingUser": {
+    "description": "Deleting user loading message"
+  },
+  "userDeleted": "User deleted",
+  "@userDeleted": {
+    "description": "User deleted success message"
+  },
+  "failedToDeleteUser": "Failed to delete user",
+  "@failedToDeleteUser": {
+    "description": "Failed to delete user error"
+  },
+  "adminFunctionsOnly": "Admin Functions Only",
+  "@adminFunctionsOnly": {
+    "description": "Admin functions only title"
+  },
+  "loginToAccess": "Please log in to access this feature",
+  "@loginToAccess": {
+    "description": "Login to access message"
+  },
+  "checkingAdminStatus": "Checking admin status...",
+  "@checkingAdminStatus": {
+    "description": "Checking admin status loading message"
+  },
+  "failedToCheckAdmin": "Failed to check admin status",
+  "@failedToCheckAdmin": {
+    "description": "Failed to check admin status error"
+  },
+  "loggedInAs": "Logged in as",
+  "@loggedInAs": {
+    "description": "Logged in as label"
+  },
+  "unknownError": "Unknown error occurred",
+  "@unknownError": {
+    "description": "Unknown error message"
+  },
+  "tryAgain": "Try again",
+  "@tryAgain": {
+    "description": "Try again button text"
+  },
+  "close": "Close",
+  "@close": {
+    "description": "Close button text"
+  },
+  "sampleDataAdded": "Sample data added!",
+  "@sampleDataAdded": {
+    "description": "Sample data added message"
+  },
+  "loadingUsers2": "Loading users...",
+  "@loadingUsers2": {
+    "description": "Loading users message alternative"
+  },
+  "addFirstUserHint": "Add the first user!",
+  "@addFirstUserHint": {
+    "description": "Add first user hint message"
+  },
+  "usersCount": "Users",
+  "@usersCount": {
+    "description": "Users count label"
+  },
+  "manageUsers": "Manage Users",
+  "@manageUsers": {
+    "description": "Manage users title"
+  },
+  "manageUsersMessage": "Would you like to add sample users to the database or create a new user?",
+  "@manageUsersMessage": {
+    "description": "Manage users dialog message"
+  },
+  "createUserComingSoon": "Create user coming soon!",
+  "@createUserComingSoon": {
+    "description": "Create user coming soon message"
+  },
+  "newUser": "New User",
+  "@newUser": {
+    "description": "New user button text"
+  },
+  "noDataAvailable": "No data available",
+  "@noDataAvailable": {
+    "description": "No data available message"
+  },
+  "settingsComingSoon2": "Settings coming soon!",
+  "@settingsComingSoon2": {
+    "description": "Settings coming soon message alternative"
+  },
+  "mustBeLoggedIn": "You must be logged in",
+  "@mustBeLoggedIn": {
+    "description": "Must be logged in message"
+  },
+  "createRaphconFor": "Create raphcon for {name}",
+  "@createRaphconFor": {
+    "description": "Create raphcon for user message"
+  },
+  "loginFailed": "Login failed",
+  "@loginFailed": {
+    "description": "Login failed title"
+  },
+  "adminRequired": "Admin authorization required",
+  "@adminRequired": {
+    "description": "Admin required message"
+  },
+  "loginToCreateRaphcons": "Please log in to create raphcons",
+  "@loginToCreateRaphcons": {
+    "description": "Login to create raphcons message"
+  },
+  "createdAgo": "Created: {timeAgo}",
+  "@createdAgo": {
+    "description": "Created time ago message"
+  },
+  "dayAgo": "{days} day ago",
+  "@dayAgo": {
+    "description": "Day ago message"
+  },
+  "daysAgo": "{days} days ago",
+  "@daysAgo": {
+    "description": "Days ago message"
+  },
+  "hourAgo": "{hours} hour ago",
+  "@hourAgo": {
+    "description": "Hour ago message"
+  },
+  "hoursAgo": "{hours} hours ago",
+  "@hoursAgo": {
+    "description": "Hours ago message"
+  },
+  "justNow": "just now",
+  "@justNow": {
+    "description": "Just now message"
+  },
+  "pleaseEnterName": "Please enter a name",
+  "@pleaseEnterName": {
+    "description": "Please enter name validation"
+  },
+  "nameMaxLength": "Name must be at most 50 characters",
+  "@nameMaxLength": {
+    "description": "Name max length validation"
+  },
+  "descriptionOptional": "Description (optional)",
+  "@descriptionOptional": {
+    "description": "Description optional label"
+  },
+  "descriptionMaxLength": "Description must be at most 500 characters",
+  "@descriptionMaxLength": {
+    "description": "Description max length validation"
+  },
+  "loginAsAdmin": "Please log in as admin to manage users and create raphcons.",
+  "@loginAsAdmin": {
+    "description": "Login as admin message"
   }
 }

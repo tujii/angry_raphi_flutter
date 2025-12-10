@@ -173,7 +173,7 @@ class UserListPage extends StatelessWidget {
         // Header mit Statistiken
         Container(
           padding: const EdgeInsets.all(AppConstants.defaultPadding),
-          color: AppConstants.primaryColor.withOpacity(0.1),
+          color: AppConstants.primaryColor.withValues(alpha: 0.1),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [

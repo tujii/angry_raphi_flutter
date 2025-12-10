@@ -17,7 +17,9 @@ abstract class RegisterModule {
   FirebaseStorage get firebaseStorage => FirebaseStorage.instance;
 
   @injectable
-  GoogleSignIn get googleSignIn => GoogleSignIn();
+  GoogleSignIn get googleSignIn => GoogleSignIn(
+    scopes: ['email'],
+  );
 
   @injectable
   Connectivity get connectivity => Connectivity();

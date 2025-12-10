@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class PersonEntity extends Equatable {
-  final String id;
+  final String? id;
   final String name;
   final String? description;
   final String? profileImageUrl;
@@ -10,7 +10,7 @@ class PersonEntity extends Equatable {
   final DateTime updatedAt;
 
   const PersonEntity({
-    required this.id,
+    this.id,
     required this.name,
     this.description,
     this.profileImageUrl,

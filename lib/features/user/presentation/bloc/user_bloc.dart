@@ -17,6 +17,28 @@ class AddSampleDataEvent extends UserEvent {}
 
 class RefreshUsersEvent extends UserEvent {}
 
+class AddUserEvent extends UserEvent {
+  final String name;
+  final String? description;
+
+  const AddUserEvent({
+    required this.name,
+    this.description,
+  });
+
+  @override
+  List<Object> get props => [name, description ?? ''];
+}
+
+class DeleteUserEvent extends UserEvent {
+  final String userId;
+
+  const DeleteUserEvent(this.userId);
+
+  @override
+  List<Object> get props => [userId];
+}
+
 // States
 abstract class UserState extends Equatable {
   const UserState();
@@ -63,6 +85,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<LoadUsersEvent>(_onLoadUsers);
     on<AddSampleDataEvent>(_onAddSampleData);
     on<RefreshUsersEvent>(_onRefreshUsers);
+    on<AddUserEvent>(_onAddUser);
+    on<DeleteUserEvent>(_onDeleteUser);
   }
 
   Future<void> _onLoadUsers(
@@ -72,7 +96,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final users = await _getUsersUseCase.execute();
       emit(UserLoaded(users));
     } catch (e) {
-      emit(UserError('Fehler beim Laden der Benutzer: ${e.toString()}'));
+      emit(UserError('loadingUsers: ${e.toString()}'));
     }
   }
 
@@ -84,13 +108,37 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       // Reload users after adding sample data
       add(LoadUsersEvent());
     } catch (e) {
-      emit(UserError(
-          'Fehler beim Hinzufügen der Beispiel-Daten: ${e.toString()}'));
+      emit(UserError('failedToAddUser: ${e.toString()}'));
     }
   }
 
   Future<void> _onRefreshUsers(
       RefreshUsersEvent event, Emitter<UserState> emit) async {
     add(LoadUsersEvent());
+  }
+
+  Future<void> _onAddUser(AddUserEvent event, Emitter<UserState> emit) async {
+    emit(UserLoading());
+    try {
+      // TODO: Implement actual user creation with repository
+      // For now, just show a message and reload users
+      emit(const UserError('addUser'));
+      add(LoadUsersEvent());
+    } catch (e) {
+      emit(UserError('failedToAddUser: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _onDeleteUser(
+      DeleteUserEvent event, Emitter<UserState> emit) async {
+    emit(UserLoading());
+    try {
+      // TODO: Implement actual user deletion with repository
+      // For now, just show a message and reload users
+      emit(const UserError('deleteUser'));
+      add(LoadUsersEvent());
+    } catch (e) {
+      emit(UserError('failedToDeleteUser: ${e.toString()}'));
+    }
   }
 }

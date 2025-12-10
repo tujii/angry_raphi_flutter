@@ -11,6 +11,18 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:angry_raphi/core/network/network_info.dart' as _i582;
 import 'package:angry_raphi/core/utils/image_helper.dart' as _i227;
+import 'package:angry_raphi/features/admin/data/datasources/admin_remote_datasource.dart'
+    as _i652;
+import 'package:angry_raphi/features/admin/data/repositories/admin_repository_impl.dart'
+    as _i540;
+import 'package:angry_raphi/features/admin/domain/repositories/admin_repository.dart'
+    as _i618;
+import 'package:angry_raphi/features/admin/domain/usecases/add_admin.dart'
+    as _i446;
+import 'package:angry_raphi/features/admin/domain/usecases/check_admin_status.dart'
+    as _i534;
+import 'package:angry_raphi/features/admin/presentation/bloc/admin_bloc.dart'
+    as _i100;
 import 'package:angry_raphi/features/authentication/data/datasources/auth_remote_datasource.dart'
     as _i306;
 import 'package:angry_raphi/features/authentication/data/repositories/auth_repository_impl.dart'
@@ -25,7 +37,22 @@ import 'package:angry_raphi/features/authentication/domain/usecases/sign_out.dar
     as _i456;
 import 'package:angry_raphi/features/authentication/presentation/bloc/auth_bloc.dart'
     as _i670;
+import 'package:angry_raphi/features/raphcon_management/data/datasources/raphcons_remote_datasource.dart'
+    as _i42;
+import 'package:angry_raphi/features/raphcon_management/data/repositories/raphcons_repository_impl.dart'
+    as _i932;
+import 'package:angry_raphi/features/raphcon_management/domain/repositories/raphcons_repository.dart'
+    as _i158;
+import 'package:angry_raphi/features/raphcon_management/domain/usecases/add_raphcon.dart'
+    as _i661;
+import 'package:angry_raphi/features/raphcon_management/presentation/bloc/raphcon_bloc.dart'
+    as _i36;
+import 'package:angry_raphi/features/user_management/domain/repositories/users_repository.dart'
+    as _i177;
+import 'package:angry_raphi/features/user_management/domain/usecases/save_person.dart'
+    as _i80;
 import 'package:angry_raphi/injection_container_module.dart' as _i1023;
+import 'package:angry_raphi/services/admin_service.dart' as _i76;
 import 'package:cloud_firestore/cloud_firestore.dart' as _i974;
 import 'package:connectivity_plus/connectivity_plus.dart' as _i895;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
@@ -52,22 +79,52 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i457.FirebaseStorage>(() => registerModule.firebaseStorage);
     gh.factory<_i116.GoogleSignIn>(() => registerModule.googleSignIn);
     gh.factory<_i895.Connectivity>(() => registerModule.connectivity);
+    gh.factory<_i652.AdminRemoteDataSource>(
+        () => _i652.AdminRemoteDataSourceImpl(gh<_i974.FirebaseFirestore>()));
     gh.factory<_i582.NetworkInfo>(
         () => _i582.NetworkInfoImpl(gh<_i895.Connectivity>()));
+    gh.factory<_i618.AdminRepository>(() => _i540.AdminRepositoryImpl(
+          remoteDataSource: gh<_i652.AdminRemoteDataSource>(),
+          networkInfo: gh<_i582.NetworkInfo>(),
+        ));
+    gh.factory<_i534.CheckAdminStatus>(
+        () => _i534.CheckAdminStatus(gh<_i618.AdminRepository>()));
+    gh.factory<_i446.AddAdmin>(
+        () => _i446.AddAdmin(gh<_i618.AdminRepository>()));
+    gh.factory<_i42.RaphconsRemoteDataSource>(
+        () => _i42.RaphconsRemoteDataSourceImpl(gh<_i974.FirebaseFirestore>()));
     gh.factory<_i306.AuthRemoteDataSource>(() => _i306.AuthRemoteDataSourceImpl(
           gh<_i59.FirebaseAuth>(),
           gh<_i116.GoogleSignIn>(),
           gh<_i974.FirebaseFirestore>(),
         ));
+    gh.factory<_i80.SavePerson>(
+        () => _i80.SavePerson(gh<_i177.UsersRepository>()));
     gh.factory<_i938.AuthRepository>(() => _i271.AuthRepositoryImpl(
           remoteDataSource: gh<_i306.AuthRemoteDataSource>(),
           networkInfo: gh<_i582.NetworkInfo>(),
         ));
+    gh.factory<_i158.RaphconsRepository>(() => _i932.RaphconsRepositoryImpl(
+          remoteDataSource: gh<_i42.RaphconsRemoteDataSource>(),
+          networkInfo: gh<_i582.NetworkInfo>(),
+        ));
+    gh.factory<_i661.AddRaphcon>(
+        () => _i661.AddRaphcon(gh<_i158.RaphconsRepository>()));
     gh.factory<_i456.SignOut>(() => _i456.SignOut(gh<_i938.AuthRepository>()));
     gh.factory<_i153.SignInWithGoogle>(
         () => _i153.SignInWithGoogle(gh<_i938.AuthRepository>()));
     gh.factory<_i660.GetCurrentUser>(
         () => _i660.GetCurrentUser(gh<_i938.AuthRepository>()));
+    gh.factory<_i100.AdminBloc>(() => _i100.AdminBloc(
+          gh<_i534.CheckAdminStatus>(),
+          gh<_i446.AddAdmin>(),
+        ));
+    gh.factory<_i76.AdminService>(() => _i76.AdminService(
+          adminRepository: gh<_i618.AdminRepository>(),
+          firebaseAuth: gh<_i59.FirebaseAuth>(),
+        ));
+    gh.factory<_i36.RaphconBloc>(
+        () => _i36.RaphconBloc(gh<_i661.AddRaphcon>()));
     gh.factory<_i670.AuthBloc>(() => _i670.AuthBloc(
           gh<_i153.SignInWithGoogle>(),
           gh<_i456.SignOut>(),

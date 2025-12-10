@@ -38,7 +38,7 @@ extension DateTimeExtensions on DateTime {
   }
 
   String get formattedDate {
-    return '${day.toString().padLeft(2, '0')}.${month.toString().padLeft(2, '0')}.${year}';
+    return '${day.toString().padLeft(2, '0')}.${month.toString().padLeft(2, '0')}.$year';
   }
 }
 

@@ -1,0 +1,55 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+             exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    
+    function isValidUser(data) {
+      return data.keys().hasAll(['name', 'createdAt']) &&
+             data.name is string &&
+             data.name.size() > 0 &&
+             data.name.size() <= 50 &&
+             data.createdAt is timestamp;
+    }
+    
+    function isValidRaphcon(data) {
+      return data.keys().hasAll(['userId', 'createdAt', 'createdBy']) &&
+             data.userId is string &&
+             data.createdAt is timestamp &&
+             data.createdBy == request.auth.uid;
+    }
+    
+    // Users Collection - Read for all (guests and authenticated), Write only for Admins
+    match /users/{userId} {
+      allow read: if true; // Everyone can read the user list
+      allow create, update: if isAdmin() && isValidUser(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    // Raphcons Collection - Read for all, Create for authenticated users, Modify only for Admins
+    match /raphcons/{raphconId} {
+      allow read: if true; // Everyone can read raphcons count
+      allow create: if isAuthenticated() && isValidRaphcon(request.resource.data);
+      allow update, delete: if isAdmin();
+    }    // Admins Collection - Only Admins can read/write
+    match /admins/{adminId} {
+      allow read: if isAuthenticated() && 
+                     (request.auth.uid == adminId || isAdmin());
+      allow write: if isAdmin();
+    }
+    
+    // Statistics - Read only for Admins
+    match /statistics/{statId} {
+      allow read: if isAdmin();
+      allow write: if false; // Generated via Cloud Functions
+    }
+  }
+}
