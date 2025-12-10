@@ -70,6 +70,4 @@ class FirestoreUserRepository implements UserRepository {
       throw Exception('Failed to delete user: $e');
     }
   }
-
-
 }

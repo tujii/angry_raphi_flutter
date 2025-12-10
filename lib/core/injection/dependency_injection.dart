@@ -42,8 +42,6 @@ void setupDependencyInjection() {
     () => DeleteUserUseCase(getIt<UserRepository>()),
   );
 
-
-
   // Presentation layer (BLoC)
   getIt.registerFactory<UserBloc>(
     () => UserBloc(

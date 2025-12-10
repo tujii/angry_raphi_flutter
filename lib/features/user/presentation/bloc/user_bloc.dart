@@ -96,8 +96,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
   }
 
-
-
   Future<void> _onRefreshUsers(
       RefreshUsersEvent event, Emitter<UserState> emit) async {
     add(LoadUsersEvent());

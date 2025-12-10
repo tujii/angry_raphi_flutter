@@ -55,5 +55,3 @@ class DeleteUserUseCase {
     return await _repository.deleteUser(userId);
   }
 }
-
-
