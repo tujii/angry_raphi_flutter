@@ -274,18 +274,18 @@ class RaphconStatisticsBottomSheet extends StatelessWidget {
         onTap: () => Navigator.of(context).pop(),
         child: Container(
           color: Colors.transparent,
-          child: DraggableScrollableSheet(
-            initialChildSize: 0.7,
-            minChildSize: 0.3,
-            maxChildSize: 0.9,
-            builder: (context, scrollController) => GestureDetector(
-              onTap:
-                  () {}, // Verhindert dass Taps auf dem Sheet das Sheet schließen
-              child: RaphconStatisticsBottomSheet(
-                userName: userName,
-                statistics: statistics,
-                isAdmin: isAdmin,
-                onTypeSelected: onTypeSelected,
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.7,
+              child: GestureDetector(
+                onTap: () {}, // Verhindert dass Taps auf dem Sheet das Sheet schließen
+                child: RaphconStatisticsBottomSheet(
+                  userName: userName,
+                  statistics: statistics,
+                  isAdmin: isAdmin,
+                  onTypeSelected: onTypeSelected,
+                ),
               ),
             ),
           ),

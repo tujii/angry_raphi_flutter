@@ -58,19 +58,20 @@ class RaphconDetailBottomSheet extends StatefulWidget {
               BlocProvider<UserBloc>.value(value: userBloc),
               BlocProvider<RaphconBloc>.value(value: raphconBloc),
             ],
-            child: DraggableScrollableSheet(
-              initialChildSize: 0.7,
-              minChildSize: 0.3,
-              maxChildSize: 0.9,
-              builder: (context, scrollController) => GestureDetector(
-                onTap:
-                    () {}, // Verhindert dass Taps auf dem Sheet das Sheet schließen
-                child: RaphconDetailBottomSheet(
-                  userName: userName,
-                  type: type,
-                  raphcons: raphcons,
-                  isAdmin: isAdmin,
-                  onBackPressed: onBackPressed,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.7,
+                child: GestureDetector(
+                  onTap:
+                      () {}, // Verhindert dass Taps auf dem Sheet das Sheet schließen
+                  child: RaphconDetailBottomSheet(
+                    userName: userName,
+                    type: type,
+                    raphcons: raphcons,
+                    isAdmin: isAdmin,
+                    onBackPressed: onBackPressed,
+                  ),
                 ),
               ),
             ),
