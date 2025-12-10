@@ -193,7 +193,7 @@ class FirestoreUserRepository implements UserRepository {
 
       // Execute all deletions atomically
       await batch.commit();
-      
+
       return true;
     } catch (e) {
       throw Exception('Failed to delete user and raphcons: $e');
