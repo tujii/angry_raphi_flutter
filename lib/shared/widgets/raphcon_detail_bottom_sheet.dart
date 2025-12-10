@@ -47,6 +47,8 @@ class RaphconDetailBottomSheet extends StatefulWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      isDismissible: true,
+      enableDrag: true,
       builder: (context) => MultiBlocProvider(
         providers: [
           BlocProvider<UserBloc>.value(value: userBloc),
