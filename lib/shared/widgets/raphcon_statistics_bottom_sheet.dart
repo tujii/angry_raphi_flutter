@@ -3,17 +3,22 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/enums/raphcon_type.dart';
+import 'raphcon_detail_bottom_sheet.dart';
 
 /// Scrollable bottom sheet that displays raphcon statistics by type
 /// Shown to non-authenticated users when they tap on a user tile
 class RaphconStatisticsBottomSheet extends StatelessWidget {
   final String userName;
   final Map<RaphconType, int> statistics;
+  final bool isAdmin;
+  final Function(RaphconType)? onTypeSelected;
 
   const RaphconStatisticsBottomSheet({
     super.key,
     required this.userName,
     required this.statistics,
+    this.isAdmin = false,
+    this.onTypeSelected,
   });
 
   @override
@@ -161,6 +166,7 @@ class RaphconStatisticsBottomSheet extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 8),
           elevation: 2,
           child: ListTile(
+            onTap: () => onTypeSelected?.call(type),
             leading: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
@@ -180,20 +186,30 @@ class RaphconStatisticsBottomSheet extends StatelessWidget {
                 fontWeight: FontWeight.w500,
               ),
             ),
-            trailing: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: _getColorForCount(count),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                count.toString(),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: _getColorForCount(count),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    count.toString(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.chevron_right,
+                  color: Colors.grey[400],
+                ),
+              ],
             ),
           ),
         );
@@ -242,6 +258,8 @@ class RaphconStatisticsBottomSheet extends StatelessWidget {
     required BuildContext context,
     required String userName,
     required Map<RaphconType, int> statistics,
+    bool isAdmin = false,
+    Function(RaphconType)? onTypeSelected,
   }) {
     return showModalBottomSheet<void>(
       context: context,
@@ -254,6 +272,8 @@ class RaphconStatisticsBottomSheet extends StatelessWidget {
         builder: (context, scrollController) => RaphconStatisticsBottomSheet(
           userName: userName,
           statistics: statistics,
+          isAdmin: isAdmin,
+          onTypeSelected: onTypeSelected,
         ),
       ),
     );

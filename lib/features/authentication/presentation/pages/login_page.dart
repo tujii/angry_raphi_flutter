@@ -124,10 +124,21 @@ class LoginPage extends StatelessWidget {
         color: AppConstants.primaryColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(60),
       ),
-      child: const Icon(
-        Icons.mood_bad,
-        size: 60,
-        color: AppConstants.primaryColor,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(60),
+        child: Image.asset(
+          'assets/images/icon-removebg.png',
+          width: 120,
+          height: 120,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            return const Icon(
+              Icons.mood_bad,
+              size: 60,
+              color: AppConstants.primaryColor,
+            );
+          },
+        ),
       ),
     );
   }

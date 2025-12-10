@@ -142,5 +142,10 @@
   "hoursAgoPlural": "vor {hours} Stunden",
   "justCreated": "gerade eben",
   "raphconsCount": "Raphcons: {count}",
-  "memberSince": "Mitglied seit {date}"
+  "memberSince": "Mitglied seit {date}",
+  "noEntriesForThisType": "Keine Einträge für diesen Typ",
+  "createdBy": "Erstellt von: {name}",
+  "noComment": "Kein Kommentar",
+  "confirmDeleteRaphcon": "Raphcon löschen",
+  "confirmDeleteRaphconMessage": "Sind Sie sicher, dass Sie diesen Eintrag löschen möchten?"
 }

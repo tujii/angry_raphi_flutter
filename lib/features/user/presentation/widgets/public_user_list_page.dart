@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/enums/raphcon_type.dart';
 import '../../domain/entities/user.dart' as user_entity;
 import '../../../admin/presentation/bloc/admin_bloc.dart';
 import '../../../raphcon_management/presentation/bloc/raphcon_bloc.dart';
@@ -312,9 +313,8 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                 onNameTapped:
                     _isAdmin ? () => _createRaphcon(users[index]) : null,
                 onLoginRequired: () => _showLoginDialog(context),
-                onShowStatistics: !_isAdmin
-                    ? () => _showStatisticsBottomSheet(users[index])
-                    : null,
+                onShowStatistics: () =>
+                    _showStatisticsBottomSheet(users[index]),
               );
             },
           ),
@@ -439,6 +439,11 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
           context: context,
           userName: user.name,
           statistics: state.statistics,
+          isAdmin: _isAdmin,
+          onTypeSelected: (type) {
+            // TODO: Load detailed raphcons for this type and show detail sheet
+            _showDetailBottomSheet(context, user, type);
+          },
         );
       } else if (state is RaphconError && context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -457,6 +462,16 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
     Future.delayed(const Duration(seconds: 5), () {
       subscription.cancel();
     });
+  }
+
+  void _showDetailBottomSheet(BuildContext context, user_entity.User user, RaphconType type) {
+    // TODO: Implement loading of detailed raphcons for this type
+    // For now, show placeholder
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Detail-Ansicht für ${type.name} wird bald verfügbar sein'),
+      ),
+    );
   }
 }
 
@@ -569,7 +584,6 @@ class PublicUserCard extends StatelessWidget {
                           ),
                           child: Text(
                             AppLocalizations.of(context)?.showDetails ??
-                                AppLocalizations.of(context)?.showDetails ??
                                 'Details anzeigen',
                             style: const TextStyle(
                               color: AppConstants.primaryColor,

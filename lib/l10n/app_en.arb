@@ -616,5 +616,30 @@
         "type": "String"
       }
     }
+  },
+  "noEntriesForThisType": "No entries for this type",
+  "@noEntriesForThisType": {
+    "description": "Message when no entries exist for a specific type"
+  },
+  "createdBy": "Created by: {name}",
+  "@createdBy": {
+    "description": "Created by text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "noComment": "No comment",
+  "@noComment": {
+    "description": "Text when no comment is available"
+  },
+  "confirmDeleteRaphcon": "Delete Raphcon",
+  "@confirmDeleteRaphcon": {
+    "description": "Confirm delete raphcon dialog title"
+  },
+  "confirmDeleteRaphconMessage": "Are you sure you want to delete this entry?",
+  "@confirmDeleteRaphconMessage": {
+    "description": "Confirm delete raphcon dialog message"
   }
 }
