@@ -1,11 +1,14 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../../core/enums/raphcon_type.dart';
+
 class RaphconEntity extends Equatable {
   final String? id;
   final String userId;
   final String createdBy;
   final DateTime createdAt;
   final String? comment;
+  final RaphconType type;
 
   const RaphconEntity({
     this.id,
@@ -13,6 +16,7 @@ class RaphconEntity extends Equatable {
     required this.createdBy,
     required this.createdAt,
     this.comment,
+    this.type = RaphconType.other, // Default to 'other' if not specified
   });
 
   @override
@@ -22,6 +26,7 @@ class RaphconEntity extends Equatable {
         createdBy,
         createdAt,
         comment,
+        type,
       ];
 
   RaphconEntity copyWith({
@@ -30,6 +35,7 @@ class RaphconEntity extends Equatable {
     String? createdBy,
     DateTime? createdAt,
     String? comment,
+    RaphconType? type,
   }) {
     return RaphconEntity(
       id: id ?? this.id,
@@ -37,6 +43,7 @@ class RaphconEntity extends Equatable {
       createdBy: createdBy ?? this.createdBy,
       createdAt: createdAt ?? this.createdAt,
       comment: comment ?? this.comment,
+      type: type ?? this.type,
     );
   }
 }

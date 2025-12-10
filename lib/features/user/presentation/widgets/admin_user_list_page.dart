@@ -8,7 +8,7 @@ import '../../domain/entities/user.dart' as user_entity;
 import '../../../admin/presentation/bloc/admin_bloc.dart';
 import '../../../raphcon_management/presentation/bloc/raphcon_bloc.dart';
 import '../bloc/user_bloc.dart';
-import 'add_user_dialog.dart';
+import 'initials_add_user_dialog.dart';
 
 class AdminUserListPage extends StatefulWidget {
   const AdminUserListPage({super.key});
@@ -207,11 +207,10 @@ class _AdminUserListPageState extends State<AdminUserListPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AddUserDialog(
-          onUserAdded: (name, description) {
+        return InitialsAddUserDialog(
+          onUserAdded: (initials) {
             context.read<UserBloc>().add(AddUserEvent(
-                  name: name,
-                  description: description,
+                  initials: initials,
                 ));
             Navigator.of(context).pop();
           },

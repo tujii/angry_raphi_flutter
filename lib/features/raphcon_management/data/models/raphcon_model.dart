@@ -1,4 +1,5 @@
 import '../../domain/entities/raphcon_entity.dart';
+import '../../../../core/enums/raphcon_type.dart';
 
 class RaphconModel extends RaphconEntity {
   const RaphconModel({
@@ -7,6 +8,7 @@ class RaphconModel extends RaphconEntity {
     required super.createdBy,
     required super.createdAt,
     super.comment,
+    super.type = RaphconType.other,
   });
 
   factory RaphconModel.fromMap(Map<String, dynamic> map, String id) {
@@ -16,6 +18,7 @@ class RaphconModel extends RaphconEntity {
       createdBy: map['createdBy'] as String,
       createdAt: (map['createdAt'] as dynamic).toDate(),
       comment: map['comment'] as String?,
+      type: RaphconType.fromString(map['type'] as String? ?? 'other'),
     );
   }
 
@@ -25,6 +28,7 @@ class RaphconModel extends RaphconEntity {
       'createdBy': createdBy,
       'createdAt': createdAt,
       'comment': comment,
+      'type': type.value,
     };
   }
 
@@ -35,6 +39,7 @@ class RaphconModel extends RaphconEntity {
       createdBy: entity.createdBy,
       createdAt: entity.createdAt,
       comment: entity.comment,
+      type: entity.type,
     );
   }
 }

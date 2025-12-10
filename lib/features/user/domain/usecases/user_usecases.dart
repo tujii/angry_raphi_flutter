@@ -20,10 +20,17 @@ class AddUserUseCase {
   const AddUserUseCase(this._repository);
 
   Future<bool> execute(User user) async {
-    // Business logic validation could go here
-    if (user.name.trim().isEmpty) {
-      throw ArgumentError('User name cannot be empty');
+    // Business logic validation for initials
+    if (user.initials.trim().isEmpty) {
+      throw ArgumentError('User initials cannot be empty');
     }
+
+    // Validate initials format (e.g., "M.M.")
+    final initialsRegex = RegExp(r'^[A-Z]\.[A-Z]\.$');
+    if (!initialsRegex.hasMatch(user.initials.trim())) {
+      throw ArgumentError('Invalid initials format. Expected format: A.B.');
+    }
+
     return await _repository.addUser(user);
   }
 }

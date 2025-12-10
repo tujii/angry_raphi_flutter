@@ -12,7 +12,7 @@ import '../../../authentication/presentation/bloc/auth_event.dart';
 import '../../../authentication/presentation/bloc/auth_state.dart';
 import '../../../authentication/presentation/pages/login_page.dart';
 import '../bloc/user_bloc.dart';
-import 'add_user_dialog.dart';
+import 'initials_add_user_dialog.dart';
 
 class PublicUserListPage extends StatefulWidget {
   const PublicUserListPage({super.key});
@@ -332,11 +332,10 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
       builder: (BuildContext dialogContext) {
         return BlocProvider.value(
           value: context.read<UserBloc>(),
-          child: AddUserDialog(
-            onUserAdded: (name, description) {
+          child: InitialsAddUserDialog(
+            onUserAdded: (initials) {
               context.read<UserBloc>().add(AddUserEvent(
-                    name: name,
-                    description: description,
+                    initials: initials,
                   ));
               Navigator.of(dialogContext).pop();
             },

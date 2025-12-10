@@ -36,9 +36,9 @@ class LoginPage extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Anmeldung fehlgeschlagen',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    Text(
+                      AppLocalizations.of(context)!.loginFailed,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 4),
                     Text(state.message),
@@ -89,7 +89,7 @@ class LoginPage extends StatelessWidget {
 
                   // App Description
                   Text(
-                    'Bewerte Personen mit Raphcons',
+                    AppLocalizations.of(context)!.ratePersonsWithRaphcons,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           color: Colors.grey[600],
                         ),
@@ -174,7 +174,7 @@ class LoginPage extends StatelessWidget {
     return Column(
       children: [
         Text(
-          'Durch die Anmeldung stimmst du unseren',
+          AppLocalizations.of(context)!.bySigningInYouAgree,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Colors.grey[600],
               ),
@@ -188,7 +188,7 @@ class LoginPage extends StatelessWidget {
                 // TODO: Navigate to Terms
               },
               child: Text(
-                'Nutzungsbedingungen',
+                AppLocalizations.of(context)!.termsOfService,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: AppConstants.primaryColor,
                       decoration: TextDecoration.underline,
@@ -196,7 +196,7 @@ class LoginPage extends StatelessWidget {
               ),
             ),
             Text(
-              ' und der ',
+              ' ${AppLocalizations.of(context)!.and} ',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Colors.grey[600],
                   ),
@@ -206,7 +206,7 @@ class LoginPage extends StatelessWidget {
                 // TODO: Navigate to Privacy Policy
               },
               child: Text(
-                'Datenschutzerklärung',
+                AppLocalizations.of(context)!.privacyPolicy,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: AppConstants.primaryColor,
                       decoration: TextDecoration.underline,
@@ -216,7 +216,7 @@ class LoginPage extends StatelessWidget {
           ],
         ),
         Text(
-          ' zu.',
+          AppLocalizations.of(context)!.agreeTo,
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Colors.grey[600],
               ),

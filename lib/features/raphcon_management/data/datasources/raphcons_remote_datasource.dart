@@ -2,12 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/errors/exceptions.dart';
+import '../../../../core/enums/raphcon_type.dart';
 import '../models/raphcon_model.dart';
 
 abstract class RaphconsRemoteDataSource {
   Future<List<RaphconModel>> getUserRaphcons(String userId);
   Future<List<RaphconModel>> getAllRaphcons();
-  Future<void> addRaphcon(String userId, String createdBy, String? comment);
+  Future<void> addRaphcon(
+      String userId, String createdBy, String? comment, RaphconType type);
   Future<void> deleteRaphcon(String raphconId);
 }
 
@@ -51,8 +53,8 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
   }
 
   @override
-  Future<void> addRaphcon(
-      String userId, String createdBy, String? comment) async {
+  Future<void> addRaphcon(String userId, String createdBy, String? comment,
+      RaphconType type) async {
     try {
       final raphconModel = RaphconModel(
         id: null,
@@ -60,6 +62,7 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
         createdBy: createdBy,
         createdAt: DateTime.now(),
         comment: comment,
+        type: type,
       );
 
       await firestore.collection('raphcons').add(raphconModel.toMap());

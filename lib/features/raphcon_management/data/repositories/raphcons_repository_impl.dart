@@ -59,6 +59,7 @@ class RaphconsRepositoryImpl implements RaphconsRepository {
           params.userId,
           params.createdBy,
           params.comment,
+          params.type,
         );
         return const Right(null);
       } on ServerException catch (e) {

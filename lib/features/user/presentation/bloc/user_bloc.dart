@@ -18,16 +18,14 @@ class AddSampleDataEvent extends UserEvent {}
 class RefreshUsersEvent extends UserEvent {}
 
 class AddUserEvent extends UserEvent {
-  final String name;
-  final String? description;
+  final String initials;
 
   const AddUserEvent({
-    required this.name,
-    this.description,
+    required this.initials,
   });
 
   @override
-  List<Object> get props => [name, description ?? ''];
+  List<Object> get props => [initials];
 }
 
 class DeleteUserEvent extends UserEvent {
@@ -74,10 +72,13 @@ class SampleDataAdded extends UserState {}
 // BLoC
 class UserBloc extends Bloc<UserEvent, UserState> {
   final GetUsersUseCase _getUsersUseCase;
+  final AddUserUseCase _addUserUseCase;
 
   UserBloc({
     required GetUsersUseCase getUsersUseCase,
+    required AddUserUseCase addUserUseCase,
   })  : _getUsersUseCase = getUsersUseCase,
+        _addUserUseCase = addUserUseCase,
         super(UserInitial()) {
     on<LoadUsersEvent>(_onLoadUsers);
     on<RefreshUsersEvent>(_onRefreshUsers);
@@ -104,10 +105,21 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   Future<void> _onAddUser(AddUserEvent event, Emitter<UserState> emit) async {
     emit(UserLoading());
     try {
-      // TODO: Implement actual user creation with repository
-      // For now, just show a message and reload users
-      emit(const UserError('addUser'));
-      add(LoadUsersEvent());
+      final newUser = User(
+        id: '', // Firestore will generate the ID
+        initials: event.initials,
+        raphconCount: 0,
+        createdAt: DateTime.now(),
+      );
+
+      final success = await _addUserUseCase.execute(newUser);
+
+      if (success) {
+        // Reload users to show the new user
+        add(LoadUsersEvent());
+      } else {
+        emit(const UserError('failedToAddUser'));
+      }
     } catch (e) {
       emit(UserError('failedToAddUser: ${e.toString()}'));
     }

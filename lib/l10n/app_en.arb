@@ -100,6 +100,30 @@
   "@addUser": {
     "description": "Add user button text"
   },
+  "initials": "Initials",
+  "@initials": {
+    "description": "Initials label"
+  },
+  "firstInitial": "First Initial",
+  "@firstInitial": {
+    "description": "First initial input label"
+  },
+  "secondInitial": "Second Initial",
+  "@secondInitial": {
+    "description": "Second initial input label"
+  },
+  "pleaseEnterFirstInitial": "Please enter the first initial",
+  "@pleaseEnterFirstInitial": {
+    "description": "Validation message for first initial"
+  },
+  "pleaseEnterSecondInitial": "Please enter the second initial",
+  "@pleaseEnterSecondInitial": {
+    "description": "Validation message for second initial"
+  },
+  "initialMustBeLetter": "Must be a letter",
+  "@initialMustBeLetter": {
+    "description": "Validation message for invalid initial"
+  },
   "settings": "Settings",
   "@settings": {
     "description": "Settings menu item"
@@ -391,5 +415,89 @@
   "loginAsAdmin": "Please log in as admin to manage users and create raphcons.",
   "@loginAsAdmin": {
     "description": "Login as admin message"
+  },
+  "addPersonWithInitials": "Add Person with Initials",
+  "@addPersonWithInitials": {
+    "description": "Add person with initials title"
+  },
+  "enterTwoInitials": "Enter two initials (e.g. J.D.)",
+  "@enterTwoInitials": {
+    "description": "Enter two initials hint"
+  },
+  "initialsFormat": "Format: First Initial + Second Initial",
+  "@initialsFormat": {
+    "description": "Initials format description"
+  },
+  "ratePersonsWithRaphcons": "Rate persons with Raphcons",
+  "@ratePersonsWithRaphcons": {
+    "description": "App description"
+  },
+  "termsOfService": "Terms of Service",
+  "@termsOfService": {
+    "description": "Terms of service link"
+  },
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": {
+    "description": "Privacy policy link"
+  },
+  "bySigningInYouAgree": "By signing in you agree to our",
+  "@bySigningInYouAgree": {
+    "description": "Terms agreement intro text"
+  },
+  "and": "and",
+  "@and": {
+    "description": "And conjunction"
+  },
+  "agreeTo": ".",
+  "@agreeTo": {
+    "description": "Terms agreement ending text"
+  },
+  "raphconTypeMouse": "Mouse",
+  "@raphconTypeMouse": {
+    "description": "Mouse problem type"
+  },
+  "raphconTypeKeyboard": "Keyboard",
+  "@raphconTypeKeyboard": {
+    "description": "Keyboard problem type"
+  },
+  "raphconTypeMicrophone": "Microphone",
+  "@raphconTypeMicrophone": {
+    "description": "Microphone problem type"
+  },
+  "raphconTypeHeadset": "Headset",
+  "@raphconTypeHeadset": {
+    "description": "Headset problem type"
+  },
+  "raphconTypeWebcam": "Webcam",
+  "@raphconTypeWebcam": {
+    "description": "Webcam problem type"
+  },
+  "raphconTypeSpeakers": "Speakers",
+  "@raphconTypeSpeakers": {
+    "description": "Speakers problem type"
+  },
+  "raphconTypeNetwork": "Network",
+  "@raphconTypeNetwork": {
+    "description": "Network problem type"
+  },
+  "raphconTypeSoftware": "Software",
+  "@raphconTypeSoftware": {
+    "description": "Software problem type"
+  },
+  "raphconTypeHardware": "Hardware",
+  "@raphconTypeHardware": {
+    "description": "Hardware problem type"
+  },
+  "raphconTypeOther": "Other",
+  "@raphconTypeOther": {
+    "description": "Other problem type"
+  },
+  "selectProblemType": "Select Problem Type",
+  "@selectProblemType": {
+    "description": "Select problem type label"
+  },
+  "whatKindOfProblem": "What kind of problem?",
+  "@whatKindOfProblem": {
+    "description": "What kind of problem question"
   }
 }

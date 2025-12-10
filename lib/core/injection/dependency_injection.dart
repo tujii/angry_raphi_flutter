@@ -46,6 +46,7 @@ void setupDependencyInjection() {
   getIt.registerFactory<UserBloc>(
     () => UserBloc(
       getUsersUseCase: getIt<GetUsersUseCase>(),
+      addUserUseCase: getIt<AddUserUseCase>(),
     ),
   );
 }

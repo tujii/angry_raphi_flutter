@@ -22,7 +22,9 @@ class FirestoreUserRepository implements UserRepository {
         final data = doc.data() as Map<String, dynamic>;
         return User(
           id: doc.id,
-          name: data['name'] ?? '',
+          initials: data['initials'] ??
+              data['name'] ??
+              '', // Support both new and legacy field names
           avatarUrl: data['avatarUrl'],
           raphconCount: data['raphconCount'] ?? 0,
           createdAt:
@@ -38,7 +40,8 @@ class FirestoreUserRepository implements UserRepository {
   Future<bool> addUser(User user) async {
     try {
       await _firestore.collection(_usersCollection).add({
-        'name': user.name,
+        'initials': user.initials,
+        'name': user.initials, // Keep legacy field for backwards compatibility
         'avatarUrl': user.avatarUrl,
         'raphconCount': user.raphconCount,
         'createdAt': Timestamp.fromDate(user.createdAt),

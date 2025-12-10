@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 import '../../domain/entities/raphcon_entity.dart';
 import '../../domain/usecases/add_raphcon.dart';
 import '../../domain/repositories/raphcons_repository.dart';
+import '../../../../core/enums/raphcon_type.dart';
 
 // Events
 abstract class RaphconEvent extends Equatable {
@@ -16,15 +17,17 @@ class AddRaphconEvent extends RaphconEvent {
   final String userId;
   final String createdBy;
   final String? comment;
+  final RaphconType type;
 
   AddRaphconEvent({
     required this.userId,
     required this.createdBy,
     this.comment,
+    this.type = RaphconType.other,
   });
 
   @override
-  List<Object> get props => [userId, createdBy, comment ?? ''];
+  List<Object> get props => [userId, createdBy, comment ?? '', type];
 }
 
 class LoadUserRaphconsEvent extends RaphconEvent {
@@ -93,6 +96,7 @@ class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
       userId: event.userId,
       createdBy: event.createdBy,
       comment: event.comment,
+      type: event.type,
     );
 
     final result = await _addRaphcon(params);
