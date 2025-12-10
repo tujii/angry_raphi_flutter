@@ -65,15 +65,21 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
       appBar: AppBar(
         title: Row(
           children: [
-            Container(
-              margin: const EdgeInsets.only(right: 8),
-              child: Image.asset(
-                'assets/images/icon-removebg.png',
-                width: 40,
-                height: 40,
+            GestureDetector(
+              onTap: () => _showAppIconDialog(context),
+              child: Container(
+                margin: const EdgeInsets.only(right: 8),
+                child: Image.asset(
+                  'assets/images/icon-removebg.png',
+                  width: 40,
+                  height: 40,
+                ),
               ),
             ),
-            const Text(AppConstants.appName),
+            GestureDetector(
+              onTap: () => _showAppIconDialog(context),
+              child: const Text(AppConstants.appName),
+            ),
             if (_isAdmin)
               Container(
                 margin: const EdgeInsets.only(left: 8),
@@ -370,6 +376,146 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                   ));
               Navigator.of(dialogContext).pop();
             },
+          ),
+        );
+      },
+    );
+  }
+
+  void _showAppIconDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Background tap to close
+              GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+                child: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: Colors.transparent,
+                ),
+              ),
+              // App icon with info
+              Container(
+                padding: const EdgeInsets.all(24),
+                margin: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Large app icon
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppConstants.primaryColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Image.asset(
+                        'assets/images/icon-removebg.png',
+                        width: 120,
+                        height: 120,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    // App name
+                    Text(
+                      AppConstants.appName,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: AppConstants.primaryColor,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    // App description
+                    Text(
+                      AppLocalizations.of(context)?.subtitle ??
+                          'Bewerte Personen mit Raphcons',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[600],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    // Version info
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: AppConstants.primaryColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        'Version 1.0.0',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppConstants.primaryColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    // Close button
+                    ElevatedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppConstants.primaryColor,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 12),
+                      ),
+                      child: Text(AppLocalizations.of(context)?.ok ?? 'OK'),
+                    ),
+                  ],
+                ),
+              ),
+              // Close X button
+              Positioned(
+                top: 40,
+                right: 40,
+                child: GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.close,
+                      color: Colors.grey,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       },

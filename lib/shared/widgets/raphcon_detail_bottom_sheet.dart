@@ -115,12 +115,15 @@ class _RaphconDetailBottomSheetState extends State<RaphconDetailBottomSheet> {
             if (state is RaphconDeleted) {
               // Remove from local list
               setState(() {
-                widget.raphcons.removeWhere((r) => r.id == state.deletedRaphconId);
+                widget.raphcons
+                    .removeWhere((r) => r.id == state.deletedRaphconId);
               });
-              
+
               // Refresh user statistics to update the overview
-              context.read<RaphconBloc>().add(LoadUserRaphconStatisticsEvent(widget.userName));
-              
+              context
+                  .read<RaphconBloc>()
+                  .add(LoadUserRaphconStatisticsEvent(widget.userName));
+
               // Show success message
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -130,7 +133,7 @@ class _RaphconDetailBottomSheetState extends State<RaphconDetailBottomSheet> {
                   ),
                 );
               }
-              
+
               // Close detail sheet if no raphcons left
               if (widget.raphcons.isEmpty && mounted) {
                 Navigator.of(context).pop();
@@ -140,7 +143,8 @@ class _RaphconDetailBottomSheetState extends State<RaphconDetailBottomSheet> {
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(AppLocalizations.of(context)!.errorRaphconIdNotFound),
+                    content: Text(
+                        AppLocalizations.of(context)!.errorRaphconIdNotFound),
                     backgroundColor: Colors.red,
                   ),
                 );
@@ -416,7 +420,8 @@ class _RaphconDetailBottomSheetState extends State<RaphconDetailBottomSheet> {
                   Navigator.of(dialogContext).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(AppLocalizations.of(context)!.errorRaphconIdNotFound),
+                      content: Text(
+                          AppLocalizations.of(context)!.errorRaphconIdNotFound),
                       backgroundColor: Colors.red,
                     ),
                   );
