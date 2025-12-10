@@ -464,12 +464,14 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
     });
   }
 
-  void _showDetailBottomSheet(BuildContext context, user_entity.User user, RaphconType type) {
+  void _showDetailBottomSheet(
+      BuildContext context, user_entity.User user, RaphconType type) {
     // TODO: Implement loading of detailed raphcons for this type
     // For now, show placeholder
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Detail-Ansicht für ${type.name} wird bald verfügbar sein'),
+        content:
+            Text('Detail-Ansicht für ${type.name} wird bald verfügbar sein'),
       ),
     );
   }

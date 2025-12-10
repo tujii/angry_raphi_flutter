@@ -128,7 +128,8 @@ class RaphconDetailBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildRaphconsList(BuildContext context, AppLocalizations localizations) {
+  Widget _buildRaphconsList(
+      BuildContext context, AppLocalizations localizations) {
     if (raphcons.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(32),
@@ -266,7 +267,7 @@ class RaphconDetailBottomSheet extends StatelessWidget {
 
   void _confirmDelete(BuildContext context, RaphconEntity raphcon) {
     final localizations = AppLocalizations.of(context)!;
-    
+
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {

@@ -190,7 +190,8 @@ class RaphconStatisticsBottomSheet extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: _getColorForCount(count),
                     borderRadius: BorderRadius.circular(12),
