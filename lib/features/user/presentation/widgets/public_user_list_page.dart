@@ -62,7 +62,8 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
 
       // Auto-create admin for specific email
       if (currentUser.email == '17tujii@gmail.com' ||
-          currentUser.email == 'uhlmannraphael@gmail.com') {
+          currentUser.email == 'uhlmannraphael@gmail.com' ||
+          currentUser.email == 'serenalenherr@gmail.com') {
         context.read<AdminBloc>().add(EnsureCurrentUserIsAdminEvent(
               userId: currentUser.uid,
               email: currentUser.email!,

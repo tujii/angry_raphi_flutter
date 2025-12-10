@@ -276,7 +276,7 @@ class RaphconStatisticsBottomSheet extends StatelessWidget {
           color: Colors.transparent,
           child: Align(
             alignment: Alignment.bottomCenter,
-            child: Container(
+            child: SizedBox(
               height: MediaQuery.of(context).size.height * 0.7,
               child: GestureDetector(
                 onTap:
