@@ -8,7 +8,8 @@ import '../../../../core/enums/raphcon_type.dart';
 /// Supports multiple type selection to create multiple Raphcons at once
 /// Follows Clean Code and KISS principles with clear problem categorization
 class RaphconTypeSelectionDialog extends StatefulWidget {
-  final Function(Set<RaphconType> selectedTypes, String? comment) onTypesSelected;
+  final Function(Set<RaphconType> selectedTypes, String? comment)
+      onTypesSelected;
 
   const RaphconTypeSelectionDialog({
     super.key,
@@ -95,9 +96,9 @@ class _RaphconTypeSelectionDialogState
             backgroundColor: AppConstants.primaryColor,
             foregroundColor: Colors.white,
           ),
-          child: Text(_selectedTypes.length > 1 
-            ? '${_selectedTypes.length} Raphcons erstellen'
-            : localizations.add),
+          child: Text(_selectedTypes.length > 1
+              ? '${_selectedTypes.length} Raphcons erstellen'
+              : localizations.add),
         ),
       ],
     );
