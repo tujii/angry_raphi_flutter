@@ -13,6 +13,17 @@ class GetUsersUseCase {
   }
 }
 
+/// Use case for streaming all users with real-time updates
+class GetUsersStreamUseCase {
+  final UserRepository _repository;
+
+  const GetUsersStreamUseCase(this._repository);
+
+  Stream<List<User>> execute() {
+    return _repository.getUsersStream();
+  }
+}
+
 /// Use case for adding a new user
 class AddUserUseCase {
   final UserRepository _repository;

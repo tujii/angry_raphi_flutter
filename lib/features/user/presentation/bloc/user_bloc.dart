@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../domain/entities/user.dart';
@@ -12,6 +13,19 @@ abstract class UserEvent extends Equatable {
 }
 
 class LoadUsersEvent extends UserEvent {}
+
+class StartUsersStreamEvent extends UserEvent {}
+
+class StopUsersStreamEvent extends UserEvent {}
+
+class UsersStreamUpdatedEvent extends UserEvent {
+  final List<User> users;
+
+  const UsersStreamUpdatedEvent(this.users);
+
+  @override
+  List<Object> get props => [users];
+}
 
 class AddSampleDataEvent extends UserEvent {}
 
@@ -72,18 +86,29 @@ class SampleDataAdded extends UserState {}
 // BLoC
 class UserBloc extends Bloc<UserEvent, UserState> {
   final GetUsersUseCase _getUsersUseCase;
+  final GetUsersStreamUseCase _getUsersStreamUseCase;
   final AddUserUseCase _addUserUseCase;
+
+  StreamSubscription<List<User>>? _usersStreamSubscription;
 
   UserBloc({
     required GetUsersUseCase getUsersUseCase,
+    required GetUsersStreamUseCase getUsersStreamUseCase,
     required AddUserUseCase addUserUseCase,
   })  : _getUsersUseCase = getUsersUseCase,
+        _getUsersStreamUseCase = getUsersStreamUseCase,
         _addUserUseCase = addUserUseCase,
         super(UserInitial()) {
     on<LoadUsersEvent>(_onLoadUsers);
+    on<StartUsersStreamEvent>(_onStartUsersStream);
+    on<StopUsersStreamEvent>(_onStopUsersStream);
+    on<UsersStreamUpdatedEvent>(_onUsersStreamUpdated);
     on<RefreshUsersEvent>(_onRefreshUsers);
     on<AddUserEvent>(_onAddUser);
     on<DeleteUserEvent>(_onDeleteUser);
+
+    // Start the stream automatically
+    add(StartUsersStreamEvent());
   }
 
   Future<void> _onLoadUsers(
@@ -97,9 +122,37 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
   }
 
+  Future<void> _onStartUsersStream(
+      StartUsersStreamEvent event, Emitter<UserState> emit) async {
+    await _usersStreamSubscription?.cancel();
+
+    emit(UserLoading());
+
+    _usersStreamSubscription = _getUsersStreamUseCase.execute().listen(
+      (users) {
+        add(UsersStreamUpdatedEvent(users));
+      },
+      onError: (error) {
+        emit(UserError('streamError: ${error.toString()}'));
+      },
+    );
+  }
+
+  Future<void> _onStopUsersStream(
+      StopUsersStreamEvent event, Emitter<UserState> emit) async {
+    await _usersStreamSubscription?.cancel();
+    _usersStreamSubscription = null;
+  }
+
+  void _onUsersStreamUpdated(
+      UsersStreamUpdatedEvent event, Emitter<UserState> emit) {
+    emit(UserLoaded(event.users));
+  }
+
   Future<void> _onRefreshUsers(
       RefreshUsersEvent event, Emitter<UserState> emit) async {
-    add(LoadUsersEvent());
+    // Restart the stream to get fresh data
+    add(StartUsersStreamEvent());
   }
 
   Future<void> _onAddUser(AddUserEvent event, Emitter<UserState> emit) async {
@@ -136,5 +189,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     } catch (e) {
       emit(UserError('failedToDeleteUser: ${e.toString()}'));
     }
+  }
+
+  @override
+  Future<void> close() {
+    _usersStreamSubscription?.cancel();
+    return super.close();
   }
 }

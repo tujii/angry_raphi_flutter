@@ -15,25 +15,122 @@ class FirestoreUserRepository implements UserRepository {
     try {
       final QuerySnapshot querySnapshot = await _firestore
           .collection(_usersCollection)
-          .orderBy('raphconCount', descending: true)
+          .orderBy('createdAt', descending: false)
           .get();
 
-      return querySnapshot.docs.map((doc) {
+      final users = <User>[];
+      final seenUserIds = <String>{};
+
+      for (final doc in querySnapshot.docs) {
         final data = doc.data() as Map<String, dynamic>;
-        return User(
+
+        // Skip if we've already processed this user ID (prevent duplicates)
+        if (seenUserIds.contains(doc.id)) {
+          continue;
+        }
+        seenUserIds.add(doc.id);
+
+        // Get real-time raphcon count from raphcons collection
+        final raphconQuery = await _firestore
+            .collection('raphcons')
+            .where('userId', isEqualTo: doc.id)
+            .get();
+
+        final initials = data['initials'] ?? data['name'] ?? '';
+
+        // Skip auth users (they don't have initials and are not app users)
+        if (initials.isEmpty) {
+          continue;
+        }
+
+        final user = User(
           id: doc.id,
-          initials: data['initials'] ??
-              data['name'] ??
-              '', // Support both new and legacy field names
+          initials: initials,
           avatarUrl: data['avatarUrl'],
-          raphconCount: data['raphconCount'] ?? 0,
+          raphconCount: raphconQuery.size,
           createdAt:
               (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
         );
-      }).toList();
+        users.add(user);
+      }
+
+      // Remove duplicates based on initials (keep the one with most recent createdAt)
+      final uniqueUsers = <String, User>{};
+      for (final user in users) {
+        final existing = uniqueUsers[user.initials];
+        if (existing == null || user.createdAt.isAfter(existing.createdAt)) {
+          uniqueUsers[user.initials] = user;
+        }
+      }
+      final finalUsers = uniqueUsers.values.toList();
+
+      // Sort by raphcon count descending
+      finalUsers.sort((a, b) => b.raphconCount.compareTo(a.raphconCount));
+
+      return finalUsers;
     } catch (e) {
       throw Exception('Failed to fetch users from Firestore: $e');
     }
+  }
+
+  @override
+  Stream<List<User>> getUsersStream() {
+    return _firestore
+        .collection(_usersCollection)
+        .orderBy('createdAt', descending: false)
+        .snapshots()
+        .asyncMap((usersSnapshot) async {
+      final users = <User>[];
+      final seenUserIds = <String>{};
+
+      for (final doc in usersSnapshot.docs) {
+        final data = doc.data();
+
+        // Skip if we've already processed this user ID (prevent duplicates)
+        if (seenUserIds.contains(doc.id)) {
+          continue;
+        }
+        seenUserIds.add(doc.id);
+
+        // Get real-time raphcon count from raphcons collection
+        final raphconQuery = await _firestore
+            .collection('raphcons')
+            .where('userId', isEqualTo: doc.id)
+            .get();
+
+        final initials = data['initials'] ?? data['name'] ?? '';
+
+        // Skip auth users (they don't have initials and are not app users)
+        if (initials.isEmpty) {
+          continue;
+        }
+
+        final user = User(
+          id: doc.id,
+          initials: initials,
+          avatarUrl: data['avatarUrl'],
+          raphconCount: raphconQuery.size,
+          createdAt:
+              (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+        );
+        users.add(user);
+      }
+
+      // Remove duplicates based on initials (keep the one with most recent createdAt)
+      final uniqueUsers = <String, User>{};
+      for (final user in users) {
+        final existing = uniqueUsers[user.initials];
+        if (existing == null || user.createdAt.isAfter(existing.createdAt)) {
+          uniqueUsers[user.initials] = user;
+        }
+      }
+      final finalUsers = uniqueUsers.values.toList();
+
+      // Sort by raphcon count descending
+      finalUsers.sort((a, b) => b.raphconCount.compareTo(a.raphconCount));
+
+      return finalUsers;
+    });
   }
 
   @override

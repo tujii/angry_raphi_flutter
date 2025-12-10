@@ -187,8 +187,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(state.message)),
                 );
-                // Reload users to update raphcon count
-                context.read<UserBloc>().add(RefreshUsersEvent());
+                // No need to manually refresh - stream will auto-update
               } else if (state is RaphconError) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

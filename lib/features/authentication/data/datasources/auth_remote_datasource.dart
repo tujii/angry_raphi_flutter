@@ -51,8 +51,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           isAdmin,
         );
 
-        // Save user data to Firestore
-        await _saveUserToFirestore(userModel);
+        // Note: We don't save auth users to the 'users' collection
+        // The 'users' collection is for app-specific users with initials
 
         return userModel;
       } else {
@@ -92,8 +92,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           isAdmin,
         );
 
-        // Save user data to Firestore
-        await _saveUserToFirestore(userModel);
+        // Note: We don't save auth users to the 'users' collection
+        // The 'users' collection is for app-specific users with initials
 
         return userModel;
       }
@@ -176,15 +176,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     }
   }
 
-  Future<void> _saveUserToFirestore(UserModel user) async {
-    try {
-      await _firestore
-          .collection('users')
-          .doc(user.id)
-          .set(user.toMap(), SetOptions(merge: true));
-    } catch (e) {
-      // Log error but don't throw - user is already signed in
-      // Failed to save user to Firestore - silent in production
-    }
-  }
+  // Removed _saveUserToFirestore method
+  // Authentication users are managed by Firebase Auth
+  // App users (with initials) are managed separately in the users collection
 }

@@ -9,14 +9,17 @@ class SplashPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppConstants.primaryColor,
-      body: const Center(
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.mood_bad,
-              size: 80,
-              color: Colors.white,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.asset(
+                'assets/images/icon.png',
+                width: 200,
+                height: 200,
+              ),
             ),
             SizedBox(height: 24),
             Text(

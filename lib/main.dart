@@ -98,11 +98,13 @@ class AngryRaphiApp extends StatelessWidget {
               final repository =
                   FirestoreUserRepository(FirebaseFirestore.instance);
               final getUsersUseCase = GetUsersUseCase(repository);
+              final getUsersStreamUseCase = GetUsersStreamUseCase(repository);
               final addUserUseCase = AddUserUseCase(repository);
               return UserBloc(
                 getUsersUseCase: getUsersUseCase,
+                getUsersStreamUseCase: getUsersStreamUseCase,
                 addUserUseCase: addUserUseCase,
-              )..add(LoadUsersEvent());
+              );
             },
           ),
           BlocProvider(

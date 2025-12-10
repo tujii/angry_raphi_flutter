@@ -30,6 +30,10 @@ void setupDependencyInjection() {
     () => GetUsersUseCase(getIt<UserRepository>()),
   );
 
+  getIt.registerLazySingleton<GetUsersStreamUseCase>(
+    () => GetUsersStreamUseCase(getIt<UserRepository>()),
+  );
+
   getIt.registerLazySingleton<AddUserUseCase>(
     () => AddUserUseCase(getIt<UserRepository>()),
   );
@@ -46,6 +50,7 @@ void setupDependencyInjection() {
   getIt.registerFactory<UserBloc>(
     () => UserBloc(
       getUsersUseCase: getIt<GetUsersUseCase>(),
+      getUsersStreamUseCase: getIt<GetUsersStreamUseCase>(),
       addUserUseCase: getIt<AddUserUseCase>(),
     ),
   );
