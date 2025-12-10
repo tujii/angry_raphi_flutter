@@ -1,0 +1,127 @@
+{
+  "@@locale": "en",
+  "appTitle": "AngryRaphi",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "welcome": "Welcome to AngryRaphi!",
+  "@welcome": {
+    "description": "Welcome message"
+  },
+  "subtitle": "Rate people with raphcons",
+  "@subtitle": {
+    "description": "App subtitle"
+  },
+  "signIn": "Sign in",
+  "@signIn": {
+    "description": "Sign in button text"
+  },
+  "signInWithGoogle": "Sign in with Google",
+  "@signInWithGoogle": {
+    "description": "Google sign in button text"
+  },
+  "signOut": "Sign Out",
+  "@signOut": {
+    "description": "Sign out button text"
+  },
+  "loading": "Loading...",
+  "@loading": {
+    "description": "Loading text"
+  },
+  "error": "Error",
+  "@error": {
+    "description": "Generic error text"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Retry button text"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Confirm button text"
+  },
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button text"
+  },
+  "add": "Add",
+  "@add": {
+    "description": "Add button text"
+  },
+  "name": "Name",
+  "@name": {
+    "description": "Name field label"
+  },
+  "description": "Description",
+  "@description": {
+    "description": "Description field label"
+  },
+  "comingSoon": "🚧 More features coming soon! 🚧",
+  "@comingSoon": {
+    "description": "Coming soon message"
+  },
+  "termsAndPrivacy": "By signing in, you agree to our Terms of Service and Privacy Policy",
+  "@termsAndPrivacy": {
+    "description": "Terms and privacy notice"
+  },
+  "errorOccurred": "Oops! Something went wrong",
+  "@errorOccurred": {
+    "description": "Error occurred message"
+  },
+  "users": "Users",
+  "@users": {
+    "description": "Users label"
+  },
+  "totalRaphcons": "Total Raphcons",
+  "@totalRaphcons": {
+    "description": "Total raphcons label"
+  },
+  "topCollector": "Top Collector",
+  "@topCollector": {
+    "description": "Top collector label"
+  },
+  "loadingUsers": "Loading users...",
+  "@loadingUsers": {
+    "description": "Loading users message"
+  },
+  "noUsersFound": "No users found",
+  "@noUsersFound": {
+    "description": "No users found message"
+  },
+  "addFirstUser": "Add the first user!",
+  "@addFirstUser": {
+    "description": "Add first user message"
+  },
+  "addUser": "Add User",
+  "@addUser": {
+    "description": "Add user button text"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings menu item"
+  },
+  "settingsComingSoon": "Settings coming soon!",
+  "@settingsComingSoon": {
+    "description": "Settings coming soon message"
+  },
+  "addUserDialogTitle": "Add User",
+  "@addUserDialogTitle": {
+    "description": "Add user dialog title"
+  },
+  "addUserDialogContent": "This feature is still in development. Soon you'll be able to add new users!",
+  "@addUserDialogContent": {
+    "description": "Add user dialog content"
+  },
+  "ok": "OK",
+  "@ok": {
+    "description": "OK button text"
+  },
+  "raphcons": "Raphcons",
+  "@raphcons": {
+    "description": "Raphcons label"
+  }
+}

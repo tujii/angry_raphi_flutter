@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "733842826620",
+    "project_id": "angryraphi",
+    "storage_bucket": "angryraphi.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:733842826620:android:c35cdb0ab78268cdcf70f9",
+        "android_client_info": {
+          "package_name": "com.angryraphi.angry_raphi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "733842826620-4btau2nffib43ej8lc92u1vdj9q0c750.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmaAak4x-WapSf9-uys0hAbn7hKErrry0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "733842826620-4btau2nffib43ej8lc92u1vdj9q0c750.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "733842826620-p8ls9c32sc5s6g9ufat2o95mg4ujgqeh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.angryraphi.angryRaphi"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
