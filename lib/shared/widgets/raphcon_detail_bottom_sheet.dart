@@ -281,7 +281,7 @@ class _RaphconDetailBottomSheetState extends State<RaphconDetailBottomSheet> {
             // Divider
             const Divider(height: 1),
 
-            // Raphcons list  
+            // Raphcons list
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(top: 8.0),

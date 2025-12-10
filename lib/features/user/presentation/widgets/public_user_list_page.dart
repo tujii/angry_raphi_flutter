@@ -38,7 +38,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
     _checkAuthAndAdminStatus();
     _loadAppVersion();
   }
-  
+
   Future<void> _loadAppVersion() async {
     try {
       final packageInfo = await PackageInfo.fromPlatform();
@@ -245,7 +245,8 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
       ),
       floatingActionButton: _isAdmin
           ? Tooltip(
-              message: AppLocalizations.of(context)?.addUser ?? 'Benutzer hinzufügen',
+              message: AppLocalizations.of(context)?.addUser ??
+                  'Benutzer hinzufügen',
               child: Focus(
                 child: Material(
                   elevation: 6.0,
@@ -257,7 +258,8 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                     splashColor: Colors.white.withValues(alpha: 0.3),
                     highlightColor: Colors.white.withValues(alpha: 0.1),
                     focusColor: Colors.white.withValues(alpha: 0.2),
-                    hoverColor: AppConstants.primaryColor.withValues(alpha: 0.8),
+                    hoverColor:
+                        AppConstants.primaryColor.withValues(alpha: 0.8),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 150),
                       width: 56.0,

@@ -73,7 +73,7 @@ class RaphconStatisticsBottomSheet extends StatelessWidget {
           // Divider
           const Divider(height: 1),
 
-          // Statistics list  
+          // Statistics list
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(top: 8.0),
