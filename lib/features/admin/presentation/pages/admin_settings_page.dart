@@ -24,23 +24,25 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
   @override
   void initState() {
     super.initState();
-    _registeredUsersService = RegisteredUsersService(FirebaseFirestore.instance);
+    _registeredUsersService =
+        RegisteredUsersService(FirebaseFirestore.instance);
     _loadAdminData();
   }
 
   Future<void> _loadAdminData() async {
     setState(() => _loading = true);
-    
+
     try {
       // Load CSV admins
       final csvAdmins = await AdminConfigService.loadAdminConfig();
-      
+
       // Load Firebase admins
       final firebaseAdmins = await _loadFirebaseAdmins();
-      
+
       // Load registered users from RegisteredUsersService
-      final registeredUsers = await _registeredUsersService.getRegisteredUsers();
-      
+      final registeredUsers =
+          await _registeredUsersService.getRegisteredUsers();
+
       setState(() {
         _csvAdmins = csvAdmins;
         _firebaseAdmins = firebaseAdmins;
@@ -62,10 +64,9 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
 
   Future<List<Map<String, dynamic>>> _loadFirebaseAdmins() async {
     try {
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('admins')
-          .get();
-          
+      final querySnapshot =
+          await FirebaseFirestore.instance.collection('admins').get();
+
       return querySnapshot.docs
           .map((doc) => {
                 'id': doc.id,
@@ -79,14 +80,13 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppConstants.backgroundColor,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)?.adminSettings ?? 'Admin Einstellungen'),
+        title: Text(AppLocalizations.of(context)?.adminSettings ??
+            'Admin Einstellungen'),
         backgroundColor: AppConstants.primaryColor,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -129,8 +129,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                 Text(
                   'Konfigurierte Admins (CSV)',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ],
             ),
@@ -144,11 +144,11 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
               const Text('Keine konfigurierten Admins gefunden.')
             else
               ..._csvAdmins.map((admin) => _buildAdminTile(
-                email: admin.email,
-                displayName: admin.displayName,
-                role: admin.role,
-                isCSVAdmin: true,
-              )),
+                    email: admin.email,
+                    displayName: admin.displayName,
+                    role: admin.role,
+                    isCSVAdmin: true,
+                  )),
           ],
         ),
       ),
@@ -169,8 +169,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                 Text(
                   'Aktive Admins (Firebase)',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ],
             ),
@@ -184,13 +184,13 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
               const Text('Keine aktiven Admins in Firebase gefunden.')
             else
               ..._firebaseAdmins.map((admin) => _buildAdminTile(
-                email: admin['email'],
-                displayName: admin['displayName'],
-                role: 'admin',
-                isCSVAdmin: false,
-                canRemove: true,
-                adminId: admin['id'],
-              )),
+                    email: admin['email'],
+                    displayName: admin['displayName'],
+                    role: 'admin',
+                    isCSVAdmin: false,
+                    canRemove: true,
+                    adminId: admin['id'],
+                  )),
           ],
         ),
       ),
@@ -211,8 +211,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                 Text(
                   'Registrierte Benutzer',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ],
             ),
@@ -226,11 +226,12 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
               const Text('Keine registrierten Benutzer gefunden.')
             else
               ..._registeredUsers.map((user) => _buildRegisteredUserTile(
-                email: user['email'],
-                displayName: user['displayName'],
-                lastLoginAt: user['lastLoginAt'],
-                onPromote: () => _showPromoteUserDialog(prefilledEmail: user['email']),
-              )),
+                    email: user['email'],
+                    displayName: user['displayName'],
+                    lastLoginAt: user['lastLoginAt'],
+                    onPromote: () =>
+                        _showPromoteUserDialog(prefilledEmail: user['email']),
+                  )),
           ],
         ),
       ),
@@ -244,26 +245,35 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     required VoidCallback onPromote,
   }) {
     // Check if user is already an admin
-    final isAlreadyAdmin = _firebaseAdmins.any((admin) => admin['email'] == email) ||
-        _csvAdmins.any((admin) => admin.email == email);
+    final isAlreadyAdmin =
+        _firebaseAdmins.any((admin) => admin['email'] == email) ||
+            _csvAdmins.any((admin) => admin.email == email);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: isAlreadyAdmin ? Colors.orange.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.05),
+        color: isAlreadyAdmin
+            ? Colors.orange.withValues(alpha: 0.1)
+            : Colors.grey.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: isAlreadyAdmin ? Colors.orange.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.2),
+          color: isAlreadyAdmin
+              ? Colors.orange.withValues(alpha: 0.3)
+              : Colors.grey.withValues(alpha: 0.2),
         ),
       ),
       child: Row(
         children: [
           CircleAvatar(
-            backgroundColor: isAlreadyAdmin ? Colors.orange : AppConstants.primaryColor,
+            backgroundColor:
+                isAlreadyAdmin ? Colors.orange : AppConstants.primaryColor,
             child: Text(
-              displayName.isNotEmpty ? displayName[0].toUpperCase() : email[0].toUpperCase(),
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              displayName.isNotEmpty
+                  ? displayName[0].toUpperCase()
+                  : email[0].toUpperCase(),
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(width: 12),
@@ -287,7 +297,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                 if (isAlreadyAdmin)
                   Container(
                     margin: const EdgeInsets.only(top: 4),
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
                       color: Colors.orange,
                       borderRadius: BorderRadius.circular(12),
@@ -318,7 +329,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date);
-    
+
     if (difference.inDays > 0) {
       return 'vor ${difference.inDays} Tag${difference.inDays == 1 ? '' : 'en'}';
     } else if (difference.inHours > 0) {
@@ -344,8 +355,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                 Text(
                   'User zu Admin befördern',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ],
             ),
@@ -382,10 +393,14 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: isCSVAdmin ? Colors.blue.withValues(alpha: 0.1) : Colors.green.withValues(alpha: 0.1),
+        color: isCSVAdmin
+            ? Colors.blue.withValues(alpha: 0.1)
+            : Colors.green.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: isCSVAdmin ? Colors.blue.withValues(alpha: 0.3) : Colors.green.withValues(alpha: 0.3),
+          color: isCSVAdmin
+              ? Colors.blue.withValues(alpha: 0.3)
+              : Colors.green.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
@@ -393,8 +408,11 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
           CircleAvatar(
             backgroundColor: AppConstants.primaryColor,
             child: Text(
-              displayName.isNotEmpty ? displayName[0].toUpperCase() : email[0].toUpperCase(),
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              displayName.isNotEmpty
+                  ? displayName[0].toUpperCase()
+                  : email[0].toUpperCase(),
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold),
             ),
           ),
           const SizedBox(width: 12),
@@ -412,7 +430,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 4),
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
                     color: role == 'super_admin' ? Colors.red : Colors.blue,
                     borderRadius: BorderRadius.circular(12),
@@ -466,7 +485,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
               await _removeAdmin(adminId, email);
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Entfernen', style: TextStyle(color: Colors.white)),
+            child:
+                const Text('Entfernen', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -502,7 +522,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
 /// Dialog to promote a user to admin
 class PromoteUserDialog extends StatefulWidget {
   final String? prefilledEmail;
-  
+
   const PromoteUserDialog({super.key, this.prefilledEmail});
 
   @override
@@ -593,7 +613,9 @@ class _PromoteUserDialogState extends State<PromoteUserDialog> {
           child: const Text('Abbrechen'),
         ),
         ElevatedButton(
-          onPressed: _isLoading || !_isValidEmail(_email) ? null : () => _promoteUser(),
+          onPressed: _isLoading || !_isValidEmail(_email)
+              ? null
+              : () => _promoteUser(),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppConstants.primaryColor,
           ),
@@ -606,7 +628,8 @@ class _PromoteUserDialogState extends State<PromoteUserDialog> {
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
                 )
-              : const Text('Zu Admin befördern', style: TextStyle(color: Colors.white)),
+              : const Text('Zu Admin befördern',
+                  style: TextStyle(color: Colors.white)),
         ),
       ],
     );
@@ -622,7 +645,8 @@ class _PromoteUserDialogState extends State<PromoteUserDialog> {
     setState(() => _isLoading = true);
 
     try {
-      final displayNameToUse = _displayName.isNotEmpty ? _displayName : _email.split('@')[0];
+      final displayNameToUse =
+          _displayName.isNotEmpty ? _displayName : _email.split('@')[0];
 
       // Add user as admin in Firebase
       await FirebaseFirestore.instance.collection('admins').add({

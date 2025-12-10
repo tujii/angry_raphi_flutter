@@ -21,6 +21,8 @@ import '../../../../shared/widgets/raphcon_statistics_bottom_sheet.dart';
 import '../../../../shared/widgets/raphcon_detail_bottom_sheet.dart';
 import '../../../../services/admin_config_service.dart';
 import '../../../admin/presentation/pages/admin_settings_page.dart';
+import '../../../../shared/widgets/user_ranking_search_delegate.dart';
+import '../../../../core/utils/responsive_helper.dart';
 
 class PublicUserListPage extends StatefulWidget {
   const PublicUserListPage({super.key});
@@ -126,6 +128,18 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
           ],
         ),
         actions: [
+          BlocBuilder<UserBloc, UserState>(
+            builder: (context, state) {
+              if (state is UserLoaded && state.users.isNotEmpty) {
+                return IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: () => _showSearchDelegate(context, state.users),
+                  tooltip: 'Suchen & Rangliste',
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
@@ -356,21 +370,47 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
 
         // User list
         Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: users.length,
-            itemBuilder: (context, index) {
-              return PublicUserCard(
-                user: users[index],
-                isAdmin: _isAdmin,
-                isLoggedIn: _isLoggedIn,
-                onNameTapped:
-                    _isAdmin ? () => _createRaphcon(users[index]) : null,
-                onLoginRequired: () => _showLoginDialog(context),
-                onShowStatistics: () =>
-                    _showStatisticsBottomSheet(users[index]),
-              );
-            },
+          child: ResponsiveHelper.wrapWithMaxWidth(
+            context: context,
+            child: ResponsiveHelper.isMobile(context)
+                ? ListView.builder(
+                    padding: ResponsiveHelper.getResponsivePadding(context),
+                    itemCount: users.length,
+                    itemBuilder: (context, index) {
+                      return PublicUserCard(
+                        user: users[index],
+                        isAdmin: _isAdmin,
+                        isLoggedIn: _isLoggedIn,
+                        onNameTapped:
+                            _isAdmin ? () => _createRaphcon(users[index]) : null,
+                        onLoginRequired: () => _showLoginDialog(context),
+                        onShowStatistics: () =>
+                            _showStatisticsBottomSheet(users[index]),
+                      );
+                    },
+                  )
+                : GridView.builder(
+                    padding: ResponsiveHelper.getResponsivePadding(context),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: ResponsiveHelper.getGridColumns(context),
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                      childAspectRatio: 2.5,
+                    ),
+                    itemCount: users.length,
+                    itemBuilder: (context, index) {
+                      return PublicUserCard(
+                        user: users[index],
+                        isAdmin: _isAdmin,
+                        isLoggedIn: _isLoggedIn,
+                        onNameTapped:
+                            _isAdmin ? () => _createRaphcon(users[index]) : null,
+                        onLoginRequired: () => _showLoginDialog(context),
+                        onShowStatistics: () =>
+                            _showStatisticsBottomSheet(users[index]),
+                      );
+                    },
+                  ),
           ),
         ),
       ],
@@ -702,6 +742,13 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
     Timer(const Duration(seconds: 10), () {
       subscription?.cancel();
     });
+  }
+
+  void _showSearchDelegate(BuildContext context, List<user_entity.User> users) {
+    showSearch(
+      context: context,
+      delegate: UserRankingSearchDelegate(users),
+    );
   }
 }
 

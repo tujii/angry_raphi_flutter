@@ -16,7 +16,7 @@ class RaphconModel extends RaphconEntity {
     try {
       final createdAtData = map['createdAt'];
       DateTime createdAt;
-      
+
       if (createdAtData is DateTime) {
         createdAt = createdAtData;
       } else if (createdAtData != null) {
@@ -24,7 +24,7 @@ class RaphconModel extends RaphconEntity {
       } else {
         createdAt = DateTime.now();
       }
-      
+
       return RaphconModel(
         id: id,
         userId: map['userId'] as String,

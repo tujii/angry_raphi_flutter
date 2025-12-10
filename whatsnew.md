@@ -1,0 +1,1 @@
+feat: Add user ranking search delegate and enhance public user list page with responsive design
