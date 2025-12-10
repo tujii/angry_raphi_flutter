@@ -322,6 +322,15 @@ class AdminUserCard extends StatelessWidget {
                       fontSize: 12,
                     ),
                   ),
+                  if (user.lastRaphconAt != null)
+                    Text(
+                      'Letzter Raphcon: ${_formatDate(user.lastRaphconAt!)}',
+                      style: TextStyle(
+                        color: Colors.orange[600],
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -363,5 +372,22 @@ class AdminUserCard extends StatelessWidget {
         );
       },
     );
+  }
+
+  String _formatDate(DateTime date) {
+    final now = DateTime.now();
+    final difference = now.difference(date);
+
+    if (difference.inDays > 0) {
+      return difference.inDays == 1
+          ? 'vor ${difference.inDays} Tag'
+          : 'vor ${difference.inDays} Tagen';
+    } else if (difference.inHours > 0) {
+      return difference.inHours == 1
+          ? 'vor ${difference.inHours} Stunde'
+          : 'vor ${difference.inHours} Stunden';
+    } else {
+      return 'gerade eben';
+    }
   }
 }

@@ -44,7 +44,8 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
       });
 
       // Auto-create admin for specific email
-      if (currentUser.email == '17tujii@gmail.com') {
+      if (currentUser.email == '17tujii@gmail.com' ||
+          currentUser.email == 'uhlmannraphael@gmail.com') {
         context.read<AdminBloc>().add(EnsureCurrentUserIsAdminEvent(
               userId: currentUser.uid,
               email: currentUser.email!,
@@ -583,9 +584,11 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
     // Load statistics for the user
     context.read<RaphconBloc>().add(LoadUserRaphconStatisticsEvent(user.id));
 
-    // Listen for the result and show the bottom sheet
-    final subscription = context.read<RaphconBloc>().stream.listen((state) {
+    // Listen for the result and show the bottom sheet (only once)
+    StreamSubscription<RaphconState>? subscription;
+    subscription = context.read<RaphconBloc>().stream.listen((state) {
       if (state is UserRaphconStatisticsLoaded && context.mounted) {
+        subscription?.cancel(); // Cancel immediately to prevent multiple calls
         RaphconStatisticsBottomSheet.show(
           context: context,
           userName: user.name,
@@ -596,6 +599,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
           },
         );
       } else if (state is RaphconError && context.mounted) {
+        subscription?.cancel(); // Cancel on error too
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -608,9 +612,9 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
       }
     });
 
-    // Cancel subscription after a short delay to prevent memory leaks
-    Future.delayed(const Duration(seconds: 5), () {
-      subscription.cancel();
+    // Auto-cancel subscription after timeout to prevent memory leaks
+    Timer(const Duration(seconds: 10), () {
+      subscription?.cancel();
     });
   }
 
@@ -713,18 +717,12 @@ class PublicUserCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      // Show statistics for all users
-                      onShowStatistics?.call();
-                    },
-                    child: Text(
-                      user.name,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
+                  Text(
+                    user.name,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -778,6 +776,15 @@ class PublicUserCard extends StatelessWidget {
                       fontSize: 10,
                     ),
                   ),
+                  if (user.lastRaphconAt != null)
+                    Text(
+                      'Letzter Raphcon: ${_formatDate(user.lastRaphconAt!, context)}',
+                      style: TextStyle(
+                        color: Colors.orange[600],
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                 ],
               ),
             ),

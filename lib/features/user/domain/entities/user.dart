@@ -6,6 +6,7 @@ class User {
   final String? avatarUrl;
   final int raphconCount;
   final DateTime createdAt;
+  final DateTime? lastRaphconAt; // When the last raphcon was created
   final bool isActive;
 
   const User({
@@ -14,6 +15,7 @@ class User {
     this.avatarUrl,
     required this.raphconCount,
     required this.createdAt,
+    this.lastRaphconAt,
     this.isActive = true,
   });
 
@@ -26,6 +28,7 @@ class User {
     String? avatarUrl,
     int? raphconCount,
     DateTime? createdAt,
+    DateTime? lastRaphconAt,
     bool? isActive,
   }) {
     return User(
@@ -34,13 +37,14 @@ class User {
       avatarUrl: avatarUrl ?? this.avatarUrl,
       raphconCount: raphconCount ?? this.raphconCount,
       createdAt: createdAt ?? this.createdAt,
+      lastRaphconAt: lastRaphconAt ?? this.lastRaphconAt,
       isActive: isActive ?? this.isActive,
     );
   }
 
   @override
   String toString() {
-    return 'User(id: $id, initials: $initials, avatarUrl: $avatarUrl, raphconCount: $raphconCount, createdAt: $createdAt, isActive: $isActive)';
+    return 'User(id: $id, initials: $initials, avatarUrl: $avatarUrl, raphconCount: $raphconCount, createdAt: $createdAt, lastRaphconAt: $lastRaphconAt, isActive: $isActive)';
   }
 
   @override
@@ -52,6 +56,7 @@ class User {
         other.avatarUrl == avatarUrl &&
         other.raphconCount == raphconCount &&
         other.createdAt == createdAt &&
+        other.lastRaphconAt == lastRaphconAt &&
         other.isActive == isActive;
   }
 
@@ -62,6 +67,7 @@ class User {
         (avatarUrl?.hashCode ?? 0) ^
         raphconCount.hashCode ^
         createdAt.hashCode ^
+        (lastRaphconAt?.hashCode ?? 0) ^
         isActive.hashCode;
   }
 }

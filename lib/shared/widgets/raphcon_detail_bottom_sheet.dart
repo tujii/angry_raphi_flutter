@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/enums/raphcon_type.dart';
@@ -79,6 +81,16 @@ class _RaphconDetailBottomSheetState extends State<RaphconDetailBottomSheet> {
   void _loadUserNames() {
     // Load all users to cache their names
     context.read<UserBloc>().add(LoadUsersEvent());
+    
+    // Pre-load all unique creator names from raphcons
+    final uniqueCreators = widget.raphcons
+        .map((r) => r.createdBy)
+        .where((creator) => creator.isNotEmpty)
+        .toSet();
+    
+    for (final creator in uniqueCreators) {
+      _loadAdminDisplayName(creator);
+    }
   }
 
   String _getCreatorDisplayName(String createdBy) {
@@ -89,8 +101,55 @@ class _RaphconDetailBottomSheetState extends State<RaphconDetailBottomSheet> {
       return _userNameCache[createdBy]!;
     }
 
-    // Return email/ID as fallback
+    // Return a better formatted fallback while loading
+    if (createdBy.contains('@')) {
+      // Extract name from email
+      final emailPart = createdBy.split('@')[0];
+      // Capitalize first letter and replace dots with spaces
+      final formatted = emailPart.replaceAll('.', ' ').toLowerCase();
+      return formatted.split(' ').map((word) => 
+        word.isNotEmpty ? '${word[0].toUpperCase()}${word.substring(1)}' : word
+      ).join(' ');
+    }
+    
     return createdBy;
+  }
+
+  Future<void> _loadAdminDisplayName(String userId) async {
+    try {
+      // Check if it's the current user first
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser?.uid == userId) {
+        final displayName = currentUser?.displayName ?? currentUser?.email?.split('@')[0] ?? userId;
+        if (mounted) {
+          setState(() {
+            _userNameCache[userId] = displayName;
+          });
+        }
+        return;
+      }
+
+      // Check admins collection for display name
+      final adminDoc = await FirebaseFirestore.instance
+          .collection('admins')
+          .doc(userId)
+          .get();
+      
+      if (adminDoc.exists) {
+        final data = adminDoc.data();
+        final displayName = data?['displayName'] as String? ?? 
+                          data?['email']?.toString().split('@')[0] ?? 
+                          userId;
+        if (mounted) {
+          setState(() {
+            _userNameCache[userId] = displayName;
+          });
+        }
+      }
+    } catch (e) {
+      // If error, keep the fallback
+      debugPrint('Error loading admin display name: $e');
+    }
   }
 
   @override

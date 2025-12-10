@@ -51,6 +51,8 @@ class FirestoreUserRepository implements UserRepository {
           raphconCount: raphconQuery.size,
           createdAt:
               (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+          lastRaphconAt: (data['lastRaphconAt'] as Timestamp?)?.toDate(),
+          isActive: data['isActive'] as bool? ?? true,
         );
         users.add(user);
       }
@@ -115,6 +117,8 @@ class FirestoreUserRepository implements UserRepository {
           raphconCount: raphconQuery.size,
           createdAt:
               (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+          lastRaphconAt: (data['lastRaphconAt'] as Timestamp?)?.toDate(),
+          isActive: data['isActive'] as bool? ?? true,
         );
         users.add(user);
       }
@@ -145,6 +149,7 @@ class FirestoreUserRepository implements UserRepository {
         'avatarUrl': user.avatarUrl,
         'raphconCount': user.raphconCount,
         'createdAt': Timestamp.fromDate(user.createdAt),
+        'lastRaphconAt': user.lastRaphconAt != null ? Timestamp.fromDate(user.lastRaphconAt!) : null,
         'isActive': user.isActive,
       });
       return true;
@@ -158,6 +163,7 @@ class FirestoreUserRepository implements UserRepository {
     try {
       await _firestore.collection(_usersCollection).doc(userId).update({
         'raphconCount': newCount,
+        'lastRaphconAt': Timestamp.now(),
       });
       return true;
     } catch (e) {

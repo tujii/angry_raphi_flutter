@@ -73,8 +73,10 @@ class AdminService {
   /// Checks if the current user should be an admin after login
   Future<bool> checkAndUpdateAdminStatus() async {
     final currentUser = firebaseAuth.currentUser;
-    if (currentUser?.email == '17tujii@gmail.com') {
+    if (currentUser?.email == '17tujii@gmail.com' ||
+        currentUser?.email == 'uhlmannraphael@gmail.com') {
       await checkAndCreateCurrentUserAsAdmin('17tujii@gmail.com');
+      await checkAndCreateCurrentUserAsAdmin('uhlmannraphael@gmail.com');
       return true;
     }
 
