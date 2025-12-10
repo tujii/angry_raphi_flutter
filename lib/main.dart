@@ -44,7 +44,7 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    
+
     // Enable offline persistence for Firestore (improves load times)
     FirebaseFirestore.instance.settings = const Settings(
       persistenceEnabled: true,

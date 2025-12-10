@@ -18,11 +18,11 @@ class AdminInfo {
 /// Service to manage admin configuration from CSV file
 class AdminConfigService {
   static const String _csvPath = 'assets/data/admins.csv';
-  
+
   /// Admin data structure
   static const List<String> _predefinedAdmins = [
     '17tujii@gmail.com',
-    'uhlmannraphael@gmail.com', 
+    'uhlmannraphael@gmail.com',
     'serenalenherr@gmail.com',
   ];
 
@@ -31,14 +31,14 @@ class AdminConfigService {
     try {
       final csvContent = await rootBundle.loadString(_csvPath);
       final lines = csvContent.split('\n');
-      
+
       // Skip header row and process data
       final adminList = <AdminInfo>[];
-      
+
       for (int i = 1; i < lines.length; i++) {
         final line = lines[i].trim();
         if (line.isEmpty) continue;
-        
+
         final parts = line.split(',');
         if (parts.length >= 3) {
           adminList.add(AdminInfo(
@@ -48,15 +48,17 @@ class AdminConfigService {
           ));
         }
       }
-      
+
       return adminList;
     } catch (e) {
       // Fallback to predefined list if CSV loading fails
-      return _predefinedAdmins.map((email) => AdminInfo(
-        email: email,
-        displayName: email.split('@')[0],
-        role: 'admin',
-      )).toList();
+      return _predefinedAdmins
+          .map((email) => AdminInfo(
+                email: email,
+                displayName: email.split('@')[0],
+                role: 'admin',
+              ))
+          .toList();
     }
   }
 

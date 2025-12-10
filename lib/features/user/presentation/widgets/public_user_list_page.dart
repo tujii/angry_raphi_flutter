@@ -63,9 +63,10 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
 
       // Check if user is admin from CSV configuration
       final isAdminUser = await AdminConfigService.isAdmin(currentUser.email!);
-      
+
       if (isAdminUser) {
-        final displayName = await AdminConfigService.getAdminDisplayName(currentUser.email!);
+        final displayName =
+            await AdminConfigService.getAdminDisplayName(currentUser.email!);
         context.read<AdminBloc>().add(EnsureCurrentUserIsAdminEvent(
               userId: currentUser.uid,
               email: currentUser.email!,

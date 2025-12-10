@@ -76,8 +76,9 @@ class AdminService {
     final currentUser = firebaseAuth.currentUser;
     if (currentUser?.email != null) {
       // Check if user is admin from CSV configuration
-      final isConfiguredAdmin = await AdminConfigService.isAdmin(currentUser!.email!);
-      
+      final isConfiguredAdmin =
+          await AdminConfigService.isAdmin(currentUser!.email!);
+
       if (isConfiguredAdmin) {
         await checkAndCreateCurrentUserAsAdmin(currentUser.email!);
         return true;
