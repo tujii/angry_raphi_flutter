@@ -149,7 +149,9 @@ class FirestoreUserRepository implements UserRepository {
         'avatarUrl': user.avatarUrl,
         'raphconCount': user.raphconCount,
         'createdAt': Timestamp.fromDate(user.createdAt),
-        'lastRaphconAt': user.lastRaphconAt != null ? Timestamp.fromDate(user.lastRaphconAt!) : null,
+        'lastRaphconAt': user.lastRaphconAt != null
+            ? Timestamp.fromDate(user.lastRaphconAt!)
+            : null,
         'isActive': user.isActive,
       });
       return true;
