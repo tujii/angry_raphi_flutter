@@ -73,7 +73,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
   Widget _buildSearchResults(BuildContext context) {
     final filteredUsers = users.where((user) {
       return user.initials.toLowerCase().contains(query.toLowerCase()) ||
-             user.raphconCount.toString().contains(query);
+          user.raphconCount.toString().contains(query);
     }).toList();
 
     if (filteredUsers.isEmpty) {
@@ -104,7 +104,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
 
   Widget _buildRankingList(BuildContext context, {bool showAll = true}) {
     final topUsers = showAll ? users : users.take(5).toList();
-    
+
     if (topUsers.isEmpty) {
       return const Center(
         child: Text('Keine Benutzer verfügbar'),
@@ -146,25 +146,29 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
     );
   }
 
-  Widget _buildUserList(BuildContext context, List<User> userList, {bool showRanking = false}) {
+  Widget _buildUserList(BuildContext context, List<User> userList,
+      {bool showRanking = false}) {
     return ResponsiveHelper.isMobile(context)
         ? _buildMobileList(context, userList, showRanking: showRanking)
         : _buildWebGrid(context, userList, showRanking: showRanking);
   }
 
-  Widget _buildMobileList(BuildContext context, List<User> userList, {bool showRanking = false}) {
+  Widget _buildMobileList(BuildContext context, List<User> userList,
+      {bool showRanking = false}) {
     return ListView.builder(
       padding: const EdgeInsets.all(8),
       itemCount: userList.length,
       itemBuilder: (context, index) {
-        return _buildUserCard(context, userList[index], index, showRanking: showRanking);
+        return _buildUserCard(context, userList[index], index,
+            showRanking: showRanking);
       },
     );
   }
 
-  Widget _buildWebGrid(BuildContext context, List<User> userList, {bool showRanking = false}) {
+  Widget _buildWebGrid(BuildContext context, List<User> userList,
+      {bool showRanking = false}) {
     final crossAxisCount = ResponsiveHelper.getGridColumns(context);
-    
+
     return GridView.builder(
       padding: const EdgeInsets.all(16),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -175,12 +179,14 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
       ),
       itemCount: userList.length,
       itemBuilder: (context, index) {
-        return _buildUserCard(context, userList[index], index, showRanking: showRanking);
+        return _buildUserCard(context, userList[index], index,
+            showRanking: showRanking);
       },
     );
   }
 
-  Widget _buildUserCard(BuildContext context, User user, int index, {bool showRanking = false}) {
+  Widget _buildUserCard(BuildContext context, User user, int index,
+      {bool showRanking = false}) {
     final rankIcon = _getRankIcon(index);
     final rankColor = _getRankColor(index);
 
@@ -303,7 +309,8 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
                 ),
                 if (showRanking && index < 3)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
                       color: rankColor,
                       borderRadius: BorderRadius.circular(8),
@@ -369,11 +376,11 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
       context: context,
       builder: (context) => Dialog(
         child: Container(
-          width: ResponsiveHelper.isMobile(context) 
-              ? MediaQuery.of(context).size.width * 0.9 
+          width: ResponsiveHelper.isMobile(context)
+              ? MediaQuery.of(context).size.width * 0.9
               : 800,
-          height: ResponsiveHelper.isMobile(context) 
-              ? MediaQuery.of(context).size.height * 0.8 
+          height: ResponsiveHelper.isMobile(context)
+              ? MediaQuery.of(context).size.height * 0.8
               : 600,
           child: Column(
             children: [

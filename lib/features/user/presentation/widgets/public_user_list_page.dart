@@ -381,8 +381,9 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                         user: users[index],
                         isAdmin: _isAdmin,
                         isLoggedIn: _isLoggedIn,
-                        onNameTapped:
-                            _isAdmin ? () => _createRaphcon(users[index]) : null,
+                        onNameTapped: _isAdmin
+                            ? () => _createRaphcon(users[index])
+                            : null,
                         onLoginRequired: () => _showLoginDialog(context),
                         onShowStatistics: () =>
                             _showStatisticsBottomSheet(users[index]),
@@ -403,8 +404,9 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                         user: users[index],
                         isAdmin: _isAdmin,
                         isLoggedIn: _isLoggedIn,
-                        onNameTapped:
-                            _isAdmin ? () => _createRaphcon(users[index]) : null,
+                        onNameTapped: _isAdmin
+                            ? () => _createRaphcon(users[index])
+                            : null,
                         onLoginRequired: () => _showLoginDialog(context),
                         onShowStatistics: () =>
                             _showStatisticsBottomSheet(users[index]),
