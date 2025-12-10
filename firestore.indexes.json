@@ -1,33 +1,33 @@
 {
-  "indexes": [
-    {
-      "collectionGroup": "raphcons",
-      "queryScope": "COLLECTION",
-      "fields": [
+    "indexes": [
         {
-          "fieldPath": "userId",
-          "order": "ASCENDING"
+            "collectionGroup": "raphcons",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "userId",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "type",
+                    "order": "ASCENDING"
+                }
+            ]
         },
         {
-          "fieldPath": "type",
-          "order": "ASCENDING"
+            "collectionGroup": "raphcons",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "userId",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "DESCENDING"
+                }
+            ]
         }
-      ]
-    },
-    {
-      "collectionGroup": "raphcons", 
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "userId",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "createdAt",
-          "order": "DESCENDING"
-        }
-      ]
-    }
-  ],
-  "fieldOverrides": []
+    ],
+    "fieldOverrides": []
 }

@@ -31,7 +31,9 @@ class UserCard extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-          AppLocalizations.of(context)?.memberSince(_formatDate(user.createdAt)) ?? 'Mitglied seit ${_formatDate(user.createdAt)}',
+          AppLocalizations.of(context)
+                  ?.memberSince(_formatDate(user.createdAt)) ??
+              'Mitglied seit ${_formatDate(user.createdAt)}',
           style: const TextStyle(
             color: AppConstants.subtitleColor,
             fontSize: 12,
@@ -42,7 +44,8 @@ class UserCard extends StatelessWidget {
           // TODO: Navigation zu User Details
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(AppLocalizations.of(context)?.comingSoon ?? '${user.name} Details - Coming Soon!'),
+              content: Text(AppLocalizations.of(context)?.comingSoon ??
+                  '${user.name} Details - Coming Soon!'),
               backgroundColor: AppConstants.primaryColor,
             ),
           );
