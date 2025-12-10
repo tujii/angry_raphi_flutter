@@ -30,10 +30,11 @@ class FirestoreUserRepository implements UserRepository {
         }
         seenUserIds.add(doc.id);
 
-        // Get real-time raphcon count from raphcons collection
+        // Get real-time raphcon count from raphcons collection (only active)
         final raphconQuery = await _firestore
             .collection('raphcons')
             .where('userId', isEqualTo: doc.id)
+            .where('isActive', isEqualTo: true)
             .get();
 
         final initials = data['initials'] ?? data['name'] ?? '';
@@ -77,6 +78,7 @@ class FirestoreUserRepository implements UserRepository {
   Stream<List<User>> getUsersStream() {
     return _firestore
         .collection(_usersCollection)
+        .where('isActive', isEqualTo: true)
         .orderBy('createdAt', descending: false)
         .snapshots()
         .asyncMap((usersSnapshot) async {
@@ -92,10 +94,11 @@ class FirestoreUserRepository implements UserRepository {
         }
         seenUserIds.add(doc.id);
 
-        // Get real-time raphcon count from raphcons collection
+        // Get real-time raphcon count from raphcons collection (only active)
         final raphconQuery = await _firestore
             .collection('raphcons')
             .where('userId', isEqualTo: doc.id)
+            .where('isActive', isEqualTo: true)
             .get();
 
         final initials = data['initials'] ?? data['name'] ?? '';
@@ -142,6 +145,7 @@ class FirestoreUserRepository implements UserRepository {
         'avatarUrl': user.avatarUrl,
         'raphconCount': user.raphconCount,
         'createdAt': Timestamp.fromDate(user.createdAt),
+        'isActive': user.isActive,
       });
       return true;
     } catch (e) {

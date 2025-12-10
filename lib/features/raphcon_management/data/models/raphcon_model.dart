@@ -9,6 +9,7 @@ class RaphconModel extends RaphconEntity {
     required super.createdAt,
     super.comment,
     super.type = RaphconType.other,
+    super.isActive = true,
   });
 
   factory RaphconModel.fromMap(Map<String, dynamic> map, String id) {
@@ -19,6 +20,7 @@ class RaphconModel extends RaphconEntity {
       createdAt: (map['createdAt'] as dynamic).toDate(),
       comment: map['comment'] as String?,
       type: RaphconType.fromString(map['type'] as String? ?? 'other'),
+      isActive: map['isActive'] as bool? ?? true,
     );
   }
 
@@ -29,6 +31,7 @@ class RaphconModel extends RaphconEntity {
       'createdAt': createdAt,
       'comment': comment,
       'type': type.value,
+      'isActive': isActive,
     };
   }
 
@@ -40,6 +43,7 @@ class RaphconModel extends RaphconEntity {
       createdAt: entity.createdAt,
       comment: entity.comment,
       type: entity.type,
+      isActive: entity.isActive,
     );
   }
 }

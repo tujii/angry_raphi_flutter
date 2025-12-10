@@ -29,6 +29,42 @@ class RaphconDetailBottomSheet extends StatefulWidget {
   @override
   State<RaphconDetailBottomSheet> createState() =>
       _RaphconDetailBottomSheetState();
+
+  /// Static method to show the detail bottom sheet
+  static Future<void> show({
+    required BuildContext context,
+    required String userName,
+    required RaphconType type,
+    required List<RaphconEntity> raphcons,
+    required bool isAdmin,
+    required VoidCallback onBackPressed,
+  }) {
+    final userBloc = context.read<UserBloc>();
+    final raphconBloc = context.read<RaphconBloc>();
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => MultiBlocProvider(
+        providers: [
+          BlocProvider<UserBloc>.value(value: userBloc),
+          BlocProvider<RaphconBloc>.value(value: raphconBloc),
+        ],
+        child: DraggableScrollableSheet(
+          initialChildSize: 0.7,
+          minChildSize: 0.3,
+          maxChildSize: 0.9,
+          builder: (context, scrollController) => RaphconDetailBottomSheet(
+            userName: userName,
+            type: type,
+            raphcons: raphcons,
+            isAdmin: isAdmin,
+            onBackPressed: onBackPressed,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _RaphconDetailBottomSheetState extends State<RaphconDetailBottomSheet> {
@@ -61,16 +97,58 @@ class _RaphconDetailBottomSheetState extends State<RaphconDetailBottomSheet> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
 
-    return BlocListener<UserBloc, UserState>(
-      listener: (context, state) {
-        if (state is UserLoaded) {
-          setState(() {
-            for (final user in state.users) {
-              _userNameCache[user.id] = user.name;
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<UserBloc, UserState>(
+          listener: (context, state) {
+            if (state is UserLoaded) {
+              setState(() {
+                for (final user in state.users) {
+                  _userNameCache[user.id] = user.name;
+                }
+              });
             }
-          });
-        }
-      },
+          },
+        ),
+        BlocListener<RaphconBloc, RaphconState>(
+          listener: (context, state) {
+            if (state is RaphconDeleted) {
+              // Remove from local list
+              setState(() {
+                widget.raphcons.removeWhere((r) => r.id == state.deletedRaphconId);
+              });
+              
+              // Refresh user statistics to update the overview
+              context.read<RaphconBloc>().add(LoadUserRaphconStatisticsEvent(widget.userName));
+              
+              // Show success message
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.raphconDeleted),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              }
+              
+              // Close detail sheet if no raphcons left
+              if (widget.raphcons.isEmpty && mounted) {
+                Navigator.of(context).pop();
+              }
+            } else if (state is RaphconDeletionError) {
+              // Show error message
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.errorRaphconIdNotFound),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            }
+          },
+        ),
+      ],
       child: Container(
         decoration: const BoxDecoration(
           color: Colors.white,
@@ -334,20 +412,11 @@ class _RaphconDetailBottomSheetState extends State<RaphconDetailBottomSheet> {
                       .read<RaphconBloc>()
                       .add(DeleteRaphconEvent(raphcon.id!));
                   Navigator.of(dialogContext).pop();
-
-                  // Show success message and close bottom sheet
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Raphcon wurde gelöscht'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                  Navigator.of(context).pop(); // Close bottom sheet
                 } else {
                   Navigator.of(dialogContext).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Fehler: Raphcon ID nicht gefunden'),
+                    SnackBar(
+                      content: Text(AppLocalizations.of(context)!.errorRaphconIdNotFound),
                       backgroundColor: Colors.red,
                     ),
                   );
@@ -362,34 +431,6 @@ class _RaphconDetailBottomSheetState extends State<RaphconDetailBottomSheet> {
           ],
         );
       },
-    );
-  }
-
-  /// Static method to show the detail bottom sheet
-  static Future<void> show({
-    required BuildContext context,
-    required String userName,
-    required RaphconType type,
-    required List<RaphconEntity> raphcons,
-    required bool isAdmin,
-    required VoidCallback onBackPressed,
-  }) {
-    return showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.7,
-        minChildSize: 0.3,
-        maxChildSize: 0.9,
-        builder: (context, scrollController) => RaphconDetailBottomSheet(
-          userName: userName,
-          type: type,
-          raphcons: raphcons,
-          isAdmin: isAdmin,
-          onBackPressed: onBackPressed,
-        ),
-      ),
     );
   }
 }

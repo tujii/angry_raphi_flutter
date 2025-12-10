@@ -9,6 +9,7 @@ class RaphconEntity extends Equatable {
   final DateTime createdAt;
   final String? comment;
   final RaphconType type;
+  final bool isActive;
 
   const RaphconEntity({
     this.id,
@@ -17,6 +18,7 @@ class RaphconEntity extends Equatable {
     required this.createdAt,
     this.comment,
     this.type = RaphconType.other, // Default to 'other' if not specified
+    this.isActive = true,
   });
 
   @override
@@ -27,6 +29,7 @@ class RaphconEntity extends Equatable {
         createdAt,
         comment,
         type,
+        isActive,
       ];
 
   RaphconEntity copyWith({
@@ -36,6 +39,7 @@ class RaphconEntity extends Equatable {
     DateTime? createdAt,
     String? comment,
     RaphconType? type,
+    bool? isActive,
   }) {
     return RaphconEntity(
       id: id ?? this.id,
@@ -44,6 +48,7 @@ class RaphconEntity extends Equatable {
       createdAt: createdAt ?? this.createdAt,
       comment: comment ?? this.comment,
       type: type ?? this.type,
+      isActive: isActive ?? this.isActive,
     );
   }
 }

@@ -61,7 +61,7 @@ class _RaphconTypeSelectionDialogState
               TextField(
                 controller: _commentController,
                 decoration: InputDecoration(
-                  labelText: '${localizations.descriptionOptional}',
+                  labelText: localizations.descriptionOptional,
                   border: const OutlineInputBorder(),
                   hintText: 'z.B. "Maus klickt nicht richtig"',
                 ),

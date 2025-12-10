@@ -641,5 +641,13 @@
   "confirmDeleteRaphconMessage": "Are you sure you want to delete this entry?",
   "@confirmDeleteRaphconMessage": {
     "description": "Confirm delete raphcon dialog message"
+  },
+  "raphconDeleted": "Raphcon deleted",
+  "@raphconDeleted": {
+    "description": "Success message when raphcon is deleted"
+  },
+  "errorRaphconIdNotFound": "Error: Raphcon ID not found",
+  "@errorRaphconIdNotFound": {
+    "description": "Error message when raphcon ID is not found for deletion"
   }
 }

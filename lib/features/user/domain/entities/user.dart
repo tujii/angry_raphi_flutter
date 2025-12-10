@@ -6,6 +6,7 @@ class User {
   final String? avatarUrl;
   final int raphconCount;
   final DateTime createdAt;
+  final bool isActive;
 
   const User({
     required this.id,
@@ -13,6 +14,7 @@ class User {
     this.avatarUrl,
     required this.raphconCount,
     required this.createdAt,
+    this.isActive = true,
   });
 
   /// Get display name (backwards compatibility)
@@ -24,6 +26,7 @@ class User {
     String? avatarUrl,
     int? raphconCount,
     DateTime? createdAt,
+    bool? isActive,
   }) {
     return User(
       id: id ?? this.id,
@@ -31,12 +34,13 @@ class User {
       avatarUrl: avatarUrl ?? this.avatarUrl,
       raphconCount: raphconCount ?? this.raphconCount,
       createdAt: createdAt ?? this.createdAt,
+      isActive: isActive ?? this.isActive,
     );
   }
 
   @override
   String toString() {
-    return 'User(id: $id, initials: $initials, avatarUrl: $avatarUrl, raphconCount: $raphconCount, createdAt: $createdAt)';
+    return 'User(id: $id, initials: $initials, avatarUrl: $avatarUrl, raphconCount: $raphconCount, createdAt: $createdAt, isActive: $isActive)';
   }
 
   @override
@@ -47,7 +51,8 @@ class User {
         other.initials == initials &&
         other.avatarUrl == avatarUrl &&
         other.raphconCount == raphconCount &&
-        other.createdAt == createdAt;
+        other.createdAt == createdAt &&
+        other.isActive == isActive;
   }
 
   @override
@@ -56,6 +61,7 @@ class User {
         initials.hashCode ^
         (avatarUrl?.hashCode ?? 0) ^
         raphconCount.hashCode ^
-        createdAt.hashCode;
+        createdAt.hashCode ^
+        isActive.hashCode;
   }
 }

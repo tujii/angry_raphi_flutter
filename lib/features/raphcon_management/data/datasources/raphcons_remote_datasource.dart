@@ -27,6 +27,7 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
       final querySnapshot = await firestore
           .collection('raphcons')
           .where('userId', isEqualTo: userId)
+          .where('isActive', isEqualTo: true)
           .orderBy('createdAt', descending: true)
           .get();
 
@@ -46,6 +47,7 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
           .collection('raphcons')
           .where('userId', isEqualTo: userId)
           .where('type', isEqualTo: type.name)
+          .where('isActive', isEqualTo: true)
           .orderBy('createdAt', descending: true)
           .get();
 
@@ -63,6 +65,7 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
     try {
       final querySnapshot = await firestore
           .collection('raphcons')
+          .where('isActive', isEqualTo: true)
           .orderBy('createdAt', descending: true)
           .get();
 
@@ -96,7 +99,10 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
   @override
   Future<void> deleteRaphcon(String raphconId) async {
     try {
-      await firestore.collection('raphcons').doc(raphconId).delete();
+      // Soft delete: set isActive to false instead of hard delete
+      await firestore.collection('raphcons').doc(raphconId).update({
+        'isActive': false,
+      });
     } catch (e) {
       throw ServerException('Failed to delete raphcon: ${e.toString()}');
     }

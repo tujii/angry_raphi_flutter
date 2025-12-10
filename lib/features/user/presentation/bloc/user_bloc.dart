@@ -133,7 +133,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         add(UsersStreamUpdatedEvent(users));
       },
       onError: (error) {
-        emit(UserError('streamError: ${error.toString()}'));
+        if (!emit.isDone) {
+          emit(UserError('streamError: ${error.toString()}'));
+        }
       },
     );
   }
