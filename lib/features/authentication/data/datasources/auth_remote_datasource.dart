@@ -35,10 +35,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         final GoogleAuthProvider provider = GoogleAuthProvider();
         provider.addScope('email');
         provider.addScope('profile');
-        
-        final UserCredential userCredential = 
+
+        final UserCredential userCredential =
             await _firebaseAuth.signInWithPopup(provider);
-            
+
         if (userCredential.user == null) {
           throw AuthException('loginError');
         }

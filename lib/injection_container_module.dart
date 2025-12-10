@@ -18,8 +18,8 @@ abstract class RegisterModule {
 
   @injectable
   GoogleSignIn get googleSignIn => GoogleSignIn(
-    scopes: ['email'],
-  );
+        scopes: ['email'],
+      );
 
   @injectable
   Connectivity get connectivity => Connectivity();
