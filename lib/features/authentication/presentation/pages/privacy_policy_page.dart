@@ -23,87 +23,75 @@ class PrivacyPolicyPage extends StatelessWidget {
             Text(
               AppLocalizations.of(context)!.privacyPolicyTitle,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppConstants.primaryColor,
-              ),
+                    fontWeight: FontWeight.bold,
+                    color: AppConstants.primaryColor,
+                  ),
             ),
             const SizedBox(height: 8),
             Text(
-              AppLocalizations.of(context)!.lastUpdated('${DateTime.now().day}.${DateTime.now().month}.${DateTime.now().year}'),
+              AppLocalizations.of(context)!.lastUpdated(
+                  '${DateTime.now().day}.${DateTime.now().month}.${DateTime.now().year}'),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.grey[600],
-              ),
+                    color: Colors.grey[600],
+                  ),
             ),
             const SizedBox(height: 24),
-            
             _buildSection(
               context,
               AppLocalizations.of(context)!.privacySection1Title,
               AppLocalizations.of(context)!.privacySection1Content,
             ),
-            
             _buildSection(
               context,
               AppLocalizations.of(context)!.privacySection2Title,
               AppLocalizations.of(context)!.privacySection2Content,
             ),
-            
             _buildSection(
               context,
               AppLocalizations.of(context)!.privacySection3Title,
               AppLocalizations.of(context)!.privacySection3Content,
             ),
-            
             _buildSection(
               context,
               AppLocalizations.of(context)!.privacySection4Title,
               AppLocalizations.of(context)!.privacySection4Content,
             ),
-            
             _buildSection(
               context,
               AppLocalizations.of(context)!.privacySection5Title,
               AppLocalizations.of(context)!.privacySection5Content,
             ),
-            
             _buildSection(
               context,
               AppLocalizations.of(context)!.privacySection6Title,
               AppLocalizations.of(context)!.privacySection6Content,
             ),
-            
             _buildSection(
               context,
               AppLocalizations.of(context)!.privacySection7Title,
               AppLocalizations.of(context)!.privacySection7Content,
             ),
-            
             _buildSection(
               context,
               AppLocalizations.of(context)!.privacySection8Title,
               AppLocalizations.of(context)!.privacySection8Content,
             ),
-            
             _buildSection(
               context,
               AppLocalizations.of(context)!.privacySection9Title,
               AppLocalizations.of(context)!.privacySection9Content,
             ),
-            
             _buildSection(
               context,
               AppLocalizations.of(context)!.privacySection10Title,
               AppLocalizations.of(context)!.privacySection10Content,
             ),
-            
             _buildSection(
               context,
               AppLocalizations.of(context)!.privacySection11Title,
               AppLocalizations.of(context)!.privacySection11Content,
             ),
-            
             const SizedBox(height: 32),
-            
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -126,10 +114,11 @@ class PrivacyPolicyPage extends StatelessWidget {
                       const SizedBox(width: 8),
                       Text(
                         AppLocalizations.of(context)!.privacyContactTitle,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppConstants.primaryColor,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: AppConstants.primaryColor,
+                                ),
                       ),
                     ],
                   ),
@@ -141,14 +130,13 @@ class PrivacyPolicyPage extends StatelessWidget {
                 ],
               ),
             ),
-            
             const SizedBox(height: 32),
           ],
         ),
       ),
     );
   }
-  
+
   Widget _buildSection(BuildContext context, String title, String content) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,16 +144,16 @@ class PrivacyPolicyPage extends StatelessWidget {
         Text(
           title,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppConstants.primaryColor,
-          ),
+                fontWeight: FontWeight.bold,
+                color: AppConstants.primaryColor,
+              ),
         ),
         const SizedBox(height: 8),
         Text(
           content,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            height: 1.5,
-          ),
+                height: 1.5,
+              ),
         ),
         const SizedBox(height: 24),
       ],
