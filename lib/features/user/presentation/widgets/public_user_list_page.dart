@@ -19,6 +19,7 @@ import 'initials_add_user_dialog.dart';
 import '../../../../shared/widgets/raphcon_type_selection_dialog.dart';
 import '../../../../shared/widgets/raphcon_statistics_bottom_sheet.dart';
 import '../../../../shared/widgets/raphcon_detail_bottom_sheet.dart';
+import '../../../../services/admin_config_service.dart';
 
 class PublicUserListPage extends StatefulWidget {
   const PublicUserListPage({super.key});
@@ -53,22 +54,22 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
     }
   }
 
-  void _checkAuthAndAdminStatus() {
+  void _checkAuthAndAdminStatus() async {
     final currentUser = firebase_auth.FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       setState(() {
         _isLoggedIn = true;
       });
 
-      // Auto-create admin for specific email
-      if (currentUser.email == '17tujii@gmail.com' ||
-          currentUser.email == 'uhlmannraphael@gmail.com' ||
-          currentUser.email == 'serenalenherr@gmail.com') {
+      // Check if user is admin from CSV configuration
+      final isAdminUser = await AdminConfigService.isAdmin(currentUser.email!);
+      
+      if (isAdminUser) {
+        final displayName = await AdminConfigService.getAdminDisplayName(currentUser.email!);
         context.read<AdminBloc>().add(EnsureCurrentUserIsAdminEvent(
               userId: currentUser.uid,
               email: currentUser.email!,
-              displayName:
-                  currentUser.displayName ?? currentUser.email!.split('@')[0],
+              displayName: currentUser.displayName ?? displayName,
             ));
       } else {
         // For other users, just check admin status

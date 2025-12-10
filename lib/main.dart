@@ -39,13 +39,24 @@ import 'package:google_sign_in/google_sign_in.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  try {
+    // Initialize Firebase with performance optimizations
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    
+    // Enable offline persistence for Firestore (improves load times)
+    FirebaseFirestore.instance.settings = const Settings(
+      persistenceEnabled: true,
+      cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+    );
 
-  // Initialize admin service and check for admin
-  await _initializeAdmin();
+    // Initialize admin service and check for admin
+    await _initializeAdmin();
+  } catch (e) {
+    // Graceful error handling - app should still start
+    debugPrint('Firebase initialization error: $e');
+  }
 
   runApp(const AngryRaphiApp());
 }

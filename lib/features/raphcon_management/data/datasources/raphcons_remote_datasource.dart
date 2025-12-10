@@ -90,7 +90,21 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
         type: type,
       );
 
-      await firestore.collection('raphcons').add(raphconModel.toMap());
+      // Use batch to atomically add raphcon and update user count
+      final batch = firestore.batch();
+      
+      // Add the raphcon
+      final raphconRef = firestore.collection('raphcons').doc();
+      batch.set(raphconRef, raphconModel.toMap());
+      
+      // Update user's raphcon count and lastRaphconAt
+      final userRef = firestore.collection('users').doc(userId);
+      batch.update(userRef, {
+        'raphconCount': FieldValue.increment(1),
+        'lastRaphconAt': FieldValue.serverTimestamp(),
+      });
+      
+      await batch.commit();
     } catch (e) {
       throw ServerException('Failed to add raphcon: ${e.toString()}');
     }
@@ -99,10 +113,29 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
   @override
   Future<void> deleteRaphcon(String raphconId) async {
     try {
+      // Get the raphcon to find its userId before deleting
+      final raphconDoc = await firestore.collection('raphcons').doc(raphconId).get();
+      
+      if (!raphconDoc.exists) {
+        throw ServerException('Raphcon not found');
+      }
+      
+      final userId = raphconDoc.data()!['userId'] as String;
+      
+      // Use batch to atomically delete raphcon and update user count
+      final batch = firestore.batch();
+      
       // Soft delete: set isActive to false instead of hard delete
-      await firestore.collection('raphcons').doc(raphconId).update({
+      batch.update(firestore.collection('raphcons').doc(raphconId), {
         'isActive': false,
       });
+      
+      // Decrement user's raphcon count
+      batch.update(firestore.collection('users').doc(userId), {
+        'raphconCount': FieldValue.increment(-1),
+      });
+      
+      await batch.commit();
     } catch (e) {
       throw ServerException('Failed to delete raphcon: ${e.toString()}');
     }

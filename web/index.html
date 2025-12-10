@@ -32,6 +32,15 @@
   <meta name="msapplication-navbutton-color" content="#FF4500">
   <meta name="msapplication-TileColor" content="#8B0000">
   
+  <!-- Resource Hints for Performance -->
+  <link rel="preload" href="flutter_bootstrap.js" as="script">
+  <link rel="preload" href="flutter.js" as="script">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://www.gstatic.com">
+  <link rel="dns-prefetch" href="https://firestore.googleapis.com">
+  <link rel="dns-prefetch" href="https://firebase.googleapis.com">
+  <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com">
+  
   <!-- iOS Icons -->
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
   <link rel="apple-touch-icon" sizes="152x152" href="icons/Icon-192.png">
@@ -94,6 +103,13 @@
       margin-bottom: 20px;
     }
     
+    .loading-progress {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    
     .loading-spinner {
       width: 40px;
       height: 40px;
@@ -101,6 +117,12 @@
       border-top: 4px solid #FF4500;
       border-radius: 50%;
       animation: spin 1s linear infinite;
+    }
+    
+    .loading-status {
+      color: #666;
+      font-size: 14px;
+      font-weight: 500;
     }
     
     @keyframes spin {
@@ -120,17 +142,31 @@
       <img src="icons/Icon-192.png" alt="AngryRaphi" />
     </div>
     <div class="loading-text">AngryRaphi</div>
-    <div class="loading-spinner"></div>
+    <div class="loading-progress">
+      <div class="loading-spinner"></div>
+      <div class="loading-status">Lade App...</div>
+    </div>
   </div>
   
   <script>
-    // Hide loading screen when Flutter is ready
+    // Performance optimization: Use requestIdleCallback for non-critical tasks
     window.addEventListener('flutter-first-frame', function () {
       const loading = document.getElementById('loading');
       if (loading) {
-        loading.style.display = 'none';
+        loading.style.opacity = '0';
+        loading.style.transition = 'opacity 0.3s ease-out';
+        setTimeout(() => {
+          loading.style.display = 'none';
+        }, 300);
       }
     });
+    
+    // Preload critical Flutter resources
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('flutter_service_worker.js');
+      });
+    }
   </script>
   
   <script src="flutter_bootstrap.js" async></script>

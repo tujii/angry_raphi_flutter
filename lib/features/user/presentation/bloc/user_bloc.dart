@@ -140,8 +140,18 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
     emit(UserLoading());
 
-    _usersStreamSubscription = _getUsersStreamUseCase.execute().listen(
+    _usersStreamSubscription = _getUsersStreamUseCase.execute()
+        .distinct() // Avoid duplicate emissions
+        .listen(
       (users) {
+        // Only emit if users list actually changed
+        final currentState = state;
+        if (currentState is UserLoaded) {
+          if (currentState.users.length == users.length &&
+              _usersEqual(currentState.users, users)) {
+            return; // Skip emission if data hasn't changed
+          }
+        }
         add(UsersStreamUpdatedEvent(users));
       },
       onError: (error) {
@@ -206,6 +216,22 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     } catch (e) {
       emit(UserError('failedToDeleteUser: ${e.toString()}'));
     }
+  }
+
+  /// Helper method to compare user lists for equality
+  bool _usersEqual(List<User> list1, List<User> list2) {
+    if (list1.length != list2.length) return false;
+    
+    for (int i = 0; i < list1.length; i++) {
+      final user1 = list1[i];
+      final user2 = list2[i];
+      if (user1.id != user2.id || 
+          user1.raphconCount != user2.raphconCount ||
+          user1.lastRaphconAt != user2.lastRaphconAt) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @override

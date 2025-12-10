@@ -2,6 +2,7 @@ import 'package:injectable/injectable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../features/admin/domain/repositories/admin_repository.dart';
+import 'admin_config_service.dart';
 
 @injectable
 class AdminService {
@@ -73,16 +74,17 @@ class AdminService {
   /// Checks if the current user should be an admin after login
   Future<bool> checkAndUpdateAdminStatus() async {
     final currentUser = firebaseAuth.currentUser;
-    if (currentUser?.email == '17tujii@gmail.com' ||
-        currentUser?.email == 'uhlmannraphael@gmail.com' ||
-        currentUser?.email == 'serenalenherr@gmail.com') {
-      await checkAndCreateCurrentUserAsAdmin('17tujii@gmail.com');
-      await checkAndCreateCurrentUserAsAdmin('uhlmannraphael@gmail.com');
-      await checkAndCreateCurrentUserAsAdmin('serenalenherr@gmail.com');
-      return true;
+    if (currentUser?.email != null) {
+      // Check if user is admin from CSV configuration
+      final isConfiguredAdmin = await AdminConfigService.isAdmin(currentUser!.email!);
+      
+      if (isConfiguredAdmin) {
+        await checkAndCreateCurrentUserAsAdmin(currentUser.email!);
+        return true;
+      }
     }
 
-    // Check if user is already admin
+    // Check if user is already admin in database
     if (currentUser != null) {
       final adminCheckResult =
           await adminRepository.checkAdminStatus(currentUser.uid);

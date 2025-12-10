@@ -53,9 +53,9 @@ else
     print_warning "Code analysis found issues, but continuing..."
 fi
 
-# Step 4: Build web app
+# Step 4: Build web app optimized for performance
 print_status "Building Flutter web app..."
-flutter build web --base-href /
+flutter build web --base-href / --web-renderer canvaskit --release
 
 if [ $? -eq 0 ]; then
     print_success "Flutter build completed successfully"
