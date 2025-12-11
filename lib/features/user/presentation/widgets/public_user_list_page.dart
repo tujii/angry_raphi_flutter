@@ -71,12 +71,10 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
 
   Future<void> _loadWhatsNewContent() async {
     try {
-      final content = await rootBundle.loadString('whatsnew.md');
+      final content = await rootBundle.loadString('assets/whatsnew.md');
+      debugPrint(content);
       setState(() {
-        // Only use file content if it's not a technical commit message
-        if (content.trim().isNotEmpty &&
-            !content.trim().startsWith('feat:') &&
-            !content.trim().startsWith('fix:')) {
+        if (content.trim().isNotEmpty) {
           _whatsNewContent = content.trim();
         } else {
           _whatsNewContent = AppLocalizations.of(context)?.subtitle ??
@@ -564,17 +562,24 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                         color: AppConstants.primaryColor,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 4),
                     // App description
-                    Text(
-                      _whatsNewContent,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey[600],
+                    Container(
+                      constraints: const BoxConstraints(maxWidth: 300),
+                      child: Text(
+                        _whatsNewContent,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                          height: 1.2,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: true,
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     // Version info
                     Container(
                       padding: const EdgeInsets.symmetric(

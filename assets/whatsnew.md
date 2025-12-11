@@ -1,0 +1,3 @@
+- User ranking
+- User search
+- Admins can add new admins

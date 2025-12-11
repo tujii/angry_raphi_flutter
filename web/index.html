@@ -23,7 +23,6 @@
   <meta name="author" content="AngryRaphi Team">
   
   <!-- PWA Meta Tags -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -162,11 +161,7 @@
     });
     
     // Preload critical Flutter resources
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('flutter_service_worker.js');
-      });
-    }
+    // Service worker registration now handled by flutter.js automatically
   </script>
   
   <script src="flutter_bootstrap.js" async></script>
