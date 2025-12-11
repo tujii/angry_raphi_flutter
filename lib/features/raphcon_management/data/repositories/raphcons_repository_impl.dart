@@ -106,4 +106,63 @@ class RaphconsRepositoryImpl implements RaphconsRepository {
       return const Left(NetworkFailure());
     }
   }
+
+  @override
+  Stream<Either<Failure, List<RaphconEntity>>> getUserRaphconsStream(
+      String userId) async* {
+    if (await networkInfo.isConnected) {
+      try {
+        yield* remoteDataSource
+            .getUserRaphconsStream(userId)
+            .map((raphconModels) => Right<Failure, List<RaphconEntity>>(
+                raphconModels.cast<RaphconEntity>()))
+            .handleError((error) => throw error);
+      } on ServerException catch (e) {
+        yield Left(ServerFailure(e.message));
+      } catch (e) {
+        yield Left(ServerFailure(e.toString()));
+      }
+    } else {
+      yield const Left(NetworkFailure());
+    }
+  }
+
+  @override
+  Stream<Either<Failure, List<RaphconEntity>>> getUserRaphconsByTypeStream(
+      String userId, RaphconType type) async* {
+    if (await networkInfo.isConnected) {
+      try {
+        yield* remoteDataSource
+            .getUserRaphconsByTypeStream(userId, type)
+            .map((raphconModels) => Right<Failure, List<RaphconEntity>>(
+                raphconModels.cast<RaphconEntity>()))
+            .handleError((error) => throw error);
+      } on ServerException catch (e) {
+        yield Left(ServerFailure(e.message));
+      } catch (e) {
+        yield Left(ServerFailure(e.toString()));
+      }
+    } else {
+      yield const Left(NetworkFailure());
+    }
+  }
+
+  @override
+  Stream<Either<Failure, List<RaphconEntity>>> getAllRaphconsStream() async* {
+    if (await networkInfo.isConnected) {
+      try {
+        yield* remoteDataSource
+            .getAllRaphconsStream()
+            .map((raphconModels) => Right<Failure, List<RaphconEntity>>(
+                raphconModels.cast<RaphconEntity>()))
+            .handleError((error) => throw error);
+      } on ServerException catch (e) {
+        yield Left(ServerFailure(e.message));
+      } catch (e) {
+        yield Left(ServerFailure(e.toString()));
+      }
+    } else {
+      yield const Left(NetworkFailure());
+    }
+  }
 }

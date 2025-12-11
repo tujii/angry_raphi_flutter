@@ -19,7 +19,7 @@ import '../bloc/user_bloc.dart';
 import 'initials_add_user_dialog.dart';
 import '../../../../shared/widgets/raphcon_type_selection_dialog.dart';
 import '../../../../shared/widgets/raphcon_statistics_bottom_sheet.dart';
-import '../../../../shared/widgets/raphcon_detail_bottom_sheet.dart';
+import '../../../../shared/widgets/streaming_raphcon_detail_bottom_sheet.dart';
 import '../../../../services/admin_config_service.dart';
 import '../../../admin/presentation/pages/admin_settings_page.dart';
 import '../../../../shared/widgets/user_ranking_search_delegate.dart';
@@ -755,43 +755,21 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
 
   void _showDetailBottomSheet(
       BuildContext context, user_entity.User user, RaphconType type) {
-    // Load detailed raphcons for this type
-    context.read<RaphconBloc>().add(LoadUserRaphconsByTypeEvent(user.id, type));
-
-    // Listen for the result and show the detail bottom sheet
-    StreamSubscription<RaphconState>? subscription;
-    subscription = context.read<RaphconBloc>().stream.listen((state) {
-      if (state is UserRaphconsByTypeLoaded && context.mounted) {
-        subscription?.cancel();
-        Navigator.of(context).pop(); // Close statistics sheet first
-        RaphconDetailBottomSheet.show(
-          context: context,
-          userName: user.name,
-          type: type,
-          raphcons: state.raphcons,
-          isAdmin: _isAdmin,
-          onBackPressed: () {
-            Navigator.of(context).pop(); // Close detail sheet
-            // Show statistics sheet again
-            _showStatisticsBottomSheet(user);
-          },
-        );
-      } else if (state is RaphconError && context.mounted) {
-        subscription?.cancel();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Fehler beim Laden der Details: ${state.message}',
-            ),
-          ),
-        );
-      }
-    });
-
-    // Auto-cancel subscription after timeout to prevent memory leaks
-    Timer(const Duration(seconds: 10), () {
-      subscription?.cancel();
-    });
+    // Show the streaming detail bottom sheet directly
+    // The stream will automatically load and update the raphcons
+    Navigator.of(context).pop(); // Close statistics sheet first
+    StreamingRaphconDetailBottomSheet.show(
+      context: context,
+      userName: user.name,
+      userId: user.id,
+      type: type,
+      isAdmin: _isAdmin,
+      onBackPressed: () {
+        Navigator.of(context).pop(); // Close detail sheet
+        // Show statistics sheet again
+        _showStatisticsBottomSheet(user);
+      },
+    );
   }
 
   void _showSearchDelegate(BuildContext context, List<user_entity.User> users) {

@@ -18,7 +18,6 @@ class FirestoreUserRepository implements UserRepository {
       final QuerySnapshot querySnapshot = await _firestore
           .collection(_usersCollection)
           .where('isActive', isEqualTo: true)
-          .limit(50) // Limit for performance
           .get(const GetOptions(
               source: Source.server)); // Force server read for fresh data
 
@@ -123,7 +122,6 @@ class FirestoreUserRepository implements UserRepository {
     return _firestore
         .collection(_usersCollection)
         .where('isActive', isEqualTo: true)
-        .limit(50)
         .snapshots(includeMetadataChanges: false) // Ignore metadata changes
         .asyncMap((usersSnapshot) async {
       final users = <User>[];

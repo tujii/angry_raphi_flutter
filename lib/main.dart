@@ -23,6 +23,9 @@ import 'features/raphcon_management/data/datasources/raphcons_remote_datasource.
 import 'features/raphcon_management/domain/usecases/add_raphcon.dart';
 import 'features/raphcon_management/domain/usecases/get_user_raphcon_statistics.dart';
 import 'features/raphcon_management/domain/usecases/get_user_raphcons_by_type.dart';
+import 'features/raphcon_management/domain/usecases/get_user_raphcons_stream.dart';
+import 'features/raphcon_management/domain/usecases/get_user_raphcons_by_type_stream.dart';
+import 'features/raphcon_management/domain/usecases/get_all_raphcons_stream.dart';
 import 'features/raphcon_management/domain/usecases/delete_raphcon.dart';
 import 'features/raphcon_management/presentation/bloc/raphcon_bloc.dart';
 import 'features/authentication/data/repositories/auth_repository_impl.dart';
@@ -157,9 +160,21 @@ class AngryRaphiApp extends StatelessWidget {
               final getUserRaphconsByType =
                   GetUserRaphconsByType(raphconRepository);
               final deleteRaphcon = DeleteRaphcon(raphconRepository);
+              final getUserRaphconsStream =
+                  GetUserRaphconsStream(raphconRepository);
+              final getUserRaphconsByTypeStream =
+                  GetUserRaphconsByTypeStream(raphconRepository);
+              final getAllRaphconsStream =
+                  GetAllRaphconsStream(raphconRepository);
 
-              return RaphconBloc(addRaphcon, getUserRaphconStatistics,
-                  getUserRaphconsByType, deleteRaphcon);
+              return RaphconBloc(
+                  addRaphcon,
+                  getUserRaphconStatistics,
+                  getUserRaphconsByType,
+                  deleteRaphcon,
+                  getUserRaphconsStream,
+                  getUserRaphconsByTypeStream,
+                  getAllRaphconsStream);
             },
           ),
           BlocProvider(

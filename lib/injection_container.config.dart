@@ -47,10 +47,16 @@ import 'package:angry_raphi/features/raphcon_management/domain/usecases/add_raph
     as _i661;
 import 'package:angry_raphi/features/raphcon_management/domain/usecases/delete_raphcon.dart'
     as _i383;
+import 'package:angry_raphi/features/raphcon_management/domain/usecases/get_all_raphcons_stream.dart'
+    as _i389;
 import 'package:angry_raphi/features/raphcon_management/domain/usecases/get_user_raphcon_statistics.dart'
     as _i717;
 import 'package:angry_raphi/features/raphcon_management/domain/usecases/get_user_raphcons_by_type.dart'
     as _i154;
+import 'package:angry_raphi/features/raphcon_management/domain/usecases/get_user_raphcons_by_type_stream.dart'
+    as _i985;
+import 'package:angry_raphi/features/raphcon_management/domain/usecases/get_user_raphcons_stream.dart'
+    as _i1016;
 import 'package:angry_raphi/features/raphcon_management/presentation/bloc/raphcon_bloc.dart'
     as _i36;
 import 'package:angry_raphi/injection_container_module.dart' as _i1023;
@@ -120,6 +126,12 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i154.GetUserRaphconsByType(gh<_i158.RaphconsRepository>()));
     gh.factory<_i661.AddRaphcon>(
         () => _i661.AddRaphcon(gh<_i158.RaphconsRepository>()));
+    gh.factory<_i985.GetUserRaphconsByTypeStream>(() =>
+        _i985.GetUserRaphconsByTypeStream(gh<_i158.RaphconsRepository>()));
+    gh.factory<_i1016.GetUserRaphconsStream>(
+        () => _i1016.GetUserRaphconsStream(gh<_i158.RaphconsRepository>()));
+    gh.factory<_i389.GetAllRaphconsStream>(
+        () => _i389.GetAllRaphconsStream(gh<_i158.RaphconsRepository>()));
     gh.factory<_i456.SignOut>(() => _i456.SignOut(gh<_i938.AuthRepository>()));
     gh.factory<_i153.SignInWithGoogle>(
         () => _i153.SignInWithGoogle(gh<_i938.AuthRepository>()));
@@ -138,6 +150,9 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i717.GetUserRaphconStatistics>(),
           gh<_i154.GetUserRaphconsByType>(),
           gh<_i383.DeleteRaphcon>(),
+          gh<_i1016.GetUserRaphconsStream>(),
+          gh<_i985.GetUserRaphconsByTypeStream>(),
+          gh<_i389.GetAllRaphconsStream>(),
         ));
     gh.factory<_i670.AuthBloc>(() => _i670.AuthBloc(
           gh<_i153.SignInWithGoogle>(),

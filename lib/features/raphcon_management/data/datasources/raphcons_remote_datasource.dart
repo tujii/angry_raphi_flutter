@@ -13,6 +13,12 @@ abstract class RaphconsRemoteDataSource {
   Future<void> addRaphcon(
       String userId, String createdBy, String? comment, RaphconType type);
   Future<void> deleteRaphcon(String raphconId);
+
+  // Stream-based methods for real-time updates
+  Stream<List<RaphconModel>> getUserRaphconsStream(String userId);
+  Stream<List<RaphconModel>> getUserRaphconsByTypeStream(
+      String userId, RaphconType type);
+  Stream<List<RaphconModel>> getAllRaphconsStream();
 }
 
 @Injectable(as: RaphconsRemoteDataSource)
@@ -140,5 +146,57 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
     } catch (e) {
       throw ServerException('Failed to delete raphcon: ${e.toString()}');
     }
+  }
+
+  @override
+  Stream<List<RaphconModel>> getUserRaphconsStream(String userId) {
+    return firestore
+        .collection('raphcons')
+        .where('userId', isEqualTo: userId)
+        .where('isActive', isEqualTo: true)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => RaphconModel.fromMap(doc.data(), doc.id))
+            .toList())
+        .handleError((error) {
+      throw ServerException(
+          'Failed to stream user raphcons: ${error.toString()}');
+    });
+  }
+
+  @override
+  Stream<List<RaphconModel>> getUserRaphconsByTypeStream(
+      String userId, RaphconType type) {
+    return firestore
+        .collection('raphcons')
+        .where('userId', isEqualTo: userId)
+        .where('type', isEqualTo: type.name)
+        .where('isActive', isEqualTo: true)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => RaphconModel.fromMap(doc.data(), doc.id))
+            .toList())
+        .handleError((error) {
+      throw ServerException(
+          'Failed to stream user raphcons by type: ${error.toString()}');
+    });
+  }
+
+  @override
+  Stream<List<RaphconModel>> getAllRaphconsStream() {
+    return firestore
+        .collection('raphcons')
+        .where('isActive', isEqualTo: true)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => RaphconModel.fromMap(doc.data(), doc.id))
+            .toList())
+        .handleError((error) {
+      throw ServerException(
+          'Failed to stream all raphcons: ${error.toString()}');
+    });
   }
 }

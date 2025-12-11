@@ -25,4 +25,11 @@ abstract class RaphconsRepository {
   Future<Either<Failure, List<RaphconEntity>>> getAllRaphcons();
   Future<Either<Failure, void>> addRaphcon(AddRaphconParams params);
   Future<Either<Failure, void>> deleteRaphcon(String raphconId);
+
+  // Stream-based methods for real-time updates
+  Stream<Either<Failure, List<RaphconEntity>>> getUserRaphconsStream(
+      String userId);
+  Stream<Either<Failure, List<RaphconEntity>>> getUserRaphconsByTypeStream(
+      String userId, RaphconType type);
+  Stream<Either<Failure, List<RaphconEntity>>> getAllRaphconsStream();
 }

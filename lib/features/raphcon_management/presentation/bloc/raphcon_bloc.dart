@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
@@ -7,6 +8,9 @@ import '../../domain/usecases/add_raphcon.dart';
 import '../../domain/usecases/get_user_raphcon_statistics.dart';
 import '../../domain/usecases/get_user_raphcons_by_type.dart';
 import '../../domain/usecases/delete_raphcon.dart';
+import '../../domain/usecases/get_user_raphcons_stream.dart';
+import '../../domain/usecases/get_user_raphcons_by_type_stream.dart';
+import '../../domain/usecases/get_all_raphcons_stream.dart';
 import '../../domain/repositories/raphcons_repository.dart';
 import '../../../../core/enums/raphcon_type.dart';
 
@@ -59,6 +63,37 @@ class DeleteRaphconEvent extends RaphconEvent {
 
   @override
   List<Object> get props => [raphconId];
+}
+
+// Stream Events
+class StartUserRaphconsStreamEvent extends RaphconEvent {
+  final String userId;
+
+  StartUserRaphconsStreamEvent(this.userId);
+
+  @override
+  List<Object> get props => [userId];
+}
+
+class StartUserRaphconsByTypeStreamEvent extends RaphconEvent {
+  final String userId;
+  final RaphconType type;
+
+  StartUserRaphconsByTypeStreamEvent(this.userId, this.type);
+
+  @override
+  List<Object> get props => [userId, type];
+}
+
+class StopRaphconsStreamEvent extends RaphconEvent {}
+
+class RaphconsStreamUpdatedEvent extends RaphconEvent {
+  final List<RaphconEntity> raphcons;
+
+  RaphconsStreamUpdatedEvent(this.raphcons);
+
+  @override
+  List<Object> get props => [raphcons];
 }
 
 // States
@@ -126,6 +161,25 @@ class RaphconError extends RaphconState {
   List<Object> get props => [message];
 }
 
+// Stream States
+class RaphconsStreamLoaded extends RaphconState {
+  final List<RaphconEntity> raphcons;
+
+  RaphconsStreamLoaded(this.raphcons);
+
+  @override
+  List<Object> get props => [raphcons];
+}
+
+class RaphconsStreamError extends RaphconState {
+  final String message;
+
+  RaphconsStreamError(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+
 // BLoC
 @injectable
 class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
@@ -133,14 +187,35 @@ class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
   final GetUserRaphconStatistics _getUserRaphconStatistics;
   final GetUserRaphconsByType _getUserRaphconsByType;
   final DeleteRaphcon _deleteRaphcon;
+  final GetUserRaphconsStream _getUserRaphconsStream;
+  final GetUserRaphconsByTypeStream _getUserRaphconsByTypeStream;
+  final GetAllRaphconsStream _getAllRaphconsStream;
 
-  RaphconBloc(this._addRaphcon, this._getUserRaphconStatistics,
-      this._getUserRaphconsByType, this._deleteRaphcon)
+  StreamSubscription? _raphconsStreamSubscription;
+
+  RaphconBloc(
+      this._addRaphcon,
+      this._getUserRaphconStatistics,
+      this._getUserRaphconsByType,
+      this._deleteRaphcon,
+      this._getUserRaphconsStream,
+      this._getUserRaphconsByTypeStream,
+      this._getAllRaphconsStream)
       : super(RaphconInitial()) {
     on<AddRaphconEvent>(_onAddRaphcon);
     on<LoadUserRaphconStatisticsEvent>(_onLoadUserRaphconStatistics);
     on<LoadUserRaphconsByTypeEvent>(_onLoadUserRaphconsByType);
     on<DeleteRaphconEvent>(_onDeleteRaphcon);
+    on<StartUserRaphconsStreamEvent>(_onStartUserRaphconsStream);
+    on<StartUserRaphconsByTypeStreamEvent>(_onStartUserRaphconsByTypeStream);
+    on<StopRaphconsStreamEvent>(_onStopRaphconsStream);
+    on<RaphconsStreamUpdatedEvent>(_onRaphconsStreamUpdated);
+  }
+
+  @override
+  Future<void> close() {
+    _raphconsStreamSubscription?.cancel();
+    return super.close();
   }
 
   Future<void> _onAddRaphcon(
@@ -201,5 +276,71 @@ class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
       (failure) => emit(RaphconDeletionError(failure.message)),
       (_) => emit(RaphconDeleted(event.raphconId)),
     );
+  }
+
+  Future<void> _onStartUserRaphconsStream(
+    StartUserRaphconsStreamEvent event,
+    Emitter<RaphconState> emit,
+  ) async {
+    // Cancel any existing subscription
+    await _raphconsStreamSubscription?.cancel();
+
+    emit(RaphconLoading());
+
+    _raphconsStreamSubscription = _getUserRaphconsStream(event.userId).listen(
+      (result) {
+        result.fold(
+          (failure) =>
+              add(RaphconsStreamUpdatedEvent([])), // Emit empty list on failure
+          (raphcons) => add(RaphconsStreamUpdatedEvent(raphcons)),
+        );
+      },
+      onError: (error) {
+        if (!emit.isDone) {
+          emit(RaphconsStreamError('Stream error: ${error.toString()}'));
+        }
+      },
+    );
+  }
+
+  Future<void> _onStartUserRaphconsByTypeStream(
+    StartUserRaphconsByTypeStreamEvent event,
+    Emitter<RaphconState> emit,
+  ) async {
+    // Cancel any existing subscription
+    await _raphconsStreamSubscription?.cancel();
+
+    emit(RaphconLoading());
+
+    _raphconsStreamSubscription =
+        _getUserRaphconsByTypeStream(event.userId, event.type).listen(
+      (result) {
+        result.fold(
+          (failure) =>
+              add(RaphconsStreamUpdatedEvent([])), // Emit empty list on failure
+          (raphcons) => add(RaphconsStreamUpdatedEvent(raphcons)),
+        );
+      },
+      onError: (error) {
+        if (!emit.isDone) {
+          emit(RaphconsStreamError('Stream error: ${error.toString()}'));
+        }
+      },
+    );
+  }
+
+  Future<void> _onStopRaphconsStream(
+    StopRaphconsStreamEvent event,
+    Emitter<RaphconState> emit,
+  ) async {
+    await _raphconsStreamSubscription?.cancel();
+    _raphconsStreamSubscription = null;
+  }
+
+  void _onRaphconsStreamUpdated(
+    RaphconsStreamUpdatedEvent event,
+    Emitter<RaphconState> emit,
+  ) {
+    emit(RaphconsStreamLoaded(event.raphcons));
   }
 }
