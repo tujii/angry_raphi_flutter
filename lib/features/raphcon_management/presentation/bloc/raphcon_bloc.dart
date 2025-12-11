@@ -164,7 +164,7 @@ class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
     result.fold(
       (failure) => emit(RaphconError(failure.message)),
       (_) => emit(RaphconAdded(_context != null
-          ? AppLocalizations.of(_context!)?.raphconCreated ?? 'Raphcon created'
+          ? AppLocalizations.of(_context)?.raphconCreated ?? 'Raphcon created'
           : 'Raphcon created')),
     );
   }
