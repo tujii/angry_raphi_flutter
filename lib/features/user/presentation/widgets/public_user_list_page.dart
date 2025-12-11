@@ -36,13 +36,22 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
   bool _isAdmin = false;
   bool _isLoggedIn = false;
   String _appVersion = '1.0.0';
-  String _whatsNewContent = 'Bewerte Personen mit Raphcons';
+  String _whatsNewContent = '';
 
   @override
   void initState() {
     super.initState();
     _checkAuthAndAdminStatus();
     _loadAppVersion();
+    // Set initial localized content
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && _whatsNewContent.isEmpty) {
+        setState(() {
+          _whatsNewContent = AppLocalizations.of(context)?.subtitle ??
+              'Bewerte Personen mit Raphcons';
+        });
+      }
+    });
     _loadWhatsNewContent();
   }
 
@@ -64,12 +73,21 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
     try {
       final content = await rootBundle.loadString('whatsnew.md');
       setState(() {
-        _whatsNewContent = content.trim();
+        // Only use file content if it's not a technical commit message
+        if (content.trim().isNotEmpty &&
+            !content.trim().startsWith('feat:') &&
+            !content.trim().startsWith('fix:')) {
+          _whatsNewContent = content.trim();
+        } else {
+          _whatsNewContent = AppLocalizations.of(context)?.subtitle ??
+              'Bewerte Personen mit Raphcons';
+        }
       });
     } catch (e) {
       // Keep default value if file can't be loaded
       setState(() {
-        _whatsNewContent = 'Bewerte Personen mit Raphcons';
+        _whatsNewContent = AppLocalizations.of(context)?.subtitle ??
+            'Bewerte Personen mit Raphcons';
       });
     }
   }
