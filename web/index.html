@@ -22,6 +22,9 @@
   <meta name="keywords" content="rating, social, raphcons, angry, community">
   <meta name="author" content="AngryRaphi Team">
   
+  <!-- Performance Hints -->
+  <meta name="format-detection" content="telephone=no">
+  
   <!-- PWA Meta Tags -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -32,19 +35,18 @@
   <meta name="msapplication-TileColor" content="#8B0000">
   
   <!-- Resource Hints for Performance -->
-  <link rel="preload" href="flutter_bootstrap.js" as="script">
-  <link rel="preload" href="flutter.js" as="script">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://www.gstatic.com">
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
   <link rel="dns-prefetch" href="https://firestore.googleapis.com">
   <link rel="dns-prefetch" href="https://firebase.googleapis.com">
   <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com">
+  <link rel="dns-prefetch" href="https://storage.googleapis.com">
   
   <!-- iOS Icons -->
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="icons/Icon-192.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="icons/Icon-192.png">
-  <link rel="apple-touch-icon" sizes="167x167" href="icons/Icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-removebg.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-removebg.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-removebg.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="icons/icon-removebg.png">
 
   <!-- Favicon & Manifest -->
   <link rel="icon" type="image/png" href="favicon.png"/>
@@ -138,7 +140,7 @@
 <body>
   <div id="loading" class="loading">
     <div class="loading-logo">
-      <img src="icons/Icon-192.png" alt="AngryRaphi" />
+      <img src="icons/icon-removebg.png" alt="AngryRaphi" />
     </div>
     <div class="loading-text">AngryRaphi</div>
     <div class="loading-progress">
@@ -148,19 +150,25 @@
   </div>
   
   <script>
-    // Performance optimization: Use requestIdleCallback for non-critical tasks
+    // Performance optimization: Faster loading
     window.addEventListener('flutter-first-frame', function () {
       const loading = document.getElementById('loading');
       if (loading) {
         loading.style.opacity = '0';
-        loading.style.transition = 'opacity 0.3s ease-out';
+        loading.style.transition = 'opacity 0.2s ease-out';
         setTimeout(() => {
-          loading.style.display = 'none';
-        }, 300);
+          loading.remove();
+        }, 200);
       }
     });
     
-    // Preload critical Flutter resources
+    // Optimize resource loading
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        // Non-critical resource loading
+      });
+    }
+    
     // Service worker registration now handled by flutter.js automatically
   </script>
   
