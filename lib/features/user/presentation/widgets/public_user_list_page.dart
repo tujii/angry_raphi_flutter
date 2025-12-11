@@ -375,27 +375,36 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                 color: AppConstants.primaryColor.withValues(alpha: 0.3),
               ),
             ),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(
-                  Icons.info_outline,
-                  color: AppConstants.primaryColor,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    AppLocalizations.of(context)?.loginAsAdmin ??
-                        'Melden Sie sich als Admin an, um Benutzer zu verwalten und Raphcons zu erstellen.',
-                    style: TextStyle(
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.info_outline,
                       color: AppConstants.primaryColor,
-                      fontWeight: FontWeight.w500,
                     ),
-                  ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        AppLocalizations.of(context)?.loginAsAdmin ??
+                            'Melden Sie sich als Admin an, um Benutzer zu verwalten und Raphcons zu erstellen.',
+                        style: TextStyle(
+                          color: AppConstants.primaryColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                TextButton(
-                  onPressed: () => _showLoginDialog(context),
-                  child:
-                      Text(AppLocalizations.of(context)?.login ?? 'Anmelden'),
+                const SizedBox(height: 8),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () => _showLoginDialog(context),
+                    child:
+                        Text(AppLocalizations.of(context)?.login ?? 'Anmelden'),
+                  ),
                 ),
               ],
             ),
@@ -429,7 +438,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                       crossAxisCount: ResponsiveHelper.getGridColumns(context),
                       crossAxisSpacing: 16,
                       mainAxisSpacing: 16,
-                      childAspectRatio: 2.5,
+                      childAspectRatio: 2.8,
                     ),
                     itemCount: users.length,
                     itemBuilder: (context, index) {
@@ -821,23 +830,23 @@ class PublicUserCard extends StatelessWidget {
             isAdmin ? null : onShowStatistics, // Nur für nicht-Admins klickbar
         borderRadius: BorderRadius.circular(8),
         child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(children: [
+          padding: const EdgeInsets.all(12),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             CircleAvatar(
               backgroundColor: AppConstants.primaryColor,
-              radius: 30,
+              radius: 24,
               child: user.avatarUrl != null && user.avatarUrl!.isNotEmpty
                   ? ClipOval(
                       child: Image.network(
                         user.avatarUrl!,
-                        width: 60,
-                        height: 60,
+                        width: 48,
+                        height: 48,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return const Icon(
                             Icons.person,
                             color: Colors.white,
-                            size: 30,
+                            size: 24,
                           );
                         },
                       ),
@@ -845,41 +854,51 @@ class PublicUserCard extends StatelessWidget {
                   : const Icon(
                       Icons.person,
                       color: Colors.white,
-                      size: 30,
+                      size: 24,
                     ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     user.name,
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
-                  Row(
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 4,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      Icon(
-                        Icons.mood_bad,
-                        size: 16,
-                        color: Colors.grey[600],
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.mood_bad,
+                            size: 16,
+                            color: Colors.grey[600],
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            AppLocalizations.of(context)
+                                    ?.raphconsCount(user.raphconCount) ??
+                                'Raphcons: ${user.raphconCount}',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 4),
-                      Text(
-                        AppLocalizations.of(context)
-                                ?.raphconsCount(user.raphconCount) ??
-                            'Raphcons: ${user.raphconCount}',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 12,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
                       GestureDetector(
                         onTap: onShowStatistics,
                         child: Container(
@@ -903,15 +922,7 @@ class PublicUserCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Text(
-                    AppLocalizations.of(context)?.createdTimeAgo(
-                            _formatDate(user.createdAt, context)) ??
-                        'Erstellt: ${_formatDate(user.createdAt, context)}',
-                    style: TextStyle(
-                      color: Colors.grey[500],
-                      fontSize: 10,
-                    ),
-                  ),
+                  // Show last Raphcon info on all devices (important info)
                   if (user.lastRaphconAt != null)
                     Text(
                       'Letzter Raphcon: ${_formatDate(user.lastRaphconAt!, context)}',
@@ -919,6 +930,17 @@ class PublicUserCard extends StatelessWidget {
                         color: Colors.orange[600],
                         fontSize: 10,
                         fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  // Show created date only on desktop (less important)
+                  if (ResponsiveHelper.isDesktop(context))
+                    Text(
+                      AppLocalizations.of(context)?.createdTimeAgo(
+                              _formatDate(user.createdAt, context)) ??
+                          'Erstellt: ${_formatDate(user.createdAt, context)}',
+                      style: TextStyle(
+                        color: Colors.grey[500],
+                        fontSize: 10,
                       ),
                     ),
                 ],
