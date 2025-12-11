@@ -765,7 +765,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
   void _showSearchDelegate(BuildContext context, List<user_entity.User> users) {
     showSearch(
       context: context,
-      delegate: UserRankingSearchDelegate(users),
+      delegate: UserRankingSearchDelegate(users, AppLocalizations.of(context)!),
     );
   }
 }

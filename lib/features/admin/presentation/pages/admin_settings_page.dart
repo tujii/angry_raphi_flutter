@@ -54,7 +54,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Fehler beim Laden der Admin-Daten: $e'),
+            content: Text(AppLocalizations.of(context)!
+                .errorLoadingAdminData(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -135,13 +136,13 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
               ],
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Diese Admins sind in der CSV-Konfiguration definiert:',
-              style: TextStyle(color: Colors.grey),
+            Text(
+              AppLocalizations.of(context)!.csvAdminsDescription,
+              style: const TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 16),
             if (_csvAdmins.isEmpty)
-              const Text('Keine konfigurierten Admins gefunden.')
+              Text(AppLocalizations.of(context)!.noConfiguredAdmins)
             else
               ..._csvAdmins.map((admin) => _buildAdminTile(
                     email: admin.email,
@@ -167,7 +168,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                 const Icon(Icons.cloud, color: AppConstants.primaryColor),
                 const SizedBox(width: 8),
                 Text(
-                  'Aktive Admins (Firebase)',
+                  AppLocalizations.of(context)!.activeAdminsFirebase,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -175,13 +176,13 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
               ],
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Diese Admins sind aktuell in Firebase registriert:',
+            Text(
+              AppLocalizations.of(context)!.firebaseAdminsDescription,
               style: TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 16),
             if (_firebaseAdmins.isEmpty)
-              const Text('Keine aktiven Admins in Firebase gefunden.')
+              Text(AppLocalizations.of(context)!.noActiveAdmins)
             else
               ..._firebaseAdmins.map((admin) => _buildAdminTile(
                     email: admin['email'],
@@ -209,7 +210,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                 const Icon(Icons.people, color: AppConstants.primaryColor),
                 const SizedBox(width: 8),
                 Text(
-                  'Registrierte Benutzer',
+                  AppLocalizations.of(context)!.registeredUsers,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -217,13 +218,13 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
               ],
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Diese Benutzer haben sich bereits mit Google angemeldet:',
+            Text(
+              AppLocalizations.of(context)!.registeredUsersDescription,
               style: TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 16),
             if (_registeredUsers.isEmpty)
-              const Text('Keine registrierten Benutzer gefunden.')
+              Text(AppLocalizations.of(context)!.noRegisteredUsers)
             else
               ..._registeredUsers.map((user) => _buildRegisteredUserTile(
                     email: user['email'],
@@ -291,7 +292,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                 ),
                 if (lastLoginAt != null)
                   Text(
-                    'Letzter Login: ${_formatDate(lastLoginAt)}',
+                    AppLocalizations.of(context)!
+                        .lastLogin(_formatDate(lastLoginAt)),
                     style: const TextStyle(color: Colors.grey, fontSize: 10),
                   ),
                 if (isAlreadyAdmin)
@@ -303,8 +305,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                       color: Colors.orange,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Text(
-                      'Bereits Admin',
+                    child: Text(
+                      AppLocalizations.of(context)!.alreadyAdmin,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 10,
@@ -319,7 +321,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
             IconButton(
               onPressed: onPromote,
               icon: const Icon(Icons.arrow_upward, color: Colors.green),
-              tooltip: 'Zu Admin befördern',
+              tooltip: AppLocalizations.of(context)!.promoteToAdmin,
             ),
         ],
       ),
@@ -331,13 +333,16 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     final difference = now.difference(date);
 
     if (difference.inDays > 0) {
-      return 'vor ${difference.inDays} Tag${difference.inDays == 1 ? '' : 'en'}';
+      return AppLocalizations.of(context)!
+          .daysAgo(difference.inDays, difference.inDays == 1 ? '' : 'en');
     } else if (difference.inHours > 0) {
-      return 'vor ${difference.inHours} Stunde${difference.inHours == 1 ? '' : 'n'}';
+      return AppLocalizations.of(context)!
+          .hoursAgo(difference.inHours, difference.inHours == 1 ? '' : 'n');
     } else if (difference.inMinutes > 0) {
-      return 'vor ${difference.inMinutes} Minute${difference.inMinutes == 1 ? '' : 'n'}';
+      return AppLocalizations.of(context)!.minutesAgo(
+          difference.inMinutes, difference.inMinutes == 1 ? '' : 'n');
     } else {
-      return 'gerade eben';
+      return AppLocalizations.of(context)!.justNow;
     }
   }
 
@@ -353,7 +358,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                 const Icon(Icons.person_add, color: AppConstants.primaryColor),
                 const SizedBox(width: 8),
                 Text(
-                  'User zu Admin befördern',
+                  AppLocalizations.of(context)!.promoteUserToAdmin,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -361,15 +366,15 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
               ],
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Manuell einen neuen Admin hinzufügen:',
+            Text(
+              AppLocalizations.of(context)!.addAdminManually,
               style: TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 16),
             ElevatedButton.icon(
               onPressed: () => _showPromoteUserDialog(),
               icon: const Icon(Icons.add),
-              label: const Text('Manuell Admin hinzufügen'),
+              label: Text(AppLocalizations.of(context)!.addAdminManuallyButton),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppConstants.primaryColor,
                 foregroundColor: Colors.white,
@@ -437,7 +442,9 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    role == 'super_admin' ? 'Super Admin' : 'Admin',
+                    role == 'super_admin'
+                        ? AppLocalizations.of(context)!.superAdmin
+                        : AppLocalizations.of(context)!.admin,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 10,
@@ -452,7 +459,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
             IconButton(
               onPressed: () => _showRemoveAdminDialog(adminId, email),
               icon: const Icon(Icons.remove_circle, color: Colors.red),
-              tooltip: 'Admin entfernen',
+              tooltip: AppLocalizations.of(context)!.removeAdmin,
             ),
         ],
       ),
@@ -472,12 +479,12 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Admin entfernen'),
-        content: Text('Möchten Sie $email wirklich als Admin entfernen?'),
+        title: Text(AppLocalizations.of(context)!.removeAdmin),
+        content: Text(AppLocalizations.of(context)!.confirmRemoveAdmin(email)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Abbrechen'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -485,8 +492,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
               await _removeAdmin(adminId, email);
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child:
-                const Text('Entfernen', style: TextStyle(color: Colors.white)),
+            child: Text(AppLocalizations.of(context)!.remove,
+                style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -510,7 +517,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Fehler beim Entfernen: $e'),
+            content:
+                Text(AppLocalizations.of(context)!.errorRemoving(e.toString())),
             backgroundColor: Colors.red,
           ),
         );
@@ -551,35 +559,35 @@ class _PromoteUserDialogState extends State<PromoteUserDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('User zu Admin befördern'),
+      title: Text(AppLocalizations.of(context)!.promoteUserDialogTitle),
       content: SizedBox(
         width: double.maxFinite,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'Geben Sie die Daten des Benutzers ein, der zu Admin befördert werden soll:',
+            Text(
+              AppLocalizations.of(context)!.promoteUserDescription,
               style: TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'E-Mail-Adresse',
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.emailAddressLabel,
                 prefixIcon: Icon(Icons.email),
                 border: OutlineInputBorder(),
-                hintText: 'beispiel@email.com',
+                hintText: AppLocalizations.of(context)!.emailAddressHint,
               ),
               keyboardType: TextInputType.emailAddress,
               onChanged: (value) => setState(() => _email = value.trim()),
             ),
             const SizedBox(height: 16),
             TextField(
-              decoration: const InputDecoration(
-                labelText: 'Anzeigename (optional)',
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.displayNameLabel,
                 prefixIcon: Icon(Icons.person),
                 border: OutlineInputBorder(),
-                hintText: 'Max Mustermann',
+                hintText: AppLocalizations.of(context)!.displayNameHint,
               ),
               onChanged: (value) => setState(() => _displayName = value.trim()),
             ),
@@ -591,14 +599,14 @@ class _PromoteUserDialogState extends State<PromoteUserDialog> {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
               ),
-              child: const Row(
+              child: Row(
                 children: [
-                  Icon(Icons.info, color: Colors.blue, size: 20),
-                  SizedBox(width: 8),
+                  const Icon(Icons.info, color: Colors.blue, size: 20),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Der Benutzer muss bereits ein Google-Konto haben und sich mindestens einmal in der App angemeldet haben.',
-                      style: TextStyle(fontSize: 12, color: Colors.blue),
+                      AppLocalizations.of(context)!.googleAccountRequired,
+                      style: const TextStyle(fontSize: 12, color: Colors.blue),
                     ),
                   ),
                 ],
@@ -610,7 +618,7 @@ class _PromoteUserDialogState extends State<PromoteUserDialog> {
       actions: [
         TextButton(
           onPressed: _isLoading ? null : () => Navigator.of(context).pop(),
-          child: const Text('Abbrechen'),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         ElevatedButton(
           onPressed: _isLoading || !_isValidEmail(_email)
@@ -628,7 +636,7 @@ class _PromoteUserDialogState extends State<PromoteUserDialog> {
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
                 )
-              : const Text('Zu Admin befördern',
+              : Text(AppLocalizations.of(context)!.promoteToAdminButton,
                   style: TextStyle(color: Colors.white)),
         ),
       ],
@@ -666,7 +674,8 @@ class _PromoteUserDialogState extends State<PromoteUserDialog> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Fehler beim Befördern: $e'),
+            content: Text(
+                AppLocalizations.of(context)!.errorPromoting(e.toString())),
             backgroundColor: Colors.red,
           ),
         );

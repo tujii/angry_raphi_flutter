@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../core/constants/app_constants.dart';
 
 class GoogleSignInButton extends StatelessWidget {
@@ -68,8 +69,8 @@ class GoogleSignInButton extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: AppConstants.smallPadding),
-                  const Text(
-                    'Sign in with Google',
+                  Text(
+                    AppLocalizations.of(context)!.signInWithGoogle,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,

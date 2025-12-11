@@ -84,56 +84,14 @@
   "settingsComingSoon2": "Einstellungen kommen bald!",
   "mustBeLoggedIn": "Sie müssen angemeldet sein",
   "createRaphconFor": "Raphcon für {name} erstellen",
-  "@createRaphconFor": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "loginFailed": "Anmeldung fehlgeschlagen",
   "adminRequired": "Admin-Berechtigung erforderlich",
   "loginToCreateRaphcons": "Melden Sie sich an, um Raphcons zu erstellen",
   "createdAgo": "Erstellt: {timeAgo}",
-  "@createdAgo": {
-    "placeholders": {
-      "timeAgo": {
-        "type": "String"
-      }
-    }
-  },
   "dayAgo": "vor {days} Tag",
-  "@dayAgo": {
-    "placeholders": {
-      "days": {
-        "type": "int"
-      }
-    }
-  },
-  "daysAgo": "vor {days} Tagen",
-  "@daysAgo": {
-    "placeholders": {
-      "days": {
-        "type": "int"
-      }
-    }
-  },
+  "daysAgo": "vor {count} Tag{plural}",
   "hourAgo": "vor {hours} Stunde",
-  "@hourAgo": {
-    "placeholders": {
-      "hours": {
-        "type": "int"
-      }
-    }
-  },
-  "hoursAgo": "vor {hours} Stunden",
-  "@hoursAgo": {
-    "placeholders": {
-      "hours": {
-        "type": "int"
-      }
-    }
-  },
+  "hoursAgo": "vor {count} Stunde{plural}",
   "justNow": "gerade eben",
   "pleaseEnterName": "Bitte geben Sie einen Namen ein",
   "nameMaxLength": "Name darf maximal 50 Zeichen haben",
@@ -180,71 +138,15 @@
   "tryAgainButton": "Erneut versuchen",
   "cancelButton": "Abbrechen",
   "createdTimeAgo": "Erstellt: {timeAgo}",
-  "@createdTimeAgo": {
-    "placeholders": {
-      "timeAgo": {
-        "type": "String"
-      }
-    }
-  },
   "daysAgoSingular": "vor {days} Tag",
-  "@daysAgoSingular": {
-    "placeholders": {
-      "days": {
-        "type": "int"
-      }
-    }
-  },
   "daysAgoPlural": "vor {days} Tagen",
-  "@daysAgoPlural": {
-    "placeholders": {
-      "days": {
-        "type": "int"
-      }
-    }
-  },
   "hoursAgoSingular": "vor {hours} Stunde",
-  "@hoursAgoSingular": {
-    "placeholders": {
-      "hours": {
-        "type": "int"
-      }
-    }
-  },
   "hoursAgoPlural": "vor {hours} Stunden",
-  "@hoursAgoPlural": {
-    "placeholders": {
-      "hours": {
-        "type": "int"
-      }
-    }
-  },
   "justCreated": "gerade eben",
   "raphconsCount": "Raphcons: {count}",
-  "@raphconsCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "memberSince": "Mitglied seit {date}",
-  "@memberSince": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
   "noEntriesForThisType": "Keine Einträge für diesen Typ",
   "createdBy": "Erstellt von: {name}",
-  "@createdBy": {
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "noComment": "Kein Kommentar",
   "confirmDeleteRaphcon": "Raphcon löschen",
   "confirmDeleteRaphconMessage": "Sind Sie sicher, dass Sie diesen Eintrag löschen möchten?",
@@ -258,211 +160,101 @@
   "enterEmailAddress": "E-Mail-Adresse eingeben",
   "emailAddress": "E-Mail-Adresse",
   "termsOfServiceTitle": "Nutzungsbedingungen für AngryRaphi",
-  "@termsOfServiceTitle": {
-    "description": "Terms of Service page title"
-  },
   "privacyPolicyTitle": "Datenschutzerklärung für AngryRaphi",
-  "@privacyPolicyTitle": {
-    "description": "Privacy Policy page title"
-  },
   "lastUpdated": "Stand: {date}",
-  "@lastUpdated": {
-    "description": "Last updated date text",
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
   "termsSection1Title": "1. Geltungsbereich",
-  "@termsSection1Title": {
-    "description": "Terms section 1 title"
-  },
   "termsSection1Content": "Diese Nutzungsbedingungen regeln die Nutzung der AngryRaphi-App (\"die App\"), einem System zur Bewertung von Personen mittels \"Raphcons\". Durch die Nutzung der App stimmen Sie diesen Bedingungen zu.",
-  "@termsSection1Content": {
-    "description": "Terms section 1 content"
-  },
   "termsSection2Title": "2. Beschreibung der Dienste",
-  "@termsSection2Title": {
-    "description": "Terms section 2 title"
-  },
   "termsSection2Content": "AngryRaphi ist eine Anwendung zur humorvollen Bewertung von Personen in geschlossenen Gruppen. Benutzer können:\n\n• Personen zur Bewertungsliste hinzufügen\n• Raphcons (Bewertungen) für verschiedene Problembereiche vergeben\n• Statistiken und Ranglisten einsehen\n• Als Administrator zusätzliche Verwaltungsfunktionen nutzen",
-  "@termsSection2Content": {
-    "description": "Terms section 2 content"
-  },
   "termsSection3Title": "3. Benutzerkonten und Zugang",
-  "@termsSection3Title": {
-    "description": "Terms section 3 title"
-  },
   "termsSection3Content": "Der Zugang zur App erfolgt über Google-Authentifizierung. Sie sind verantwortlich für:\n\n• Die Geheimhaltung Ihrer Anmeldedaten\n• Alle Aktivitäten unter Ihrem Konto\n• Die Benachrichtigung bei unbefugter Nutzung",
-  "@termsSection3Content": {
-    "description": "Terms section 3 content"
-  },
   "termsSection4Title": "4. Angemessene Nutzung",
-  "@termsSection4Title": {
-    "description": "Terms section 4 title"
-  },
   "termsSection4Content": "Sie verpflichten sich zur angemessenen Nutzung der App:\n\n• Keine Beleidigungen oder Diskriminierung\n• Respektvoller Umgang mit anderen Benutzern\n• Keine missbräuchliche Nutzung der Bewertungsfunktion\n• Wahrung der Privatsphäre anderer Personen",
-  "@termsSection4Content": {
-    "description": "Terms section 4 content"
-  },
   "termsSection5Title": "5. Datenschutz",
-  "@termsSection5Title": {
-    "description": "Terms section 5 title"
-  },
   "termsSection5Content": "Ihre Privatsphäre ist uns wichtig. Details zur Datenerhebung und -verarbeitung finden Sie in unserer Datenschutzerklärung, die integraler Bestandteil dieser Nutzungsbedingungen ist.",
-  "@termsSection5Content": {
-    "description": "Terms section 5 content"
-  },
   "termsSection6Title": "6. Geistiges Eigentum",
-  "@termsSection6Title": {
-    "description": "Terms section 6 title"
-  },
   "termsSection6Content": "Alle Inhalte der App, einschließlich Design, Code und Grafiken, sind urheberrechtlich geschützt. Die Nutzung ist nur im Rahmen der bestimmungsgemäßen Verwendung der App gestattet.",
-  "@termsSection6Content": {
-    "description": "Terms section 6 content"
-  },
   "termsSection7Title": "7. Haftungsausschluss",
-  "@termsSection7Title": {
-    "description": "Terms section 7 title"
-  },
   "termsSection7Content": "Die App wird \"wie besehen\" bereitgestellt. Wir übernehmen keine Gewähr für:\n\n• Kontinuierliche Verfügbarkeit\n• Fehlerfreiheit der Software\n• Eignung für bestimmte Zwecke\n• Schäden durch die Nutzung der App",
-  "@termsSection7Content": {
-    "description": "Terms section 7 content"
-  },
   "termsSection8Title": "8. Änderungen der Bedingungen",
-  "@termsSection8Title": {
-    "description": "Terms section 8 title"
-  },
   "termsSection8Content": "Wir behalten uns das Recht vor, diese Nutzungsbedingungen jederzeit zu ändern. Änderungen werden in der App bekannt gegeben und treten mit der Fortsetzung der Nutzung in Kraft.",
-  "@termsSection8Content": {
-    "description": "Terms section 8 content"
-  },
   "termsSection9Title": "9. Kündigung",
-  "@termsSection9Title": {
-    "description": "Terms section 9 title"
-  },
   "termsSection9Content": "Sie können Ihr Konto jederzeit löschen. Wir behalten uns vor, Konten bei Verstößen gegen diese Bedingungen zu sperren oder zu löschen.",
-  "@termsSection9Content": {
-    "description": "Terms section 9 content"
-  },
   "termsSection10Title": "10. Anwendbares Recht",
-  "@termsSection10Title": {
-    "description": "Terms section 10 title"
-  },
   "termsSection10Content": "Diese Nutzungsbedingungen unterliegen dem Recht der Bundesrepublik Deutschland. Gerichtsstand ist Olten, Schweiz.\n\n**WICHTIGER HINWEIS:** AngryRaphi ist eine reine Spaß-App ohne ernsthafte Absicht. Bei Problemen nehmen Sie bitte zuerst Kontakt auf, bevor rechtliche Schritte eingeleitet werden.",
-  "@termsSection10Content": {
-    "description": "Terms section 10 content"
-  },
   "contactTitle": "Kontakt",
-  "@contactTitle": {
-    "description": "Contact section title"
-  },
   "termsContactContent": "Bei Fragen zu diesen Nutzungsbedingungen wenden Sie sich bitte an:\n\nInthusan Gunasiri\nAarauerstrasse 132\n4600 Olten\nE-Mail: inthusan@hotmail.de\n\nApp: AngryRaphi v{version}",
-  "@termsContactContent": {
-    "description": "Terms contact information",
-    "placeholders": {
-      "version": {
-        "type": "String"
-      }
-    }
-  },
   "privacySection1Title": "1. Verantwortlicher",
-  "@privacySection1Title": {
-    "description": "Privacy section 1 title"
-  },
   "privacySection1Content": "Verantwortlich für die Datenverarbeitung in der AngryRaphi-App ist:\n\nInthusan Gunasiri\nAarauerstrasse 132\n4600 Olten, Schweiz\nE-Mail: inthusan@hotmail.de\n\n**HINWEIS:** Dies ist eine Spaß-App ohne kommerzielle Absichten.",
-  "@privacySection1Content": {
-    "description": "Privacy section 1 content"
-  },
   "privacySection2Title": "2. Erhobene Daten",
-  "@privacySection2Title": {
-    "description": "Privacy section 2 title"
-  },
   "privacySection2Content": "Wir erheben und verarbeiten folgende Daten:\n\n**Authentifizierungsdaten:**\n• Google-Account-Informationen (Name, E-Mail, Profilbild)\n• Eindeutige Benutzer-ID\n\n**App-Nutzungsdaten:**\n• Erstellte Personen und deren Namen/Initialen\n• Raphcon-Bewertungen mit Zeitstempel\n• Admin-Status und Berechtigungen\n\n**Technische Daten:**\n• Geräteinformationen\n• App-Nutzungsstatistiken\n• Crash-Reports (anonymisiert)",
-  "@privacySection2Content": {
-    "description": "Privacy section 2 content"
-  },
   "privacySection3Title": "3. Zweck der Datenverarbeitung",
-  "@privacySection3Title": {
-    "description": "Privacy section 3 title"
-  },
   "privacySection3Content": "Die Datenverarbeitung erfolgt zu folgenden Zwecken:\n\n• **Bereitstellung der App-Funktionen:** Authentifizierung, Benutzerverwaltung\n• **Personenbewertungen:** Speicherung und Anzeige von Raphcons\n• **Administration:** Verwaltung von Benutzern und Berechtigungen\n• **Verbesserung der App:** Analyse von Nutzungsmustern\n• **Sicherheit:** Schutz vor Missbrauch",
-  "@privacySection3Content": {
-    "description": "Privacy section 3 content"
-  },
   "privacySection4Title": "4. Rechtsgrundlage",
-  "@privacySection4Title": {
-    "description": "Privacy section 4 title"
-  },
   "privacySection4Content": "Die Verarbeitung erfolgt auf Basis von:\n\n• **Art. 6 Abs. 1 lit. b DSGVO:** Vertragserfüllung\n• **Art. 6 Abs. 1 lit. f DSGVO:** Berechtigte Interessen\n• **Art. 6 Abs. 1 lit. a DSGVO:** Einverständnis (wo erforderlich)",
-  "@privacySection4Content": {
-    "description": "Privacy section 4 content"
-  },
   "privacySection5Title": "5. Datenspeicherung und -sicherheit",
-  "@privacySection5Title": {
-    "description": "Privacy section 5 title"
-  },
   "privacySection5Content": "**Speicherort:**\nIhre Daten werden in Google Firebase/Firestore gespeichert, welches den EU-Datenschutzstandards entspricht.\n\n**Sicherheitsmaßnahmen:**\n• Verschlüsselte Datenübertragung (HTTPS)\n• Sichere Authentifizierung über Google\n• Regelmäßige Sicherheits-Updates\n• Zugriffskontrolle über Firebase Security Rules",
-  "@privacySection5Content": {
-    "description": "Privacy section 5 content"
-  },
   "privacySection6Title": "6. Datenweitergabe",
-  "@privacySection6Title": {
-    "description": "Privacy section 6 title"
-  },
   "privacySection6Content": "Eine Weitergabe Ihrer Daten erfolgt nur:\n\n• An Google Firebase (als technischer Dienstleister)\n• Bei rechtlicher Verpflichtung\n• Mit Ihrer ausdrücklichen Einwilligung\n\nEine kommerzielle Weitergabe findet nicht statt.",
-  "@privacySection6Content": {
-    "description": "Privacy section 6 content"
-  },
   "privacySection7Title": "7. Speicherdauer",
-  "@privacySection7Title": {
-    "description": "Privacy section 7 title"
-  },
   "privacySection7Content": "**Benutzerkonto:** Bis zur Löschung durch Sie\n**Raphcon-Daten:** Bis zur manuellen Löschung\n**Log-Daten:** 30 Tage\n**Crash-Reports:** 90 Tage (anonymisiert)",
-  "@privacySection7Content": {
-    "description": "Privacy section 7 content"
-  },
   "privacySection8Title": "8. Ihre Rechte",
-  "@privacySection8Title": {
-    "description": "Privacy section 8 title"
-  },
   "privacySection8Content": "Sie haben folgende Rechte bezüglich Ihrer Daten:\n\n• **Auskunft:** Information über gespeicherte Daten\n• **Berichtigung:** Korrektur falscher Daten\n• **Löschung:** Entfernung Ihrer Daten\n• **Einschränkung:** Beschränkung der Verarbeitung\n• **Datenübertragbarkeit:** Export Ihrer Daten\n• **Widerspruch:** Widerspruch gegen die Verarbeitung\n\nKontaktieren Sie uns unter: privacy@angryraphi.app",
-  "@privacySection8Content": {
-    "description": "Privacy section 8 content"
-  },
   "privacySection9Title": "9. Google Services",
-  "@privacySection9Title": {
-    "description": "Privacy section 9 title"
-  },
   "privacySection9Content": "Die App nutzt Google-Dienste:\n\n• **Firebase Authentication:** Sichere Anmeldung\n• **Cloud Firestore:** Datenspeicherung\n• **Firebase Storage:** Bildspeicherung\n\nGoogle's Datenschutzbestimmungen gelten für diese Dienste: https://policies.google.com/privacy",
-  "@privacySection9Content": {
-    "description": "Privacy section 9 content"
-  },
   "privacySection10Title": "10. Minderjährige",
-  "@privacySection10Title": {
-    "description": "Privacy section 10 title"
-  },
   "privacySection10Content": "Die App ist nicht für Personen unter 16 Jahren bestimmt. Wir erheben wissentlich keine Daten von Minderjährigen.",
-  "@privacySection10Content": {
-    "description": "Privacy section 10 content"
-  },
   "privacySection11Title": "11. Änderungen",
-  "@privacySection11Title": {
-    "description": "Privacy section 11 title"
-  },
   "privacySection11Content": "Diese Datenschutzerklärung kann aktualisiert werden. Änderungen werden in der App bekannt gegeben.",
-  "@privacySection11Content": {
-    "description": "Privacy section 11 content"
-  },
   "privacyContactTitle": "Datenschutz-Kontakt",
-  "@privacyContactTitle": {
-    "description": "Privacy contact section title"
-  },
   "privacyContactContent": "Bei Fragen zum Datenschutz:\n\nInthusan Gunasiri\nE-Mail: inthusan@hotmail.de\nBetreff: \"Datenschutz AngryRaphi\"\n\nBitte nehmen Sie zuerst Kontakt auf, bevor Sie sich an Aufsichtsbehörden wenden. Diese App dient nur dem Spaß!",
-  "@privacyContactContent": {
-    "description": "Privacy contact information"
-  },
+  "searchUsers": "Benutzer suchen...",
+  "showRanking": "Rangliste anzeigen",
+  "noResultsFor": "Keine Ergebnisse für \"{query}\"",
+  "noUsersAvailable": "Keine Benutzer verfügbar",
+  "fullRanking": "Vollständige Rangliste",
+  "topRanking": "Top 5 Rangliste",
+  "showFullRanking": "Vollständige Rangliste anzeigen ({count} Benutzer)",
+  "gold": "GOLD",
+  "silver": "SILBER",
+  "bronze": "BRONZE",
+  "commentExample": "z.B. \"Maus klickt nicht richtig\"",
+  "rateWithRaphcons": "Bewerte Personen mit Raphcons!",
+  "termsPrivacyAgreement": "Durch die Anmeldung stimmen Sie unseren Nutzungsbedingungen und Datenschutzrichtlinien zu",
+  "errorLoadingAdminData": "Fehler beim Laden der Admin-Daten: {error}",
+  "csvAdminsDescription": "Diese Admins sind in der CSV-Konfiguration definiert:",
+  "noConfiguredAdmins": "Keine konfigurierten Admins gefunden.",
+  "firebaseAdminsDescription": "Diese Admins sind aktuell in Firebase registriert:",
+  "noActiveAdmins": "Keine aktiven Admins in Firebase gefunden.",
+  "registeredUsers": "Registrierte Benutzer",
+  "registeredUsersDescription": "Diese Benutzer haben sich bereits mit Google angemeldet:",
+  "noRegisteredUsers": "Keine registrierten Benutzer gefunden.",
+  "lastLogin": "Letzter Login: {date}",
+  "alreadyAdmin": "Bereits Admin",
+  "promoteToAdmin": "Zu Admin befördern",
+  "minutesAgo": "vor {count} Minute{plural}",
+  "addAdminManually": "Manuell einen neuen Admin hinzufügen:",
+  "addAdminManuallyButton": "Manuell Admin hinzufügen",
+  "superAdmin": "Super Admin",
+  "admin": "Admin",
+  "confirmRemoveAdmin": "Möchten Sie {email} wirklich als Admin entfernen?",
+  "remove": "Entfernen",
+  "errorRemoving": "Fehler beim Entfernen: {error}",
+  "promoteUserDialogTitle": "User zu Admin befördern",
+  "promoteUserDescription": "Geben Sie die Daten des Benutzers ein, der zu Admin befördert werden soll:",
+  "emailAddressLabel": "E-Mail-Adresse",
+  "emailAddressHint": "beispiel@email.com",
+  "displayNameLabel": "Anzeigename (optional)",
+  "displayNameHint": "Max Mustermann",
+  "googleAccountRequired": "Der Benutzer muss bereits ein Google-Konto haben und sich mindestens einmal in der App angemeldet haben.",
+  "promoteToAdminButton": "Zu Admin befördern",
+  "errorPromoting": "Fehler beim Befördern: {error}",
+  "manageUsersDescription": "Möchten Sie Beispiel-Benutzer zur Datenbank hinzufügen oder einen neuen Benutzer erstellen?",
+  "sampleData": "Beispiel-Daten",
+  "searchAndRanking": "Suchen & Rangliste",
+  "logout": "Abmelden",
+  "adminLoginPrompt": "Melden Sie sich als Admin an, um Benutzer zu verwalten und Raphcons zu erstellen.",
+  "version": "Version {version}",
   "@appTitle": {
     "description": "appTitle text"
   },
@@ -476,7 +268,7 @@
     "description": "signIn text"
   },
   "@signInWithGoogle": {
-    "description": "signInWithGoogle text"
+    "description": "Sign in with Google button text"
   },
   "@signOut": {
     "description": "signOut text"
@@ -524,25 +316,25 @@
     "description": "totalRaphcons text"
   },
   "@topCollector": {
-    "description": "topCollector text"
+    "description": "Top collector label"
   },
   "@loadingUsers": {
-    "description": "loadingUsers text"
+    "description": "Loading users message"
   },
   "@noUsersFound": {
-    "description": "noUsersFound text"
+    "description": "No users found message"
   },
   "@addFirstUser": {
-    "description": "addFirstUser text"
+    "description": "Add first user message"
   },
   "@addUser": {
-    "description": "addUser text"
+    "description": "Add user button text"
   },
   "@settings": {
-    "description": "settings text"
+    "description": "Settings menu item"
   },
   "@settingsComingSoon": {
-    "description": "settingsComingSoon text"
+    "description": "Settings coming soon message"
   },
   "@addUserDialogTitle": {
     "description": "addUserDialogTitle text"
@@ -557,7 +349,7 @@
     "description": "raphcons text"
   },
   "@login": {
-    "description": "login text"
+    "description": "Login button text"
   },
   "@adminLogin": {
     "description": "adminLogin text"
@@ -677,7 +469,7 @@
     "description": "unknownError text"
   },
   "@tryAgain": {
-    "description": "tryAgain text"
+    "description": "Try again button text"
   },
   "@close": {
     "description": "close text"
@@ -692,25 +484,32 @@
     "description": "usersCount text"
   },
   "@manageUsers": {
-    "description": "manageUsers text"
+    "description": "Manage users dialog title"
   },
   "@manageUsersMessage": {
     "description": "manageUsersMessage text"
   },
   "@createUserComingSoon": {
-    "description": "createUserComingSoon text"
+    "description": "Create user coming soon message"
   },
   "@newUser": {
-    "description": "newUser text"
+    "description": "New user button text"
   },
   "@noDataAvailable": {
-    "description": "noDataAvailable text"
+    "description": "No data available message"
   },
   "@settingsComingSoon2": {
     "description": "settingsComingSoon2 text"
   },
   "@mustBeLoggedIn": {
     "description": "mustBeLoggedIn text"
+  },
+  "@createRaphconFor": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "@loginFailed": {
     "description": "loginFailed text"
@@ -721,8 +520,51 @@
   "@loginToCreateRaphcons": {
     "description": "loginToCreateRaphcons text"
   },
+  "@createdAgo": {
+    "placeholders": {
+      "timeAgo": {
+        "type": "String"
+      }
+    }
+  },
+  "@dayAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@daysAgo": {
+    "description": "Days ago text",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "plural": {
+        "type": "String"
+      }
+    }
+  },
+  "@hourAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "@hoursAgo": {
+    "description": "Hours ago text",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "plural": {
+        "type": "String"
+      }
+    }
+  },
   "@justNow": {
-    "description": "justNow text"
+    "description": "Just now text"
   },
   "@pleaseEnterName": {
     "description": "pleaseEnterName text"
@@ -773,7 +615,7 @@
     "description": "initialsFormat text"
   },
   "@ratePersonsWithRaphcons": {
-    "description": "ratePersonsWithRaphcons text"
+    "description": "Default app description"
   },
   "@termsOfService": {
     "description": "termsOfService text"
@@ -866,11 +708,67 @@
   "@cancelButton": {
     "description": "cancelButton text"
   },
+  "@createdTimeAgo": {
+    "placeholders": {
+      "timeAgo": {
+        "type": "String"
+      }
+    }
+  },
+  "@daysAgoSingular": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@daysAgoPlural": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@hoursAgoSingular": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "@hoursAgoPlural": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
   "@justCreated": {
     "description": "justCreated text"
   },
+  "@raphconsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@memberSince": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "@noEntriesForThisType": {
     "description": "noEntriesForThisType text"
+  },
+  "@createdBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "@noComment": {
     "description": "noComment text"
@@ -885,19 +783,19 @@
     "description": "adminSettings text"
   },
   "@configuredAdminsCSV": {
-    "description": "configuredAdminsCSV text"
+    "description": "Configured admins CSV title"
   },
   "@activeAdminsFirebase": {
-    "description": "activeAdminsFirebase text"
+    "description": "Active Firebase admins title"
   },
   "@promoteUserToAdmin": {
-    "description": "promoteUserToAdmin text"
+    "description": "Promote user to admin title"
   },
   "@selectAndPromoteUser": {
     "description": "selectAndPromoteUser text"
   },
   "@removeAdmin": {
-    "description": "removeAdmin text"
+    "description": "Remove admin tooltip and title"
   },
   "@searchUser": {
     "description": "searchUser text"
@@ -907,5 +805,351 @@
   },
   "@emailAddress": {
     "description": "emailAddress text"
+  },
+  "@termsOfServiceTitle": {
+    "description": "Terms of Service page title"
+  },
+  "@privacyPolicyTitle": {
+    "description": "Privacy Policy page title"
+  },
+  "@lastUpdated": {
+    "description": "Last updated date text",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@termsSection1Title": {
+    "description": "Terms section 1 title"
+  },
+  "@termsSection1Content": {
+    "description": "Terms section 1 content"
+  },
+  "@termsSection2Title": {
+    "description": "Terms section 2 title"
+  },
+  "@termsSection2Content": {
+    "description": "Terms section 2 content"
+  },
+  "@termsSection3Title": {
+    "description": "Terms section 3 title"
+  },
+  "@termsSection3Content": {
+    "description": "Terms section 3 content"
+  },
+  "@termsSection4Title": {
+    "description": "Terms section 4 title"
+  },
+  "@termsSection4Content": {
+    "description": "Terms section 4 content"
+  },
+  "@termsSection5Title": {
+    "description": "Terms section 5 title"
+  },
+  "@termsSection5Content": {
+    "description": "Terms section 5 content"
+  },
+  "@termsSection6Title": {
+    "description": "Terms section 6 title"
+  },
+  "@termsSection6Content": {
+    "description": "Terms section 6 content"
+  },
+  "@termsSection7Title": {
+    "description": "Terms section 7 title"
+  },
+  "@termsSection7Content": {
+    "description": "Terms section 7 content"
+  },
+  "@termsSection8Title": {
+    "description": "Terms section 8 title"
+  },
+  "@termsSection8Content": {
+    "description": "Terms section 8 content"
+  },
+  "@termsSection9Title": {
+    "description": "Terms section 9 title"
+  },
+  "@termsSection9Content": {
+    "description": "Terms section 9 content"
+  },
+  "@termsSection10Title": {
+    "description": "Terms section 10 title"
+  },
+  "@termsSection10Content": {
+    "description": "Terms section 10 content"
+  },
+  "@contactTitle": {
+    "description": "Contact section title"
+  },
+  "@termsContactContent": {
+    "description": "Terms contact information",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "@privacySection1Title": {
+    "description": "Privacy section 1 title"
+  },
+  "@privacySection1Content": {
+    "description": "Privacy section 1 content"
+  },
+  "@privacySection2Title": {
+    "description": "Privacy section 2 title"
+  },
+  "@privacySection2Content": {
+    "description": "Privacy section 2 content"
+  },
+  "@privacySection3Title": {
+    "description": "Privacy section 3 title"
+  },
+  "@privacySection3Content": {
+    "description": "Privacy section 3 content"
+  },
+  "@privacySection4Title": {
+    "description": "Privacy section 4 title"
+  },
+  "@privacySection4Content": {
+    "description": "Privacy section 4 content"
+  },
+  "@privacySection5Title": {
+    "description": "Privacy section 5 title"
+  },
+  "@privacySection5Content": {
+    "description": "Privacy section 5 content"
+  },
+  "@privacySection6Title": {
+    "description": "Privacy section 6 title"
+  },
+  "@privacySection6Content": {
+    "description": "Privacy section 6 content"
+  },
+  "@privacySection7Title": {
+    "description": "Privacy section 7 title"
+  },
+  "@privacySection7Content": {
+    "description": "Privacy section 7 content"
+  },
+  "@privacySection8Title": {
+    "description": "Privacy section 8 title"
+  },
+  "@privacySection8Content": {
+    "description": "Privacy section 8 content"
+  },
+  "@privacySection9Title": {
+    "description": "Privacy section 9 title"
+  },
+  "@privacySection9Content": {
+    "description": "Privacy section 9 content"
+  },
+  "@privacySection10Title": {
+    "description": "Privacy section 10 title"
+  },
+  "@privacySection10Content": {
+    "description": "Privacy section 10 content"
+  },
+  "@privacySection11Title": {
+    "description": "Privacy section 11 title"
+  },
+  "@privacySection11Content": {
+    "description": "Privacy section 11 content"
+  },
+  "@privacyContactTitle": {
+    "description": "Privacy contact section title"
+  },
+  "@privacyContactContent": {
+    "description": "Privacy contact information"
+  },
+  "@searchUsers": {
+    "description": "Search users placeholder"
+  },
+  "@showRanking": {
+    "description": "Show ranking tooltip"
+  },
+  "@noResultsFor": {
+    "description": "No results message",
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "@noUsersAvailable": {
+    "description": "No users available message"
+  },
+  "@fullRanking": {
+    "description": "Full ranking title"
+  },
+  "@topRanking": {
+    "description": "Top 5 ranking title"
+  },
+  "@showFullRanking": {
+    "description": "Show full ranking button text",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@gold": {
+    "description": "Gold medal text"
+  },
+  "@silver": {
+    "description": "Silver medal text"
+  },
+  "@bronze": {
+    "description": "Bronze medal text"
+  },
+  "@commentExample": {
+    "description": "Comment field hint example"
+  },
+  "@rateWithRaphcons": {
+    "description": "Application subtitle"
+  },
+  "@termsPrivacyAgreement": {
+    "description": "Terms and privacy agreement text"
+  },
+  "@errorLoadingAdminData": {
+    "description": "Error loading admin data message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@csvAdminsDescription": {
+    "description": "CSV admins description text"
+  },
+  "@noConfiguredAdmins": {
+    "description": "No configured admins found"
+  },
+  "@firebaseAdminsDescription": {
+    "description": "Firebase admins description text"
+  },
+  "@noActiveAdmins": {
+    "description": "No active admins found"
+  },
+  "@registeredUsers": {
+    "description": "Registered users title"
+  },
+  "@registeredUsersDescription": {
+    "description": "Registered users description text"
+  },
+  "@noRegisteredUsers": {
+    "description": "No registered users found"
+  },
+  "@lastLogin": {
+    "description": "Last login text",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@alreadyAdmin": {
+    "description": "Already admin badge text"
+  },
+  "@promoteToAdmin": {
+    "description": "Promote to admin tooltip"
+  },
+  "@minutesAgo": {
+    "description": "Minutes ago text",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "plural": {
+        "type": "String"
+      }
+    }
+  },
+  "@addAdminManually": {
+    "description": "Add admin manually description"
+  },
+  "@addAdminManuallyButton": {
+    "description": "Add admin manually button"
+  },
+  "@superAdmin": {
+    "description": "Super admin role text"
+  },
+  "@admin": {
+    "description": "Admin role text"
+  },
+  "@confirmRemoveAdmin": {
+    "description": "Confirm remove admin message",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "@remove": {
+    "description": "Remove button text"
+  },
+  "@errorRemoving": {
+    "description": "Error removing message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@promoteUserDialogTitle": {
+    "description": "Promote user dialog title"
+  },
+  "@promoteUserDescription": {
+    "description": "Promote user dialog description"
+  },
+  "@emailAddressLabel": {
+    "description": "Email address label"
+  },
+  "@emailAddressHint": {
+    "description": "Email address hint"
+  },
+  "@displayNameLabel": {
+    "description": "Display name label"
+  },
+  "@displayNameHint": {
+    "description": "Display name hint"
+  },
+  "@googleAccountRequired": {
+    "description": "Google account required note"
+  },
+  "@promoteToAdminButton": {
+    "description": "Promote to admin button text"
+  },
+  "@errorPromoting": {
+    "description": "Error promoting message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@manageUsersDescription": {
+    "description": "Manage users dialog description"
+  },
+  "@sampleData": {
+    "description": "Sample data button text"
+  },
+  "@searchAndRanking": {
+    "description": "Search and ranking tooltip"
+  },
+  "@logout": {
+    "description": "Logout menu item"
+  },
+  "@adminLoginPrompt": {
+    "description": "Admin login prompt message"
+  },
+  "@version": {
+    "description": "Version text",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
   }
 }

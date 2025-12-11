@@ -1,766 +1,174 @@
 {
   "@@locale": "en",
   "appTitle": "AngryRaphi",
-  "@appTitle": {
-    "description": "The title of the application"
-  },
   "welcome": "Welcome to AngryRaphi!",
-  "@welcome": {
-    "description": "Welcome message"
-  },
   "subtitle": "Rate people with raphcons",
-  "@subtitle": {
-    "description": "App subtitle"
-  },
   "signIn": "Sign in",
-  "@signIn": {
-    "description": "Sign in button text"
-  },
   "signInWithGoogle": "Sign in with Google",
-  "@signInWithGoogle": {
-    "description": "Google sign in button text"
-  },
   "signOut": "Sign Out",
-  "@signOut": {
-    "description": "Sign out button text"
-  },
   "loading": "Loading...",
-  "@loading": {
-    "description": "Loading text"
-  },
   "error": "Error",
-  "@error": {
-    "description": "Generic error text"
-  },
   "retry": "Retry",
-  "@retry": {
-    "description": "Retry button text"
-  },
   "cancel": "Cancel",
-  "@cancel": {
-    "description": "Cancel button text"
-  },
   "confirm": "Confirm",
-  "@confirm": {
-    "description": "Confirm button text"
-  },
   "delete": "Delete",
-  "@delete": {
-    "description": "Delete button text"
-  },
   "add": "Add",
-  "@add": {
-    "description": "Add button text"
-  },
   "name": "Name",
-  "@name": {
-    "description": "Name field label"
-  },
   "description": "Description",
-  "@description": {
-    "description": "Description field label"
-  },
   "comingSoon": "🚧 More features coming soon! 🚧",
-  "@comingSoon": {
-    "description": "Coming soon message"
-  },
   "termsAndPrivacy": "By signing in, you agree to our Terms of Service and Privacy Policy",
-  "@termsAndPrivacy": {
-    "description": "Terms and privacy notice"
-  },
   "errorOccurred": "Oops! Something went wrong",
-  "@errorOccurred": {
-    "description": "Error occurred message"
-  },
   "users": "Users",
-  "@users": {
-    "description": "Users label"
-  },
   "totalRaphcons": "Total Raphcons",
-  "@totalRaphcons": {
-    "description": "Total raphcons label"
-  },
   "topCollector": "Top Collector",
-  "@topCollector": {
-    "description": "Top collector label"
-  },
   "loadingUsers": "Loading users...",
-  "@loadingUsers": {
-    "description": "Loading users message"
-  },
-  "noUsersFound": "No users found",
-  "@noUsersFound": {
-    "description": "No users found message"
-  },
+  "noUsersFound": "No Users Found",
   "addFirstUser": "Add the first user!",
-  "@addFirstUser": {
-    "description": "Add first user message"
-  },
   "addUser": "Add User",
-  "@addUser": {
-    "description": "Add user button text"
-  },
   "initials": "Initials",
-  "@initials": {
-    "description": "Initials label"
-  },
   "firstInitial": "First Initial",
-  "@firstInitial": {
-    "description": "First initial input label"
-  },
   "secondInitial": "Second Initial",
-  "@secondInitial": {
-    "description": "Second initial input label"
-  },
   "pleaseEnterFirstInitial": "Please enter the first initial",
-  "@pleaseEnterFirstInitial": {
-    "description": "Validation message for first initial"
-  },
   "pleaseEnterSecondInitial": "Please enter the second initial",
-  "@pleaseEnterSecondInitial": {
-    "description": "Validation message for second initial"
-  },
   "initialMustBeLetter": "Must be a letter",
-  "@initialMustBeLetter": {
-    "description": "Validation message for invalid initial"
-  },
   "settings": "Settings",
-  "@settings": {
-    "description": "Settings menu item"
-  },
   "settingsComingSoon": "Settings coming soon!",
-  "@settingsComingSoon": {
-    "description": "Settings coming soon message"
-  },
   "addUserDialogTitle": "Add User",
-  "@addUserDialogTitle": {
-    "description": "Add user dialog title"
-  },
   "addUserDialogContent": "This feature is still in development. Soon you'll be able to add new users!",
-  "@addUserDialogContent": {
-    "description": "Add user dialog content"
-  },
   "ok": "OK",
-  "@ok": {
-    "description": "OK button text"
-  },
   "raphcons": "Raphcons",
-  "@raphcons": {
-    "description": "Raphcons label"
-  },
-  "login": "Login",
-  "@login": {
-    "description": "Login button text"
-  },
+  "login": "Sign In",
   "adminLogin": "Admin Login",
-  "@adminLogin": {
-    "description": "Admin login title"
-  },
   "loginRequired": "Login Required",
-  "@loginRequired": {
-    "description": "Login required title"
-  },
   "loginToManage": "Please log in to manage users",
-  "@loginToManage": {
-    "description": "Login to manage users message"
-  },
   "notAdmin": "Not Authorized",
-  "@notAdmin": {
-    "description": "Not admin title"
-  },
   "notAdminMessage": "You don't have permission to perform this action.",
-  "@notAdminMessage": {
-    "description": "Not admin message"
-  },
   "loginSuccess": "Login Successful",
-  "@loginSuccess": {
-    "description": "Login success message"
-  },
   "loginError": "Login Error",
-  "@loginError": {
-    "description": "Login error title"
-  },
   "signInCancelled": "Sign in cancelled",
-  "@signInCancelled": {
-    "description": "Sign in cancelled message"
-  },
   "noInternetConnection": "No internet connection",
-  "@noInternetConnection": {
-    "description": "No internet connection error"
-  },
   "networkRequestFailed": "Network request failed",
-  "@networkRequestFailed": {
-    "description": "Network request failed error"
-  },
   "tooManyRequests": "Too many requests. Please try again later.",
-  "@tooManyRequests": {
-    "description": "Too many requests error"
-  },
   "userDisabled": "User account disabled",
-  "@userDisabled": {
-    "description": "User disabled error"
-  },
   "userNotFound": "User not found",
-  "@userNotFound": {
-    "description": "User not found error"
-  },
   "operationNotAllowed": "Operation not allowed",
-  "@operationNotAllowed": {
-    "description": "Operation not allowed error"
-  },
   "invalidCredential": "Invalid credentials",
-  "@invalidCredential": {
-    "description": "Invalid credential error"
-  },
   "credentialAlreadyInUse": "Credentials already in use",
-  "@credentialAlreadyInUse": {
-    "description": "Credential already in use error"
-  },
   "invalidEmail": "Invalid email address",
-  "@invalidEmail": {
-    "description": "Invalid email error"
-  },
   "wrongPassword": "Wrong password",
-  "@wrongPassword": {
-    "description": "Wrong password error"
-  },
   "weakPassword": "Password too weak",
-  "@weakPassword": {
-    "description": "Weak password error"
-  },
   "emailAlreadyInUse": "Email already in use",
-  "@emailAlreadyInUse": {
-    "description": "Email already in use error"
-  },
   "enterName": "Enter name",
-  "@enterName": {
-    "description": "Enter name hint"
-  },
   "nameRequired": "Name is required",
-  "@nameRequired": {
-    "description": "Name required validation"
-  },
   "addingUser": "Adding user...",
-  "@addingUser": {
-    "description": "Adding user loading message"
-  },
   "userAdded": "User added",
-  "@userAdded": {
-    "description": "User added success message"
-  },
   "failedToAddUser": "Failed to add user",
-  "@failedToAddUser": {
-    "description": "Failed to add user error"
-  },
   "creatingRaphcon": "Creating raphcon...",
-  "@creatingRaphcon": {
-    "description": "Creating raphcon loading message"
-  },
   "raphconCreated": "Raphcon created! 🎉",
-  "@raphconCreated": {
-    "description": "Raphcon created success message"
-  },
   "failedToCreateRaphcon": "Failed to create raphcon",
-  "@failedToCreateRaphcon": {
-    "description": "Failed to create raphcon error"
-  },
   "confirmDeleteUser": "Confirm Delete User",
-  "@confirmDeleteUser": {
-    "description": "Confirm delete user title"
-  },
   "confirmDeleteUserMessage": "Are you sure you want to delete this user? This action cannot be undone.",
-  "@confirmDeleteUserMessage": {
-    "description": "Confirm delete user message"
-  },
   "deletingUser": "Deleting user...",
-  "@deletingUser": {
-    "description": "Deleting user loading message"
-  },
   "userDeleted": "User deleted",
-  "@userDeleted": {
-    "description": "User deleted success message"
-  },
   "failedToDeleteUser": "Failed to delete user",
-  "@failedToDeleteUser": {
-    "description": "Failed to delete user error"
-  },
   "adminFunctionsOnly": "Admin Functions Only",
-  "@adminFunctionsOnly": {
-    "description": "Admin functions only title"
-  },
   "loginToAccess": "Please log in to access this feature",
-  "@loginToAccess": {
-    "description": "Login to access message"
-  },
   "checkingAdminStatus": "Checking admin status...",
-  "@checkingAdminStatus": {
-    "description": "Checking admin status loading message"
-  },
   "failedToCheckAdmin": "Failed to check admin status",
-  "@failedToCheckAdmin": {
-    "description": "Failed to check admin status error"
-  },
   "loggedInAs": "Logged in as",
-  "@loggedInAs": {
-    "description": "Logged in as label"
-  },
   "unknownError": "Unknown error occurred",
-  "@unknownError": {
-    "description": "Unknown error message"
-  },
-  "tryAgain": "Try again",
-  "@tryAgain": {
-    "description": "Try again button text"
-  },
+  "tryAgain": "Try Again",
   "close": "Close",
-  "@close": {
-    "description": "Close button text"
-  },
   "loadingUsers2": "Loading users...",
-  "@loadingUsers2": {
-    "description": "Loading users message alternative"
-  },
   "addFirstUserHint": "Add the first user!",
-  "@addFirstUserHint": {
-    "description": "Add first user hint message"
-  },
   "usersCount": "Users",
-  "@usersCount": {
-    "description": "Users count label"
-  },
   "manageUsers": "Manage Users",
-  "@manageUsers": {
-    "description": "Manage users title"
-  },
   "manageUsersMessage": "Would you like to add sample users to the database or create a new user?",
-  "@manageUsersMessage": {
-    "description": "Manage users dialog message"
-  },
   "createUserComingSoon": "Create user coming soon!",
-  "@createUserComingSoon": {
-    "description": "Create user coming soon message"
-  },
   "newUser": "New User",
-  "@newUser": {
-    "description": "New user button text"
-  },
   "noDataAvailable": "No data available",
-  "@noDataAvailable": {
-    "description": "No data available message"
-  },
   "settingsComingSoon2": "Settings coming soon!",
-  "@settingsComingSoon2": {
-    "description": "Settings coming soon message alternative"
-  },
   "mustBeLoggedIn": "You must be logged in",
-  "@mustBeLoggedIn": {
-    "description": "Must be logged in message"
-  },
   "createRaphconFor": "Create raphcon for {name}",
-  "@createRaphconFor": {
-    "description": "Create raphcon for user message",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "loginFailed": "Login failed",
-  "@loginFailed": {
-    "description": "Login failed title"
-  },
   "adminRequired": "Admin authorization required",
-  "@adminRequired": {
-    "description": "Admin required message"
-  },
   "loginToCreateRaphcons": "Please log in to create raphcons",
-  "@loginToCreateRaphcons": {
-    "description": "Login to create raphcons message"
-  },
   "createdAgo": "Created: {timeAgo}",
-  "@createdAgo": {
-    "description": "Created time ago message",
-    "placeholders": {
-      "timeAgo": {
-        "type": "String"
-      }
-    }
-  },
   "dayAgo": "{days} day ago",
-  "@dayAgo": {
-    "description": "Day ago message",
-    "placeholders": {
-      "days": {
-        "type": "int"
-      }
-    }
-  },
-  "daysAgo": "{days} days ago",
-  "@daysAgo": {
-    "description": "Days ago message",
-    "placeholders": {
-      "days": {
-        "type": "int"
-      }
-    }
-  },
+  "daysAgo": "{count} day{plural} ago",
   "hourAgo": "{hours} hour ago",
-  "@hourAgo": {
-    "description": "Hour ago message",
-    "placeholders": {
-      "hours": {
-        "type": "int"
-      }
-    }
-  },
-  "hoursAgo": "{hours} hours ago",
-  "@hoursAgo": {
-    "description": "Hours ago message",
-    "placeholders": {
-      "hours": {
-        "type": "int"
-      }
-    }
-  },
+  "hoursAgo": "{count} hour{plural} ago",
   "justNow": "just now",
-  "@justNow": {
-    "description": "Just now message"
-  },
   "pleaseEnterName": "Please enter a name",
-  "@pleaseEnterName": {
-    "description": "Please enter name validation"
-  },
   "nameMaxLength": "Name must be at most 50 characters",
-  "@nameMaxLength": {
-    "description": "Name max length validation"
-  },
   "descriptionOptional": "Description (optional)",
-  "@descriptionOptional": {
-    "description": "Description optional label"
-  },
   "descriptionMaxLength": "Description must be at most 500 characters",
-  "@descriptionMaxLength": {
-    "description": "Description max length validation"
-  },
   "loginAsAdmin": "Please log in as admin to manage users and create raphcons.",
-  "@loginAsAdmin": {
-    "description": "Login as admin message"
-  },
   "addPersonWithInitials": "Add Person with Initials",
-  "@addPersonWithInitials": {
-    "description": "Add person with initials title"
-  },
   "enterTwoInitials": "Enter two initials (e.g. J.D.)",
-  "@enterTwoInitials": {
-    "description": "Enter two initials hint"
-  },
   "initialsFormat": "Format: First Initial + Second Initial",
-  "@initialsFormat": {
-    "description": "Initials format description"
-  },
   "ratePersonsWithRaphcons": "Rate persons with Raphcons",
-  "@ratePersonsWithRaphcons": {
-    "description": "App description"
-  },
   "termsOfService": "Terms of Service",
-  "@termsOfService": {
-    "description": "Terms of service link"
-  },
   "privacyPolicy": "Privacy Policy",
-  "@privacyPolicy": {
-    "description": "Privacy policy link"
-  },
   "bySigningInYouAgree": "By signing in you agree to our",
-  "@bySigningInYouAgree": {
-    "description": "Terms agreement intro text"
-  },
   "and": "and",
-  "@and": {
-    "description": "And conjunction"
-  },
   "agreeTo": ".",
-  "@agreeTo": {
-    "description": "Terms agreement ending text"
-  },
   "raphconTypeMouse": "Mouse",
-  "@raphconTypeMouse": {
-    "description": "Mouse problem type"
-  },
   "raphconTypeKeyboard": "Keyboard",
-  "@raphconTypeKeyboard": {
-    "description": "Keyboard problem type"
-  },
   "raphconTypeMicrophone": "Microphone",
-  "@raphconTypeMicrophone": {
-    "description": "Microphone problem type"
-  },
   "raphconTypeHeadset": "Headset",
-  "@raphconTypeHeadset": {
-    "description": "Headset problem type"
-  },
   "raphconTypeWebcam": "Webcam",
-  "@raphconTypeWebcam": {
-    "description": "Webcam problem type"
-  },
   "raphconTypeSpeakers": "Speakers",
-  "@raphconTypeSpeakers": {
-    "description": "Speakers problem type"
-  },
   "raphconTypeNetwork": "Network",
-  "@raphconTypeNetwork": {
-    "description": "Network problem type"
-  },
   "raphconTypeSoftware": "Software",
-  "@raphconTypeSoftware": {
-    "description": "Software problem type"
-  },
   "raphconTypeHardware": "Hardware",
-  "@raphconTypeHardware": {
-    "description": "Hardware problem type"
-  },
   "raphconTypeOther": "Other",
-  "@raphconTypeOther": {
-    "description": "Other problem type"
-  },
   "selectProblemType": "Select Problem Type",
-  "@selectProblemType": {
-    "description": "Select problem type label"
-  },
   "whatKindOfProblem": "What kind of problem?",
-  "@whatKindOfProblem": {
-    "description": "What kind of problem question"
-  },
   "showDetails": "Show Details",
-  "@showDetails": {
-    "description": "Button to show problem details"
-  },
   "problemStatisticsFor": "Problems for {userName}",
-  "@problemStatisticsFor": {
-    "description": "Problem statistics header with user name",
-    "placeholders": {
-      "userName": {
-        "type": "String"
-      }
-    }
-  },
   "sortedByType": "Sorted by problem type",
-  "@sortedByType": {
-    "description": "Subtitle for problem statistics"
-  },
   "totalCount": "Total count:",
-  "@totalCount": {
-    "description": "Total count label"
-  },
   "problems": "problems",
-  "@problems": {
-    "description": "Problems plural"
-  },
   "noProblemsReported": "No problems reported!",
-  "@noProblemsReported": {
-    "description": "Message when user has no problems"
-  },
   "noTechnicalProblemsYet": "This user has not reported any technical problems yet.",
-  "@noTechnicalProblemsYet": {
-    "description": "Explanation for users with no problems"
-  },
   "errorLoadingStatistics": "Error loading statistics: {message}",
-  "@errorLoadingStatistics": {
-    "description": "Error message when statistics fail to load",
-    "placeholders": {
-      "message": {
-        "type": "String"
-      }
-    }
-  },
   "tryAgainButton": "Try Again",
-  "@tryAgainButton": {
-    "description": "Try again button text"
-  },
   "cancelButton": "Cancel",
-  "@cancelButton": {
-    "description": "Cancel button text"
-  },
   "createdTimeAgo": "Created: {timeAgo}",
-  "@createdTimeAgo": {
-    "description": "Created time ago text",
-    "placeholders": {
-      "timeAgo": {
-        "type": "String"
-      }
-    }
-  },
   "daysAgoSingular": "{days} day ago",
-  "@daysAgoSingular": {
-    "description": "Days ago singular",
-    "placeholders": {
-      "days": {
-        "type": "int"
-      }
-    }
-  },
   "daysAgoPlural": "{days} days ago",
-  "@daysAgoPlural": {
-    "description": "Days ago plural",
-    "placeholders": {
-      "days": {
-        "type": "int"
-      }
-    }
-  },
   "hoursAgoSingular": "{hours} hour ago",
-  "@hoursAgoSingular": {
-    "description": "Hours ago singular",
-    "placeholders": {
-      "hours": {
-        "type": "int"
-      }
-    }
-  },
   "hoursAgoPlural": "{hours} hours ago",
-  "@hoursAgoPlural": {
-    "description": "Hours ago plural",
-    "placeholders": {
-      "hours": {
-        "type": "int"
-      }
-    }
-  },
   "justCreated": "just now",
-  "@justCreated": {
-    "description": "Just created text"
-  },
   "raphconsCount": "Raphcons: {count}",
-  "@raphconsCount": {
-    "description": "Raphcons count text",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "memberSince": "Member since {date}",
-  "@memberSince": {
-    "description": "Member since text",
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
   "noEntriesForThisType": "No entries for this type",
-  "@noEntriesForThisType": {
-    "description": "Message when no entries exist for a specific type"
-  },
   "createdBy": "Created by: {name}",
-  "@createdBy": {
-    "description": "Created by text",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   "noComment": "No comment",
-  "@noComment": {
-    "description": "Text when no comment is available"
-  },
   "confirmDeleteRaphcon": "Delete Raphcon",
-  "@confirmDeleteRaphcon": {
-    "description": "Confirm delete raphcon dialog title"
-  },
   "confirmDeleteRaphconMessage": "Are you sure you want to delete this entry?",
-  "@confirmDeleteRaphconMessage": {
-    "description": "Confirm delete raphcon dialog message"
-  },
   "raphconDeleted": "Raphcon deleted",
-  "@raphconDeleted": {
-    "description": "Success message when raphcon is deleted"
-  },
   "errorRaphconIdNotFound": "Error: Raphcon ID not found",
-  "@errorRaphconIdNotFound": {
-    "description": "Error message when raphcon ID is not found for deletion"
-  },
   "adminSettings": "Admin Settings",
-  "@adminSettings": {
-    "description": "Admin settings page title"
-  },
   "configuredAdminsCSV": "Configured Admins (CSV)",
-  "@configuredAdminsCSV": {
-    "description": "CSV admins section title"
-  },
   "activeAdminsFirebase": "Active Admins (Firebase)",
-  "@activeAdminsFirebase": {
-    "description": "Firebase admins section title"
-  },
   "promoteUserToAdmin": "Promote User to Admin",
-  "@promoteUserToAdmin": {
-    "description": "Promote user section title"
-  },
   "selectAndPromoteUser": "Select and promote user",
-  "@selectAndPromoteUser": {
-    "description": "Button text to select and promote user"
-  },
-  "removeAdmin": "Remove Admin",
-  "@removeAdmin": {
-    "description": "Remove admin button text"
-  },
+  "removeAdmin": "Remove admin",
   "searchUser": "Search user",
-  "@searchUser": {
-    "description": "Search user placeholder text"
-  },
   "enterEmailAddress": "Enter email address",
-  "@enterEmailAddress": {
-    "description": "Enter email dialog title"
-  },
   "emailAddress": "Email address",
-  "@emailAddress": {
-    "description": "Email address field label"
-  },
   "termsOfServiceTitle": "Terms of Service for AngryRaphi",
-  "@termsOfServiceTitle": {
-    "description": "Terms of Service page title"
-  },
   "privacyPolicyTitle": "Privacy Policy for AngryRaphi",
-  "@privacyPolicyTitle": {
-    "description": "Privacy Policy page title"
-  },
   "lastUpdated": "Last updated: {date}",
-  "@lastUpdated": {
-    "description": "Last updated date text",
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
   "termsSection1Title": "1. Scope",
-  "@termsSection1Title": {
-    "description": "Terms section 1 title"
-  },
   "termsSection1Content": "These Terms of Service govern the use of the AngryRaphi app (\"the App\"), a system for rating persons using \"Raphcons\". By using the App, you agree to these terms.",
-  "@termsSection1Content": {
-    "description": "Terms section 1 content"
-  },
   "termsSection2Title": "2. Service Description",
-  "@termsSection2Title": {
-    "description": "Terms section 2 title"
-  },
   "termsSection2Content": "AngryRaphi is an application for humorous rating of persons in closed groups. Users can:\n\n• Add persons to the rating list\n• Assign Raphcons (ratings) for various problem areas\n• View statistics and rankings\n• Use additional administrative functions as an administrator",
-  "@termsSection2Content": {
-    "description": "Terms section 2 content"
-  },
   "termsSection3Title": "3. User Accounts and Access",
-  "@termsSection3Title": {
-    "description": "Terms section 3 title"
-  },
   "termsSection3Content": "Access to the App is via Google authentication. You are responsible for:\n\n• Keeping your login credentials confidential\n• All activities under your account\n• Notification in case of unauthorized use",
-  "@termsSection3Content": {
-    "description": "Terms section 3 content"
-  },
   "termsSection4Title": "4. Appropriate Use",
-  "@termsSection4Title": {
-    "description": "Terms section 4 title"
-  },
   "termsSection4Content": "You commit to appropriate use of the App:\n\n• No insults or discrimination\n• Respectful treatment of other users\n• No abusive use of the rating function\n• Respect for others' privacy",
   "termsSection5Title": "5. Privacy",
   "termsSection5Content": "Your privacy is important to us. Details on data collection and processing can be found in our Privacy Policy, which is an integral part of these Terms of Service.",
@@ -776,13 +184,6 @@
   "termsSection10Content": "These Terms of Service are governed by the laws of Switzerland. Place of jurisdiction is Olten, Switzerland.\n\n**IMPORTANT NOTE:** AngryRaphi is purely a fun app with no serious intent. For any issues, please contact us first before taking legal action.",
   "contactTitle": "Contact",
   "termsContactContent": "For questions about these Terms of Service, please contact:\n\nInthusan Gunasiri\nAarauerstrasse 132\n4600 Olten, Switzerland\nE-Mail: inthusan@hotmail.de\n\nApp: AngryRaphi v{version}",
-  "@termsContactContent": {
-    "placeholders": {
-      "version": {
-        "type": "String"
-      }
-    }
-  },
   "privacySection1Title": "1. Controller",
   "privacySection1Content": "Responsible for data processing in the AngryRaphi app:\n\nInthusan Gunasiri\nAarauerstrasse 132\n4600 Olten, Switzerland\nE-Mail: inthusan@hotmail.de\n\n**NOTE:** This is a fun app with no commercial intentions.",
   "privacySection2Title": "2. Collected Data",
@@ -807,6 +208,651 @@
   "privacySection11Content": "This Privacy Policy may be updated. Changes will be announced in the App.",
   "privacyContactTitle": "Privacy Contact",
   "privacyContactContent": "For privacy questions:\n\nInthusan Gunasiri\nE-Mail: inthusan@hotmail.de\nSubject: \"AngryRaphi Privacy\"\n\nPlease contact us first before reaching out to supervisory authorities. This app is just for fun!",
+  "searchUsers": "Search users...",
+  "showRanking": "Show ranking",
+  "noResultsFor": "No results for \"{query}\"",
+  "noUsersAvailable": "No users available",
+  "fullRanking": "Full Ranking",
+  "topRanking": "Top 5 Ranking",
+  "showFullRanking": "Show full ranking ({count} users)",
+  "gold": "GOLD",
+  "silver": "SILVER",
+  "bronze": "BRONZE",
+  "commentExample": "e.g. \"Mouse doesn't click properly\"",
+  "rateWithRaphcons": "Rate people with raphcons!",
+  "termsPrivacyAgreement": "By signing in, you agree to our Terms of Service and Privacy Policy",
+  "errorLoadingAdminData": "Error loading admin data: {error}",
+  "csvAdminsDescription": "These admins are defined in the CSV configuration:",
+  "noConfiguredAdmins": "No configured admins found.",
+  "firebaseAdminsDescription": "These admins are currently registered in Firebase:",
+  "noActiveAdmins": "No active admins found in Firebase.",
+  "registeredUsers": "Registered Users",
+  "registeredUsersDescription": "These users have already signed in with Google:",
+  "noRegisteredUsers": "No registered users found.",
+  "lastLogin": "Last login: {date}",
+  "alreadyAdmin": "Already Admin",
+  "promoteToAdmin": "Promote to admin",
+  "minutesAgo": "{count} minute{plural} ago",
+  "addAdminManually": "Add a new admin manually:",
+  "addAdminManuallyButton": "Add Admin Manually",
+  "superAdmin": "Super Admin",
+  "admin": "Admin",
+  "confirmRemoveAdmin": "Do you really want to remove {email} as admin?",
+  "remove": "Remove",
+  "errorRemoving": "Error removing: {error}",
+  "promoteUserDialogTitle": "Promote User to Admin",
+  "promoteUserDescription": "Enter the details of the user to be promoted to admin:",
+  "emailAddressLabel": "Email Address",
+  "emailAddressHint": "example@email.com",
+  "displayNameLabel": "Display Name (optional)",
+  "displayNameHint": "John Doe",
+  "googleAccountRequired": "The user must already have a Google account and have signed in to the app at least once.",
+  "promoteToAdminButton": "Promote to Admin",
+  "errorPromoting": "Error promoting: {error}",
+  "manageUsersDescription": "Would you like to add sample users to the database or create a new user?",
+  "sampleData": "Sample Data",
+  "searchAndRanking": "Search & Ranking",
+  "logout": "Logout",
+  "adminLoginPrompt": "Sign in as admin to manage users and create Raphcons.",
+  "version": "Version {version}",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "@welcome": {
+    "description": "Welcome message"
+  },
+  "@subtitle": {
+    "description": "App subtitle"
+  },
+  "@signIn": {
+    "description": "Sign in button text"
+  },
+  "@signInWithGoogle": {
+    "description": "Google sign in button text"
+  },
+  "@signOut": {
+    "description": "Sign out button text"
+  },
+  "@loading": {
+    "description": "Loading text"
+  },
+  "@error": {
+    "description": "Generic error text"
+  },
+  "@retry": {
+    "description": "Retry button text"
+  },
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  "@confirm": {
+    "description": "Confirm button text"
+  },
+  "@delete": {
+    "description": "Delete button text"
+  },
+  "@add": {
+    "description": "Add button text"
+  },
+  "@name": {
+    "description": "Name field label"
+  },
+  "@description": {
+    "description": "Description field label"
+  },
+  "@comingSoon": {
+    "description": "Coming soon message"
+  },
+  "@termsAndPrivacy": {
+    "description": "Terms and privacy notice"
+  },
+  "@errorOccurred": {
+    "description": "Error occurred message"
+  },
+  "@users": {
+    "description": "Users label"
+  },
+  "@totalRaphcons": {
+    "description": "Total raphcons label"
+  },
+  "@topCollector": {
+    "description": "Top collector label"
+  },
+  "@loadingUsers": {
+    "description": "Loading users message"
+  },
+  "@noUsersFound": {
+    "description": "No users found message"
+  },
+  "@addFirstUser": {
+    "description": "Add first user message"
+  },
+  "@addUser": {
+    "description": "Add user button text"
+  },
+  "@initials": {
+    "description": "Initials label"
+  },
+  "@firstInitial": {
+    "description": "First initial input label"
+  },
+  "@secondInitial": {
+    "description": "Second initial input label"
+  },
+  "@pleaseEnterFirstInitial": {
+    "description": "Validation message for first initial"
+  },
+  "@pleaseEnterSecondInitial": {
+    "description": "Validation message for second initial"
+  },
+  "@initialMustBeLetter": {
+    "description": "Validation message for invalid initial"
+  },
+  "@settings": {
+    "description": "Settings menu item"
+  },
+  "@settingsComingSoon": {
+    "description": "Settings coming soon message"
+  },
+  "@addUserDialogTitle": {
+    "description": "Add user dialog title"
+  },
+  "@addUserDialogContent": {
+    "description": "Add user dialog content"
+  },
+  "@ok": {
+    "description": "OK button text"
+  },
+  "@raphcons": {
+    "description": "Raphcons label"
+  },
+  "@login": {
+    "description": "Login button text"
+  },
+  "@adminLogin": {
+    "description": "Admin login title"
+  },
+  "@loginRequired": {
+    "description": "Login required title"
+  },
+  "@loginToManage": {
+    "description": "Login to manage users message"
+  },
+  "@notAdmin": {
+    "description": "Not admin title"
+  },
+  "@notAdminMessage": {
+    "description": "Not admin message"
+  },
+  "@loginSuccess": {
+    "description": "Login success message"
+  },
+  "@loginError": {
+    "description": "Login error title"
+  },
+  "@signInCancelled": {
+    "description": "Sign in cancelled message"
+  },
+  "@noInternetConnection": {
+    "description": "No internet connection error"
+  },
+  "@networkRequestFailed": {
+    "description": "Network request failed error"
+  },
+  "@tooManyRequests": {
+    "description": "Too many requests error"
+  },
+  "@userDisabled": {
+    "description": "User disabled error"
+  },
+  "@userNotFound": {
+    "description": "User not found error"
+  },
+  "@operationNotAllowed": {
+    "description": "Operation not allowed error"
+  },
+  "@invalidCredential": {
+    "description": "Invalid credential error"
+  },
+  "@credentialAlreadyInUse": {
+    "description": "Credential already in use error"
+  },
+  "@invalidEmail": {
+    "description": "Invalid email error"
+  },
+  "@wrongPassword": {
+    "description": "Wrong password error"
+  },
+  "@weakPassword": {
+    "description": "Weak password error"
+  },
+  "@emailAlreadyInUse": {
+    "description": "Email already in use error"
+  },
+  "@enterName": {
+    "description": "Enter name hint"
+  },
+  "@nameRequired": {
+    "description": "Name required validation"
+  },
+  "@addingUser": {
+    "description": "Adding user loading message"
+  },
+  "@userAdded": {
+    "description": "User added success message"
+  },
+  "@failedToAddUser": {
+    "description": "Failed to add user error"
+  },
+  "@creatingRaphcon": {
+    "description": "Creating raphcon loading message"
+  },
+  "@raphconCreated": {
+    "description": "Raphcon created success message"
+  },
+  "@failedToCreateRaphcon": {
+    "description": "Failed to create raphcon error"
+  },
+  "@confirmDeleteUser": {
+    "description": "Confirm delete user title"
+  },
+  "@confirmDeleteUserMessage": {
+    "description": "Confirm delete user message"
+  },
+  "@deletingUser": {
+    "description": "Deleting user loading message"
+  },
+  "@userDeleted": {
+    "description": "User deleted success message"
+  },
+  "@failedToDeleteUser": {
+    "description": "Failed to delete user error"
+  },
+  "@adminFunctionsOnly": {
+    "description": "Admin functions only title"
+  },
+  "@loginToAccess": {
+    "description": "Login to access message"
+  },
+  "@checkingAdminStatus": {
+    "description": "Checking admin status loading message"
+  },
+  "@failedToCheckAdmin": {
+    "description": "Failed to check admin status error"
+  },
+  "@loggedInAs": {
+    "description": "Logged in as label"
+  },
+  "@unknownError": {
+    "description": "Unknown error message"
+  },
+  "@tryAgain": {
+    "description": "Try again button text"
+  },
+  "@close": {
+    "description": "Close button text"
+  },
+  "@loadingUsers2": {
+    "description": "Loading users message alternative"
+  },
+  "@addFirstUserHint": {
+    "description": "Add first user hint message"
+  },
+  "@usersCount": {
+    "description": "Users count label"
+  },
+  "@manageUsers": {
+    "description": "Manage users dialog title"
+  },
+  "@manageUsersMessage": {
+    "description": "Manage users dialog message"
+  },
+  "@createUserComingSoon": {
+    "description": "Create user coming soon message"
+  },
+  "@newUser": {
+    "description": "New user button text"
+  },
+  "@noDataAvailable": {
+    "description": "No data available message"
+  },
+  "@settingsComingSoon2": {
+    "description": "Settings coming soon message alternative"
+  },
+  "@mustBeLoggedIn": {
+    "description": "Must be logged in message"
+  },
+  "@createRaphconFor": {
+    "description": "Create raphcon for user message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@loginFailed": {
+    "description": "Login failed title"
+  },
+  "@adminRequired": {
+    "description": "Admin required message"
+  },
+  "@loginToCreateRaphcons": {
+    "description": "Login to create raphcons message"
+  },
+  "@createdAgo": {
+    "description": "Created time ago message",
+    "placeholders": {
+      "timeAgo": {
+        "type": "String"
+      }
+    }
+  },
+  "@dayAgo": {
+    "description": "Day ago message",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@daysAgo": {
+    "description": "Days ago text",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "plural": {
+        "type": "String"
+      }
+    }
+  },
+  "@hourAgo": {
+    "description": "Hour ago message",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "@hoursAgo": {
+    "description": "Hours ago text",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "plural": {
+        "type": "String"
+      }
+    }
+  },
+  "@justNow": {
+    "description": "Just now text"
+  },
+  "@pleaseEnterName": {
+    "description": "Please enter name validation"
+  },
+  "@nameMaxLength": {
+    "description": "Name max length validation"
+  },
+  "@descriptionOptional": {
+    "description": "Description optional label"
+  },
+  "@descriptionMaxLength": {
+    "description": "Description max length validation"
+  },
+  "@loginAsAdmin": {
+    "description": "Login as admin message"
+  },
+  "@addPersonWithInitials": {
+    "description": "Add person with initials title"
+  },
+  "@enterTwoInitials": {
+    "description": "Enter two initials hint"
+  },
+  "@initialsFormat": {
+    "description": "Initials format description"
+  },
+  "@ratePersonsWithRaphcons": {
+    "description": "Default app description"
+  },
+  "@termsOfService": {
+    "description": "Terms of service link"
+  },
+  "@privacyPolicy": {
+    "description": "Privacy policy link"
+  },
+  "@bySigningInYouAgree": {
+    "description": "Terms agreement intro text"
+  },
+  "@and": {
+    "description": "And conjunction"
+  },
+  "@agreeTo": {
+    "description": "Terms agreement ending text"
+  },
+  "@raphconTypeMouse": {
+    "description": "Mouse problem type"
+  },
+  "@raphconTypeKeyboard": {
+    "description": "Keyboard problem type"
+  },
+  "@raphconTypeMicrophone": {
+    "description": "Microphone problem type"
+  },
+  "@raphconTypeHeadset": {
+    "description": "Headset problem type"
+  },
+  "@raphconTypeWebcam": {
+    "description": "Webcam problem type"
+  },
+  "@raphconTypeSpeakers": {
+    "description": "Speakers problem type"
+  },
+  "@raphconTypeNetwork": {
+    "description": "Network problem type"
+  },
+  "@raphconTypeSoftware": {
+    "description": "Software problem type"
+  },
+  "@raphconTypeHardware": {
+    "description": "Hardware problem type"
+  },
+  "@raphconTypeOther": {
+    "description": "Other problem type"
+  },
+  "@selectProblemType": {
+    "description": "Select problem type label"
+  },
+  "@whatKindOfProblem": {
+    "description": "What kind of problem question"
+  },
+  "@showDetails": {
+    "description": "Button to show problem details"
+  },
+  "@problemStatisticsFor": {
+    "description": "Problem statistics header with user name",
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      }
+    }
+  },
+  "@sortedByType": {
+    "description": "Subtitle for problem statistics"
+  },
+  "@totalCount": {
+    "description": "Total count label"
+  },
+  "@problems": {
+    "description": "Problems plural"
+  },
+  "@noProblemsReported": {
+    "description": "Message when user has no problems"
+  },
+  "@noTechnicalProblemsYet": {
+    "description": "Explanation for users with no problems"
+  },
+  "@errorLoadingStatistics": {
+    "description": "Error message when statistics fail to load",
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "@tryAgainButton": {
+    "description": "Try again button text"
+  },
+  "@cancelButton": {
+    "description": "Cancel button text"
+  },
+  "@createdTimeAgo": {
+    "description": "Created time ago text",
+    "placeholders": {
+      "timeAgo": {
+        "type": "String"
+      }
+    }
+  },
+  "@daysAgoSingular": {
+    "description": "Days ago singular",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@daysAgoPlural": {
+    "description": "Days ago plural",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@hoursAgoSingular": {
+    "description": "Hours ago singular",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "@hoursAgoPlural": {
+    "description": "Hours ago plural",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "@justCreated": {
+    "description": "Just created text"
+  },
+  "@raphconsCount": {
+    "description": "Raphcons count text",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@memberSince": {
+    "description": "Member since text",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@noEntriesForThisType": {
+    "description": "Message when no entries exist for a specific type"
+  },
+  "@createdBy": {
+    "description": "Created by text",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@noComment": {
+    "description": "Text when no comment is available"
+  },
+  "@confirmDeleteRaphcon": {
+    "description": "Confirm delete raphcon dialog title"
+  },
+  "@confirmDeleteRaphconMessage": {
+    "description": "Confirm delete raphcon dialog message"
+  },
+  "@raphconDeleted": {
+    "description": "Success message when raphcon is deleted"
+  },
+  "@errorRaphconIdNotFound": {
+    "description": "Error message when raphcon ID is not found for deletion"
+  },
+  "@adminSettings": {
+    "description": "Admin settings page title"
+  },
+  "@configuredAdminsCSV": {
+    "description": "Configured admins CSV title"
+  },
+  "@activeAdminsFirebase": {
+    "description": "Active Firebase admins title"
+  },
+  "@promoteUserToAdmin": {
+    "description": "Promote user to admin title"
+  },
+  "@selectAndPromoteUser": {
+    "description": "Button text to select and promote user"
+  },
+  "@removeAdmin": {
+    "description": "Remove admin tooltip and title"
+  },
+  "@searchUser": {
+    "description": "Search user placeholder text"
+  },
+  "@enterEmailAddress": {
+    "description": "Enter email dialog title"
+  },
+  "@emailAddress": {
+    "description": "Email address field label"
+  },
+  "@termsOfServiceTitle": {
+    "description": "Terms of Service page title"
+  },
+  "@privacyPolicyTitle": {
+    "description": "Privacy Policy page title"
+  },
+  "@lastUpdated": {
+    "description": "Last updated date text",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@termsSection1Title": {
+    "description": "Terms section 1 title"
+  },
+  "@termsSection1Content": {
+    "description": "Terms section 1 content"
+  },
+  "@termsSection2Title": {
+    "description": "Terms section 2 title"
+  },
+  "@termsSection2Content": {
+    "description": "Terms section 2 content"
+  },
+  "@termsSection3Title": {
+    "description": "Terms section 3 title"
+  },
+  "@termsSection3Content": {
+    "description": "Terms section 3 content"
+  },
+  "@termsSection4Title": {
+    "description": "Terms section 4 title"
+  },
   "@termsSection4Content": {
     "description": "termsSection4Content text"
   },
@@ -848,6 +894,13 @@
   },
   "@contactTitle": {
     "description": "contactTitle text"
+  },
+  "@termsContactContent": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
   },
   "@privacySection1Title": {
     "description": "privacySection1Title text"
@@ -920,5 +973,194 @@
   },
   "@privacyContactContent": {
     "description": "privacyContactContent text"
+  },
+  "@searchUsers": {
+    "description": "Search users placeholder"
+  },
+  "@showRanking": {
+    "description": "Show ranking tooltip"
+  },
+  "@noResultsFor": {
+    "description": "No results message",
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "@noUsersAvailable": {
+    "description": "No users available message"
+  },
+  "@fullRanking": {
+    "description": "Full ranking title"
+  },
+  "@topRanking": {
+    "description": "Top 5 ranking title"
+  },
+  "@showFullRanking": {
+    "description": "Show full ranking button text",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@gold": {
+    "description": "Gold medal text"
+  },
+  "@silver": {
+    "description": "Silver medal text"
+  },
+  "@bronze": {
+    "description": "Bronze medal text"
+  },
+  "@commentExample": {
+    "description": "Comment field hint example"
+  },
+  "@rateWithRaphcons": {
+    "description": "Application subtitle"
+  },
+  "@termsPrivacyAgreement": {
+    "description": "Terms and privacy agreement text"
+  },
+  "@errorLoadingAdminData": {
+    "description": "Error loading admin data message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@csvAdminsDescription": {
+    "description": "CSV admins description text"
+  },
+  "@noConfiguredAdmins": {
+    "description": "No configured admins found"
+  },
+  "@firebaseAdminsDescription": {
+    "description": "Firebase admins description text"
+  },
+  "@noActiveAdmins": {
+    "description": "No active admins found"
+  },
+  "@registeredUsers": {
+    "description": "Registered users title"
+  },
+  "@registeredUsersDescription": {
+    "description": "Registered users description text"
+  },
+  "@noRegisteredUsers": {
+    "description": "No registered users found"
+  },
+  "@lastLogin": {
+    "description": "Last login text",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@alreadyAdmin": {
+    "description": "Already admin badge text"
+  },
+  "@promoteToAdmin": {
+    "description": "Promote to admin tooltip"
+  },
+  "@minutesAgo": {
+    "description": "Minutes ago text",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "plural": {
+        "type": "String"
+      }
+    }
+  },
+  "@addAdminManually": {
+    "description": "Add admin manually description"
+  },
+  "@addAdminManuallyButton": {
+    "description": "Add admin manually button"
+  },
+  "@superAdmin": {
+    "description": "Super admin role text"
+  },
+  "@admin": {
+    "description": "Admin role text"
+  },
+  "@confirmRemoveAdmin": {
+    "description": "Confirm remove admin message",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "@remove": {
+    "description": "Remove button text"
+  },
+  "@errorRemoving": {
+    "description": "Error removing message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@promoteUserDialogTitle": {
+    "description": "Promote user dialog title"
+  },
+  "@promoteUserDescription": {
+    "description": "Promote user dialog description"
+  },
+  "@emailAddressLabel": {
+    "description": "Email address label"
+  },
+  "@emailAddressHint": {
+    "description": "Email address hint"
+  },
+  "@displayNameLabel": {
+    "description": "Display name label"
+  },
+  "@displayNameHint": {
+    "description": "Display name hint"
+  },
+  "@googleAccountRequired": {
+    "description": "Google account required note"
+  },
+  "@promoteToAdminButton": {
+    "description": "Promote to admin button text"
+  },
+  "@errorPromoting": {
+    "description": "Error promoting message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@manageUsersDescription": {
+    "description": "Manage users dialog description"
+  },
+  "@sampleData": {
+    "description": "Sample data button text"
+  },
+  "@searchAndRanking": {
+    "description": "Search and ranking tooltip"
+  },
+  "@logout": {
+    "description": "Logout menu item"
+  },
+  "@adminLoginPrompt": {
+    "description": "Admin login prompt message"
+  },
+  "@version": {
+    "description": "Version text",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
   }
 }

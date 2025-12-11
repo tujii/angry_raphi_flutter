@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter/material.dart';
 
 import '../../domain/entities/raphcon_entity.dart';
 import '../../domain/usecases/add_raphcon.dart';
@@ -133,9 +135,11 @@ class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
   final GetUserRaphconStatistics _getUserRaphconStatistics;
   final GetUserRaphconsByType _getUserRaphconsByType;
   final DeleteRaphcon _deleteRaphcon;
+  final BuildContext? _context;
 
   RaphconBloc(this._addRaphcon, this._getUserRaphconStatistics,
-      this._getUserRaphconsByType, this._deleteRaphcon)
+      this._getUserRaphconsByType, this._deleteRaphcon,
+      [@factoryParam this._context])
       : super(RaphconInitial()) {
     on<AddRaphconEvent>(_onAddRaphcon);
     on<LoadUserRaphconStatisticsEvent>(_onLoadUserRaphconStatistics);
@@ -159,7 +163,9 @@ class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
     final result = await _addRaphcon(params);
     result.fold(
       (failure) => emit(RaphconError(failure.message)),
-      (_) => emit(RaphconAdded('raphconCreated')),
+      (_) => emit(RaphconAdded(_context != null
+          ? AppLocalizations.of(_context!)?.raphconCreated ?? 'Raphcon created'
+          : 'Raphcon created')),
     );
   }
 

@@ -58,13 +58,13 @@ class TermsOfServicePage extends StatelessWidget {
             ),
             _buildSection(
               context,
-              '5. Datenschutz',
-              'Ihre Privatsphäre ist uns wichtig. Details zur Datenerhebung und -verarbeitung finden Sie in unserer Datenschutzerklärung, die integraler Bestandteil dieser Nutzungsbedingungen ist.',
+              AppLocalizations.of(context)!.termsSection5Title,
+              AppLocalizations.of(context)!.termsSection5Content,
             ),
             _buildSection(
               context,
-              '6. Geistiges Eigentum',
-              'Alle Inhalte der App, einschließlich Design, Code und Grafiken, sind urheberrechtlich geschützt. Die Nutzung ist nur im Rahmen der bestimmungsgemäßen Verwendung der App gestattet.',
+              AppLocalizations.of(context)!.termsSection6Title,
+              AppLocalizations.of(context)!.termsSection6Content,
             ),
             _buildSection(
               context,
@@ -73,18 +73,18 @@ class TermsOfServicePage extends StatelessWidget {
             ),
             _buildSection(
               context,
-              '8. Änderungen der Bedingungen',
-              'Wir behalten uns das Recht vor, diese Nutzungsbedingungen jederzeit zu ändern. Änderungen werden in der App bekannt gegeben und treten mit der Fortsetzung der Nutzung in Kraft.',
+              AppLocalizations.of(context)!.termsSection8Title,
+              AppLocalizations.of(context)!.termsSection8Content,
             ),
             _buildSection(
               context,
-              '9. Kündigung',
-              'Sie können Ihr Konto jederzeit löschen. Wir behalten uns vor, Konten bei Verstößen gegen diese Bedingungen zu sperren oder zu löschen.',
+              AppLocalizations.of(context)!.termsSection9Title,
+              AppLocalizations.of(context)!.termsSection9Content,
             ),
             _buildSection(
               context,
-              '10. Anwendbares Recht',
-              'Diese Nutzungsbedingungen unterliegen dem Recht der Bundesrepublik Deutschland. Gerichtsstand ist [Ihr Standort].',
+              AppLocalizations.of(context)!.termsSection10Title,
+              AppLocalizations.of(context)!.termsSection10Content,
             ),
             const SizedBox(height: 32),
             Container(

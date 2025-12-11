@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
@@ -49,7 +50,7 @@ class AuthPage extends StatelessWidget {
 
                   // App Name
                   Text(
-                    'AngryRaphi',
+                    AppLocalizations.of(context)!.appTitle,
                     style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                           color: AppConstants.primaryColor,
                           fontWeight: FontWeight.bold,
@@ -59,7 +60,7 @@ class AuthPage extends StatelessWidget {
 
                   // Subtitle
                   Text(
-                    'Rate people with raphcons!',
+                    AppLocalizations.of(context)!.rateWithRaphcons,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           color: AppConstants.subtitleColor,
                         ),
@@ -83,7 +84,7 @@ class AuthPage extends StatelessWidget {
 
                   // Terms and Privacy
                   Text(
-                    'By signing in, you agree to our Terms of Service and Privacy Policy',
+                    AppLocalizations.of(context)!.termsPrivacyAgreement,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: AppConstants.subtitleColor,
                         ),

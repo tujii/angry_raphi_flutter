@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/utils/responsive_helper.dart';
@@ -6,11 +7,12 @@ import '../../features/user/domain/entities/user.dart';
 
 class UserRankingSearchDelegate extends SearchDelegate<String> {
   final List<User> users;
+  final AppLocalizations localizations;
 
-  UserRankingSearchDelegate(this.users);
+  UserRankingSearchDelegate(this.users, this.localizations);
 
   @override
-  String get searchFieldLabel => 'Benutzer suchen...';
+  String get searchFieldLabel => localizations.searchUsers;
 
   @override
   ThemeData appBarTheme(BuildContext context) {
@@ -44,7 +46,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
       IconButton(
         icon: const Icon(Icons.leaderboard),
         onPressed: () => _showRankingDialog(context),
-        tooltip: 'Rangliste anzeigen',
+        tooltip: localizations.showRanking,
       ),
     ];
   }
@@ -88,7 +90,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Keine Ergebnisse für "$query"',
+              localizations.noResultsFor(query),
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.grey[600],
@@ -106,8 +108,8 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
     final topUsers = showAll ? users : users.take(5).toList();
 
     if (topUsers.isEmpty) {
-      return const Center(
-        child: Text('Keine Benutzer verfügbar'),
+      return Center(
+        child: Text(localizations.noUsersAvailable),
       );
     }
 
@@ -118,7 +120,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
           padding: const EdgeInsets.all(16),
           color: AppConstants.primaryColor.withValues(alpha: 0.1),
           child: Text(
-            showAll ? 'Vollständige Rangliste' : 'Top 5 Rangliste',
+            showAll ? localizations.fullRanking : localizations.topRanking,
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -137,7 +139,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
             child: TextButton(
               onPressed: () => _showRankingDialog(context),
               child: Text(
-                'Vollständige Rangliste anzeigen (${users.length} Benutzer)',
+                localizations.showFullRanking(users.length),
                 style: const TextStyle(color: AppConstants.primaryColor),
               ),
             ),
@@ -361,11 +363,11 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
   String _getRankText(int index) {
     switch (index) {
       case 0:
-        return 'GOLD';
-      case 1:
-        return 'SILBER';
+        return localizations.gold;
       case 2:
-        return 'BRONZE';
+        return localizations.silver;
+      case 3:
+        return localizations.bronze;
       default:
         return '';
     }
@@ -397,9 +399,9 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
                   children: [
                     const Icon(Icons.leaderboard, color: Colors.white),
                     const SizedBox(width: 8),
-                    const Expanded(
+                    Expanded(
                       child: Text(
-                        'Vollständige Rangliste',
+                        localizations.fullRanking,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 18,

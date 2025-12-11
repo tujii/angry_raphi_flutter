@@ -76,7 +76,7 @@ class _RaphconTypeSelectionDialogState
                 decoration: InputDecoration(
                   labelText: localizations.descriptionOptional,
                   border: const OutlineInputBorder(),
-                  hintText: 'z.B. "Maus klickt nicht richtig"',
+                  hintText: localizations.commentExample,
                 ),
                 maxLines: 2,
                 maxLength: 200,
