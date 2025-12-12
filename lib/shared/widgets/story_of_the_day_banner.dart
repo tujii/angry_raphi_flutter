@@ -2,16 +2,12 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import '../../core/constants/app_constants.dart';
 
-/// Widget to display the "Story of the Day" banner
-/// Shows rotating AI-generated stories based on weekly Raphcon statistics
 class StoryOfTheDayBanner extends StatefulWidget {
   final List<String> stories;
-  final VoidCallback? onTap;
 
   const StoryOfTheDayBanner({
     super.key,
     required this.stories,
-    this.onTap,
   });
 
   @override
@@ -83,77 +79,73 @@ class _StoryOfTheDayBannerState extends State<StoryOfTheDayBanner> {
           ),
         ],
       ),
-      child: InkWell(
-        onTap: widget.onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: AppConstants.primaryColor.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    Icons.auto_awesome,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppConstants.primaryColor.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.auto_awesome,
+                  color: AppConstants.primaryColor,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Text(
+                  '📖 Story of the Week',
+                  style: TextStyle(
                     color: AppConstants.primaryColor,
-                    size: 20,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
-                ),
-                const SizedBox(width: 12),
-                const Expanded(
-                  child: Text(
-                    '📖 Story of the Week',
-                    style: TextStyle(
-                      color: AppConstants.primaryColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 500),
-              child: Text(
-                widget.stories.isNotEmpty
-                    ? widget.stories[_currentIndex]
-                    : 'Keine Stories verfügbar',
-                key: ValueKey(_currentIndex),
-                style: TextStyle(
-                  color: Colors.grey[800],
-                  fontSize: 14,
-                  height: 1.4,
                 ),
               ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 500),
+            child: Text(
+              widget.stories.isNotEmpty
+                  ? widget.stories[_currentIndex]
+                  : 'Keine Stories verfügbar',
+              key: ValueKey(_currentIndex),
+              style: TextStyle(
+                color: Colors.grey[800],
+                fontSize: 14,
+                height: 1.4,
+              ),
             ),
-            if (widget.stories.length > 1)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                    widget.stories.length,
-                    (index) => Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 2),
-                      width: 6,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        color: index == _currentIndex
-                            ? AppConstants.primaryColor
-                            : AppConstants.primaryColor.withValues(alpha: 0.3),
-                        shape: BoxShape.circle,
-                      ),
+          ),
+          if (widget.stories.length > 1)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  widget.stories.length,
+                  (index) => Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 2),
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: index == _currentIndex
+                          ? AppConstants.primaryColor
+                          : AppConstants.primaryColor.withValues(alpha: 0.3),
+                      shape: BoxShape.circle,
                     ),
                   ),
                 ),
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }

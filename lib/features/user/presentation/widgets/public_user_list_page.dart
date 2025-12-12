@@ -407,7 +407,6 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
         if (_storiesOfTheWeek.isNotEmpty)
           StoryOfTheDayBanner(
             stories: _storiesOfTheWeek,
-            onTap: !_isLoggedIn ? () => _showLoginDialog(context) : null,
           ),
 
         // User list
