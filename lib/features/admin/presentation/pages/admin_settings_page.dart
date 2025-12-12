@@ -39,9 +39,12 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     final currentUser = FirebaseAuth.instance.currentUser;
 
     if (currentUser == null || currentUser.email == null) {
-      // User not logged in, redirect to home
+      // User not logged in, set error state and return
       if (mounted) {
-        context.go(AppRouter.home);
+        setState(() {
+          _loading = false;
+          _isAdmin = false;
+        });
       }
       return;
     }
@@ -119,86 +122,113 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AdminBloc, AdminState>(
+    return BlocConsumer<AdminBloc, AdminState>(
       listener: (context, state) {
         if (state is AdminStatusChecked) {
           if (state.isAdmin) {
-            setState(() => _isAdmin = true);
-            _ensureAdminEmailExists();
-            _loadAdminData();
-          } else {
-            // User is not admin, redirect to home
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content:
-                      Text('Zugriff verweigert. Sie sind kein Administrator.'),
-                  backgroundColor: Colors.red,
-                ),
-              );
-              context.go(AppRouter.home);
+            if (!_isAdmin) {
+              setState(() => _isAdmin = true);
+              _ensureAdminEmailExists();
+              _loadAdminData();
             }
+          } else {
+            // User is not admin
+            setState(() {
+              _loading = false;
+              _isAdmin = false;
+            });
           }
         } else if (state is AdminError) {
-          // Error checking admin status, redirect to home
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                    'Fehler beim Prüfen der Admin-Berechtigung: ${state.message}'),
-                backgroundColor: Colors.red,
-              ),
-            );
-            context.go(AppRouter.home);
-          }
+          // Error checking admin status
+          setState(() {
+            _loading = false;
+            _isAdmin = false;
+          });
         }
       },
-      child: Scaffold(
-        backgroundColor: AppConstants.backgroundColor,
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)?.adminSettings ??
-              'Admin Einstellungen'),
-          backgroundColor: AppConstants.primaryColor,
-          foregroundColor: Colors.white,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => context.go(AppRouter.home),
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: AppConstants.backgroundColor,
+          appBar: AppBar(
+            title: Text(AppLocalizations.of(context)?.adminSettings ??
+                'Admin Einstellungen'),
+            backgroundColor: AppConstants.primaryColor,
+            foregroundColor: Colors.white,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => context.go(AppRouter.home),
+            ),
           ),
-        ),
-        body: !_isAdmin
-            ? const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 16),
-                    Text('Prüfe Admin-Berechtigung...'),
-                  ],
-                ),
-              )
-            : _loading
-                ? const Center(child: CircularProgressIndicator())
-                : RefreshIndicator(
-                    onRefresh: _loadAdminData,
-                    child: SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      padding: const EdgeInsets.all(16.0),
+          body: _loading
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 16),
+                      Text(AppLocalizations.of(context)?.checkingAdminStatus ??
+                          'Prüfe Admin-Status...'),
+                    ],
+                  ),
+                )
+              : !_isAdmin
+                  ? Center(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _buildCSVAdminsSection(),
-                          const SizedBox(height: 24),
-                          _buildFirebaseAdminsSection(),
-                          const SizedBox(height: 24),
-                          _buildRegisteredUsersSection(),
-                          const SizedBox(height: 24),
-                          _buildPromoteUserSection(),
+                          Icon(
+                            Icons.security,
+                            size: 80,
+                            color: Colors.red,
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            AppLocalizations.of(context)?.notAdmin ??
+                                'Keine Admin-Berechtigung',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red,
+                                ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            AppLocalizations.of(context)?.notAdminMessage ??
+                                'Du hast keine Berechtigung, diese Aktion durchzuführen.',
+                            style: TextStyle(color: Colors.grey[600]),
+                          ),
+                          SizedBox(height: 24),
+                          ElevatedButton(
+                            onPressed: () => context.go(AppRouter.home),
+                            child: const Text('Zur Startseite'),
+                          ),
                         ],
                       ),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: _loadAdminData,
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildCSVAdminsSection(),
+                            const SizedBox(height: 24),
+                            _buildFirebaseAdminsSection(),
+                            const SizedBox(height: 24),
+                            _buildRegisteredUsersSection(),
+                            const SizedBox(height: 24),
+                            _buildPromoteUserSection(),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-      ),
+        );
+      },
     );
   }
 
