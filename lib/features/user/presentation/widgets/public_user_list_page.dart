@@ -6,9 +6,11 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/config/ai_config.dart';
+import '../../../../core/routing/app_router.dart';
 import '../../../../core/enums/raphcon_type.dart';
 import '../../domain/entities/user.dart' as user_entity;
 import '../../../admin/presentation/bloc/admin_bloc.dart';
@@ -24,7 +26,6 @@ import '../../../../shared/widgets/raphcon_statistics_bottom_sheet.dart';
 import '../../../../shared/widgets/streaming_raphcon_detail_bottom_sheet.dart';
 import '../../../../services/admin_config_service.dart';
 import '../../../../services/story_of_the_day_service.dart';
-import '../../../admin/presentation/pages/admin_settings_page.dart';
 import '../../../../shared/widgets/user_ranking_search_delegate.dart';
 import '../../../../shared/widgets/markdown_content_widget.dart';
 import '../../../../shared/widgets/story_of_the_day_banner.dart';
@@ -218,11 +219,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                     if (value == 'logout') {
                       context.read<AuthBloc>().add(AuthSignOutRequested());
                     } else if (value == 'settings') {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const AdminSettingsPage(),
-                        ),
-                      );
+                      context.push(AppRouter.adminSettings);
                     }
                   },
                   itemBuilder: (context) => [

@@ -36,6 +36,9 @@ dependencies:
   cached_network_image: ^3.4.1
   image_picker: ^1.1.2
   
+  # Navigation
+  go_router: ^14.6.2
+  
   # Authentication
   google_sign_in: ^6.2.1
   
