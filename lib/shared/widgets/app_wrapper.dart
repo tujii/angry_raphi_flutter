@@ -7,7 +7,18 @@ import '../../features/authentication/presentation/pages/splash_page.dart';
 import '../../features/user/presentation/widgets/public_user_list_page.dart';
 
 class AppWrapper extends StatelessWidget {
-  const AppWrapper({super.key});
+  final Function(Locale) onLanguageChanged;
+  final Function(ThemeMode) onThemeChanged;
+  final Locale currentLocale;
+  final ThemeMode currentTheme;
+
+  const AppWrapper({
+    super.key,
+    required this.onLanguageChanged,
+    required this.onThemeChanged,
+    required this.currentLocale,
+    required this.currentTheme,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +28,12 @@ class AppWrapper extends StatelessWidget {
           return const SplashPage();
         } else {
           // Always show the public user list - login is handled within
-          return const PublicUserListPage();
+          return PublicUserListPage(
+            onLanguageChanged: onLanguageChanged,
+            onThemeChanged: onThemeChanged,
+            currentLocale: currentLocale,
+            currentTheme: currentTheme,
+          );
         }
       },
     );
