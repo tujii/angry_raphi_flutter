@@ -84,7 +84,7 @@ jobs:
         run: flutter pub get
 
       - name: Build web app (debug)
-        run: flutter build web --base-href / --web-renderer canvaskit --release
+        run: flutter build web --base-href / --web-renderer canvaskit
 
       - name: Deploy to Firebase Preview Channel
         uses: FirebaseExtended/action-hosting-deploy@v0
