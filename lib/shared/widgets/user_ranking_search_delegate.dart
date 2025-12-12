@@ -193,8 +193,9 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
   Widget _buildUserCard(BuildContext context, User user, int index, int rank,
       {bool showRanking = false}) {
     final shouldShowBadge = _shouldShowBadge(users, index);
-    final rankIcon = _getRankIcon(rank);
-    final rankColor = _getRankColor(rank);
+    final badgePosition = _getBadgePosition(users, index);
+    final rankIcon = shouldShowBadge ? _getBadgeIcon(badgePosition) : _getRankIcon(rank);
+    final rankColor = shouldShowBadge ? _getBadgeColor(badgePosition) : _getRankColor(rank);
 
     return Card(
       elevation: showRanking && rank <= 3 ? 8 : 4,
@@ -322,7 +323,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      _getRankText(rank),
+                      shouldShowBadge ? _getBadgeText(badgePosition) : _getRankText(rank),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 8,
@@ -392,6 +393,58 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
     return uniqueCounts.length >= 3
         ? uniqueCounts.take(3).contains(userCount)
         : uniqueCounts.contains(userCount);
+  }
+
+  int _getBadgePosition(List<User> userList, int index) {
+    if (index >= userList.length) return 0;
+    
+    final uniqueCounts = userList
+        .map((user) => user.raphconCount)
+        .toSet()
+        .toList()
+      ..sort((a, b) => b.compareTo(a));
+    
+    final userCount = userList[index].raphconCount;
+    return uniqueCounts.indexOf(userCount) + 1; // 1-based position
+  }
+
+  IconData _getBadgeIcon(int badgePosition) {
+    switch (badgePosition) {
+      case 1:
+        return Icons.emoji_events; // Trophy for Gold
+      case 2:
+        return Icons.workspace_premium; // Medal for Silver
+      case 3:
+        return Icons.military_tech; // Medal for Bronze
+      default:
+        return Icons.person;
+    }
+  }
+
+  Color _getBadgeColor(int badgePosition) {
+    switch (badgePosition) {
+      case 1:
+        return const Color(0xFFFFD700); // Gold
+      case 2:
+        return const Color(0xFFC0C0C0); // Silver
+      case 3:
+        return const Color(0xFFCD7F32); // Bronze
+      default:
+        return AppConstants.primaryColor;
+    }
+  }
+
+  String _getBadgeText(int badgePosition) {
+    switch (badgePosition) {
+      case 1:
+        return localizations.gold;
+      case 2:
+        return localizations.silver;
+      case 3:
+        return localizations.bronze;
+      default:
+        return '';
+    }
   }
 
   void _showRankingDialog(BuildContext context) {
