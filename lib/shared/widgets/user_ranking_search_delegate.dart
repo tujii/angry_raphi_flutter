@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/constants/app_constants.dart';
+import '../../core/utils/ranking_utils.dart';
 import '../../core/utils/responsive_helper.dart';
 import '../../features/user/domain/entities/user.dart';
 
@@ -161,7 +162,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
       padding: const EdgeInsets.all(8),
       itemCount: userList.length,
       itemBuilder: (context, index) {
-        final rank = _calculateRank(userList, index);
+        final rank = RankingUtils.calculateRank(userList, index);
         return _buildUserCard(context, userList[index], index, rank,
             showRanking: showRanking);
       },
@@ -182,7 +183,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
       ),
       itemCount: userList.length,
       itemBuilder: (context, index) {
-        final rank = _calculateRank(userList, index);
+        final rank = RankingUtils.calculateRank(userList, index);
         return _buildUserCard(context, userList[index], index, rank,
             showRanking: showRanking);
       },
@@ -334,22 +335,6 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
         ),
       ),
     );
-  }
-
-  /// Calculates the rank of a user at a given index, accounting for ties.
-  /// Users with the same raphconCount get the same rank.
-  /// Returns a 1-based rank (1 = Gold, 2 = Silver, 3 = Bronze).
-  int _calculateRank(List<User> userList, int index) {
-    if (index == 0) return 1;
-    
-    int rank = 1;
-    for (int i = 0; i < index; i++) {
-      // Only increment rank when raphconCount changes
-      if (userList[i].raphconCount != userList[i + 1].raphconCount) {
-        rank = i + 2; // +2 because rank is 1-based and we're at i+1 position
-      }
-    }
-    return rank;
   }
 
   IconData _getRankIcon(int rank) {
