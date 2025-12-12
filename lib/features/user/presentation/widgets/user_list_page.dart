@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/utils/ranking_utils.dart';
 import '../../domain/entities/user.dart';
 import '../bloc/user_bloc.dart';
 import 'user_card.dart';
@@ -183,7 +184,7 @@ class UserListPage extends StatelessWidget {
           child: ListView.builder(
             itemCount: users.length,
             itemBuilder: (context, index) {
-              final rank = _calculateRank(users, index);
+              final rank = RankingUtils.calculateRank(users, index);
               return UserCard(
                 user: users[index],
                 rank: rank,
@@ -219,22 +220,6 @@ class UserListPage extends StatelessWidget {
 
   int _getTotalRaphcons(List<User> users) {
     return users.fold(0, (sum, user) => sum + user.raphconCount);
-  }
-
-  /// Calculates the rank of a user at a given index, accounting for ties.
-  /// Users with the same raphconCount get the same rank.
-  /// Returns a 1-based rank (1 = Gold, 2 = Silver, 3 = Bronze).
-  int _calculateRank(List<User> users, int index) {
-    if (index == 0) return 1;
-    
-    int rank = 1;
-    for (int i = 0; i < index; i++) {
-      // Only increment rank when raphconCount changes
-      if (users[i].raphconCount != users[i + 1].raphconCount) {
-        rank = i + 2; // +2 because rank is 1-based and we're at i+1 position
-      }
-    }
-    return rank;
   }
 
   void _showAddUserDialog(BuildContext context) {
