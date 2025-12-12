@@ -27,6 +27,13 @@ service cloud.firestore {
              data.createdBy == request.auth.uid;
     }
     
+    function isValidRegisteredUser(data) {
+      return data.keys().hasAll(['uid', 'email']) &&
+             data.uid is string &&
+             data.email is string &&
+             data.uid == request.auth.uid; // Ensure user can only register themselves
+    }
+    
     // Users Collection - Read for all (guests and authenticated), Write only for Admins
     match /users/{userId} {
       allow read: if true; // Everyone can read the user list
@@ -50,7 +57,12 @@ service cloud.firestore {
     // RegisteredUsers Collection - Read only for Admins, Write for authenticated users (for their own data)
     match /registeredUsers/{userId} {
       allow read: if isAdmin();
-      allow write: if isAuthenticated() && request.auth.uid == userId;
+      // Allow users to create/update their own registered user document with validation
+      allow create, update: if isAuthenticated() && 
+                              request.auth.uid == userId && 
+                              isValidRegisteredUser(request.resource.data);
+      // Allow admins to delete registered user documents
+      allow delete: if isAdmin();
     }
     
     // Statistics - Read only for Admins

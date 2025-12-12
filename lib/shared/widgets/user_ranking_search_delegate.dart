@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/constants/app_constants.dart';
+import '../../core/utils/ranking_utils.dart';
 import '../../core/utils/responsive_helper.dart';
 import '../../features/user/domain/entities/user.dart';
 
@@ -161,7 +162,8 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
       padding: const EdgeInsets.all(8),
       itemCount: userList.length,
       itemBuilder: (context, index) {
-        return _buildUserCard(context, userList[index], index,
+        final rank = RankingUtils.calculateRank(userList, index);
+        return _buildUserCard(context, userList[index], index, rank,
             showRanking: showRanking);
       },
     );
@@ -181,19 +183,24 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
       ),
       itemCount: userList.length,
       itemBuilder: (context, index) {
-        return _buildUserCard(context, userList[index], index,
+        final rank = RankingUtils.calculateRank(userList, index);
+        return _buildUserCard(context, userList[index], index, rank,
             showRanking: showRanking);
       },
     );
   }
 
-  Widget _buildUserCard(BuildContext context, User user, int index,
+  Widget _buildUserCard(BuildContext context, User user, int index, int rank,
       {bool showRanking = false}) {
-    final rankIcon = _getRankIcon(index);
-    final rankColor = _getRankColor(index);
+    final shouldShowBadge = _shouldShowBadge(users, index);
+    final badgePosition = _getBadgePosition(users, index);
+    final rankIcon =
+        shouldShowBadge ? _getBadgeIcon(badgePosition) : _getRankIcon(rank);
+    final rankColor =
+        shouldShowBadge ? _getBadgeColor(badgePosition) : _getRankColor(rank);
 
     return Card(
-      elevation: showRanking && index < 3 ? 8 : 4,
+      elevation: showRanking && rank <= 3 ? 8 : 4,
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       child: InkWell(
         onTap: () => close(context, user.id),
@@ -201,7 +208,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            gradient: showRanking && index < 3
+            gradient: showRanking && shouldShowBadge
                 ? LinearGradient(
                     colors: [
                       rankColor.withValues(alpha: 0.1),
@@ -223,7 +230,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
                     decoration: BoxDecoration(
                       color: rankColor,
                       borderRadius: BorderRadius.circular(16),
-                      boxShadow: index < 3
+                      boxShadow: shouldShowBadge
                           ? [
                               BoxShadow(
                                 color: rankColor.withValues(alpha: 0.3),
@@ -234,10 +241,10 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
                           : null,
                     ),
                     child: Center(
-                      child: index < 3
+                      child: shouldShowBadge
                           ? Icon(rankIcon, color: Colors.white, size: 20)
                           : Text(
-                              '${index + 1}',
+                              '$rank',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -309,7 +316,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
                     ],
                   ),
                 ),
-                if (showRanking && index < 3)
+                if (showRanking && shouldShowBadge)
                   Container(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -318,7 +325,9 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      _getRankText(index),
+                      shouldShowBadge
+                          ? _getBadgeText(badgePosition)
+                          : _getRankText(rank),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 8,
@@ -334,35 +343,104 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
     );
   }
 
-  IconData _getRankIcon(int index) {
-    switch (index) {
-      case 0:
-        return Icons.emoji_events; // Trophy
+  IconData _getRankIcon(int rank) {
+    switch (rank) {
       case 1:
-        return Icons.workspace_premium; // Silver medal
+        return Icons.emoji_events; // Trophy
       case 2:
+        return Icons.workspace_premium; // Silver medal
+      case 3:
         return Icons.military_tech; // Bronze medal
       default:
         return Icons.person;
     }
   }
 
-  Color _getRankColor(int index) {
-    switch (index) {
-      case 0:
-        return const Color(0xFFFFD700); // Gold
+  Color _getRankColor(int rank) {
+    switch (rank) {
       case 1:
-        return const Color(0xFFC0C0C0); // Silver
+        return const Color(0xFFFFD700); // Gold
       case 2:
+        return const Color(0xFFC0C0C0); // Silver
+      case 3:
         return const Color(0xFFCD7F32); // Bronze
       default:
         return AppConstants.primaryColor;
     }
   }
 
-  String _getRankText(int index) {
-    switch (index) {
-      case 0:
+  String _getRankText(int rank) {
+    switch (rank) {
+      case 1:
+        return localizations.gold;
+      case 2:
+        return localizations.silver;
+      case 3:
+        return localizations.bronze;
+      default:
+        return '';
+    }
+  }
+
+  bool _shouldShowBadge(List<User> userList, int index) {
+    if (index >= userList.length) return false;
+
+    // Get unique raphcon counts in descending order
+    final uniqueCounts = userList
+        .map((user) => user.raphconCount)
+        .toSet()
+        .toList()
+      ..sort((a, b) => b.compareTo(a));
+
+    // Show badge if user has one of the top 3 unique scores
+    final userCount = userList[index].raphconCount;
+    return uniqueCounts.length >= 3
+        ? uniqueCounts.take(3).contains(userCount)
+        : uniqueCounts.contains(userCount);
+  }
+
+  int _getBadgePosition(List<User> userList, int index) {
+    if (index >= userList.length) return 0;
+
+    final uniqueCounts = userList
+        .map((user) => user.raphconCount)
+        .toSet()
+        .toList()
+      ..sort((a, b) => b.compareTo(a));
+
+    final userCount = userList[index].raphconCount;
+    return uniqueCounts.indexOf(userCount) + 1; // 1-based position
+  }
+
+  IconData _getBadgeIcon(int badgePosition) {
+    switch (badgePosition) {
+      case 1:
+        return Icons.emoji_events; // Trophy for Gold
+      case 2:
+        return Icons.workspace_premium; // Medal for Silver
+      case 3:
+        return Icons.military_tech; // Medal for Bronze
+      default:
+        return Icons.person;
+    }
+  }
+
+  Color _getBadgeColor(int badgePosition) {
+    switch (badgePosition) {
+      case 1:
+        return const Color(0xFFFFD700); // Gold
+      case 2:
+        return const Color(0xFFC0C0C0); // Silver
+      case 3:
+        return const Color(0xFFCD7F32); // Bronze
+      default:
+        return AppConstants.primaryColor;
+    }
+  }
+
+  String _getBadgeText(int badgePosition) {
+    switch (badgePosition) {
+      case 1:
         return localizations.gold;
       case 2:
         return localizations.silver;
