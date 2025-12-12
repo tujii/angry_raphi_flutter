@@ -1,5 +1,8 @@
-import 'dart:html' as html;
 import 'package:flutter/foundation.dart';
+
+// Conditional import for web-only functionality
+import 'pwa_update_service_stub.dart'
+    if (dart.library.html) 'pwa_update_service_web.dart';
 
 /// Service to handle PWA updates and version checking
 /// This ensures the app automatically loads the latest version
@@ -13,81 +16,19 @@ class PwaUpdateService {
   /// Check for PWA updates when the app starts
   Future<void> checkForUpdatesOnStart() async {
     if (!isWeb) return;
-
-    try {
-      // Only check if running in a web browser
-      if (html.window.navigator.serviceWorker != null) {
-        final lastCheck = _getLastCheckTime();
-        final now = DateTime.now();
-
-        // Check if we should perform an update check
-        if (lastCheck == null ||
-            now.difference(lastCheck).inMinutes >= _checkIntervalMinutes) {
-          await _performUpdateCheck();
-          _saveLastCheckTime(now);
-        }
-      }
-    } catch (e) {
-      debugPrint('[PWA Update] Error checking for updates: $e');
-    }
+    await checkForUpdatesOnStartImpl();
   }
 
   /// Force an update check immediately
   Future<void> forceUpdateCheck() async {
     if (!isWeb) return;
-
-    try {
-      if (html.window.navigator.serviceWorker != null) {
-        await _performUpdateCheck();
-        _saveLastCheckTime(DateTime.now());
-      }
-    } catch (e) {
-      debugPrint('[PWA Update] Error forcing update check: $e');
-    }
-  }
-
-  /// Perform the actual update check
-  Future<void> _performUpdateCheck() async {
-    try {
-      final registration =
-          await html.window.navigator.serviceWorker?.ready;
-      if (registration != null) {
-        debugPrint('[PWA Update] Checking for service worker updates...');
-        await registration.update();
-      }
-    } catch (e) {
-      debugPrint('[PWA Update] Update check failed: $e');
-    }
-  }
-
-  /// Get the last time we checked for updates
-  DateTime? _getLastCheckTime() {
-    try {
-      final stored = html.window.localStorage[_storageKey];
-      if (stored != null) {
-        return DateTime.parse(stored);
-      }
-    } catch (e) {
-      debugPrint('[PWA Update] Error reading last check time: $e');
-    }
-    return null;
-  }
-
-  /// Save the last check time
-  void _saveLastCheckTime(DateTime time) {
-    try {
-      html.window.localStorage[_storageKey] = time.toIso8601String();
-    } catch (e) {
-      debugPrint('[PWA Update] Error saving last check time: $e');
-    }
+    await forceUpdateCheckImpl();
   }
 
   /// Clear the stored check time (for testing)
   void clearCheckTime() {
-    try {
-      html.window.localStorage.remove(_storageKey);
-    } catch (e) {
-      debugPrint('[PWA Update] Error clearing check time: $e');
-    }
+    if (!isWeb) return;
+    clearCheckTimeImpl();
   }
 }
+
