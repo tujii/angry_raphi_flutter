@@ -64,6 +64,8 @@ class DeleteRaphconEvent extends RaphconEvent {
   List<Object> get props => [raphconId];
 }
 
+class ExpireOldRaphconsEvent extends RaphconEvent {}
+
 // Stream Events
 class StartUserRaphconsStreamEvent extends RaphconEvent {
   final String userId;
@@ -160,6 +162,15 @@ class RaphconError extends RaphconState {
   List<Object> get props => [message];
 }
 
+class RaphconsExpired extends RaphconState {
+  final int expiredCount;
+
+  RaphconsExpired(this.expiredCount);
+
+  @override
+  List<Object> get props => [expiredCount];
+}
+
 // Stream States
 class RaphconsStreamLoaded extends RaphconState {
   final List<RaphconEntity> raphcons;
@@ -188,6 +199,7 @@ class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
   final DeleteRaphcon _deleteRaphcon;
   final GetUserRaphconsStream _getUserRaphconsStream;
   final GetUserRaphconsByTypeStream _getUserRaphconsByTypeStream;
+  final RaphconsRepository _repository;
 
   StreamSubscription? _raphconsStreamSubscription;
 
@@ -197,12 +209,14 @@ class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
       this._getUserRaphconsByType,
       this._deleteRaphcon,
       this._getUserRaphconsStream,
-      this._getUserRaphconsByTypeStream)
+      this._getUserRaphconsByTypeStream,
+      this._repository)
       : super(RaphconInitial()) {
     on<AddRaphconEvent>(_onAddRaphcon);
     on<LoadUserRaphconStatisticsEvent>(_onLoadUserRaphconStatistics);
     on<LoadUserRaphconsByTypeEvent>(_onLoadUserRaphconsByType);
     on<DeleteRaphconEvent>(_onDeleteRaphcon);
+    on<ExpireOldRaphconsEvent>(_onExpireOldRaphcons);
     on<StartUserRaphconsStreamEvent>(_onStartUserRaphconsStream);
     on<StartUserRaphconsByTypeStreamEvent>(_onStartUserRaphconsByTypeStream);
     on<StopRaphconsStreamEvent>(_onStopRaphconsStream);
@@ -272,6 +286,26 @@ class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
     result.fold(
       (failure) => emit(RaphconDeletionError(failure.message)),
       (_) => emit(RaphconDeleted(event.raphconId)),
+    );
+  }
+
+  Future<void> _onExpireOldRaphcons(
+    ExpireOldRaphconsEvent event,
+    Emitter<RaphconState> emit,
+  ) async {
+    // Don't emit loading state - this runs silently in the background
+    final result = await _repository.expireOldRaphcons();
+    result.fold(
+      (failure) {
+        // Silent fail - don't emit error state
+        // This operation should not interrupt user experience
+      },
+      (expiredCount) {
+        if (expiredCount > 0) {
+          emit(RaphconsExpired(expiredCount));
+        }
+        // If no raphcons expired, don't emit any state
+      },
     );
   }
 
