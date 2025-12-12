@@ -23,6 +23,7 @@ import '../../../../shared/widgets/streaming_raphcon_detail_bottom_sheet.dart';
 import '../../../../services/admin_config_service.dart';
 import '../../../admin/presentation/pages/admin_settings_page.dart';
 import '../../../../shared/widgets/user_ranking_search_delegate.dart';
+import '../../../../shared/widgets/markdown_content_widget.dart';
 import '../../../../core/utils/responsive_helper.dart';
 
 class PublicUserListPage extends StatefulWidget {
@@ -573,18 +574,10 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                     const SizedBox(height: 4),
 
                     Container(
-                      constraints: const BoxConstraints(maxWidth: 300),
-                      child: Text(
-                        _whatsNewContent,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                          height: 1.2,
-                        ),
-                        textAlign: TextAlign.left,
-                        maxLines: 20,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
+                      constraints:
+                          const BoxConstraints(maxWidth: 350, maxHeight: 300),
+                      child: SingleChildScrollView(
+                        child: MarkdownContentWidget(content: _whatsNewContent),
                       ),
                     ),
                     const SizedBox(height: 12),

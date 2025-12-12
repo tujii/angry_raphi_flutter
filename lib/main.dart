@@ -25,7 +25,6 @@ import 'features/raphcon_management/domain/usecases/get_user_raphcon_statistics.
 import 'features/raphcon_management/domain/usecases/get_user_raphcons_by_type.dart';
 import 'features/raphcon_management/domain/usecases/get_user_raphcons_stream.dart';
 import 'features/raphcon_management/domain/usecases/get_user_raphcons_by_type_stream.dart';
-import 'features/raphcon_management/domain/usecases/get_all_raphcons_stream.dart';
 import 'features/raphcon_management/domain/usecases/delete_raphcon.dart';
 import 'features/raphcon_management/presentation/bloc/raphcon_bloc.dart';
 import 'features/authentication/data/repositories/auth_repository_impl.dart';
@@ -152,17 +151,15 @@ class AngryRaphiApp extends StatelessWidget {
                   GetUserRaphconsStream(raphconRepository);
               final getUserRaphconsByTypeStream =
                   GetUserRaphconsByTypeStream(raphconRepository);
-              final getAllRaphconsStream =
-                  GetAllRaphconsStream(raphconRepository);
 
               return RaphconBloc(
-                  addRaphcon,
-                  getUserRaphconStatistics,
-                  getUserRaphconsByType,
-                  deleteRaphcon,
-                  getUserRaphconsStream,
-                  getUserRaphconsByTypeStream,
-                  getAllRaphconsStream);
+                addRaphcon,
+                getUserRaphconStatistics,
+                getUserRaphconsByType,
+                deleteRaphcon,
+                getUserRaphconsStream,
+                getUserRaphconsByTypeStream,
+              );
             },
           ),
           BlocProvider(

@@ -152,7 +152,7 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i383.DeleteRaphcon>(),
           gh<_i1016.GetUserRaphconsStream>(),
           gh<_i985.GetUserRaphconsByTypeStream>(),
-          gh<_i389.GetAllRaphconsStream>(),
+
         ));
     gh.factory<_i670.AuthBloc>(() => _i670.AuthBloc(
           gh<_i153.SignInWithGoogle>(),
