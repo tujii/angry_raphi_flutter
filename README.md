@@ -2,6 +2,15 @@
 
 A new Flutter project.
 
+## Setup
+
+### API Keys
+
+To use the Gemini AI features, you'll need to obtain a Gemini API key from Google AI Studio:
+- Get your API key at: https://aistudio.google.com/app/api-keys
+- Create a file named `gemini_api_key` in the project root directory
+- Add your API key to this file (the file is already included in `.gitignore` for security)
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
