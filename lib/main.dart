@@ -13,6 +13,7 @@ import 'features/user/data/repositories/firestore_user_repository.dart';
 import 'features/user/domain/usecases/user_usecases.dart';
 import 'features/user/presentation/bloc/user_bloc.dart';
 import 'services/admin_service.dart';
+import 'services/pwa_update_service.dart';
 import 'features/admin/data/repositories/admin_repository_impl.dart';
 import 'features/admin/data/datasources/admin_remote_datasource.dart';
 import 'features/admin/domain/usecases/check_admin_status.dart';
@@ -49,6 +50,9 @@ void main() async {
   // Initialize admin service
   await _initializeAdmin();
 
+  // Check for PWA updates on startup
+  await _checkPwaUpdates();
+
   runApp(const AngryRaphiApp());
 }
 
@@ -75,6 +79,15 @@ Future<void> _initializeAdmin() async {
     await adminService.ensureAdminExists('uhlmannraphael@gmail.com');
   } catch (e) {
     // Error initializing admin: silent fail in production
+  }
+}
+
+Future<void> _checkPwaUpdates() async {
+  try {
+    final pwaUpdateService = PwaUpdateService();
+    await pwaUpdateService.checkForUpdatesOnStart();
+  } catch (e) {
+    // Error checking for PWA updates: silent fail
   }
 }
 
