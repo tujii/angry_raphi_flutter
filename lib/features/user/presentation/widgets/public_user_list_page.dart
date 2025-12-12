@@ -111,6 +111,11 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                   displayName: currentUser.displayName ?? displayName,
                 ));
           }
+          
+          // Admin-only: Check and expire old raphcons (older than 1 year)
+          if (mounted) {
+            context.read<RaphconBloc>().add(ExpireOldRaphconsEvent());
+          }
         } else {
           // For other users, just check admin status
           context.read<AdminBloc>().add(CheckAdminStatusEvent(currentUser.uid));

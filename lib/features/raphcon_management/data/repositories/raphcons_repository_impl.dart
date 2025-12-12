@@ -108,6 +108,22 @@ class RaphconsRepositoryImpl implements RaphconsRepository {
   }
 
   @override
+  Future<Either<Failure, int>> expireOldRaphcons() async {
+    if (await networkInfo.isConnected) {
+      try {
+        final expiredCount = await remoteDataSource.expireOldRaphcons();
+        return Right(expiredCount);
+      } on ServerException catch (e) {
+        return Left(ServerFailure(e.message));
+      } catch (e) {
+        return Left(ServerFailure(e.toString()));
+      }
+    } else {
+      return const Left(NetworkFailure());
+    }
+  }
+
+  @override
   Stream<Either<Failure, List<RaphconEntity>>> getUserRaphconsStream(
       String userId) async* {
     if (await networkInfo.isConnected) {

@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/enums/raphcon_type.dart';
+import '../../../../core/constants/app_constants.dart';
 import '../models/raphcon_model.dart';
 
 abstract class RaphconsRemoteDataSource {
@@ -13,6 +14,7 @@ abstract class RaphconsRemoteDataSource {
   Future<void> addRaphcon(
       String userId, String createdBy, String? comment, RaphconType type);
   Future<void> deleteRaphcon(String raphconId);
+  Future<int> expireOldRaphcons();
 
   // Stream-based methods for real-time updates
   Stream<List<RaphconModel>> getUserRaphconsStream(String userId);
@@ -198,5 +200,56 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
       throw ServerException(
           'Failed to stream all raphcons: ${error.toString()}');
     });
+  }
+
+  @override
+  Future<int> expireOldRaphcons() async {
+    try {
+      // Calculate date one year ago from now
+      final expiryDate = DateTime.now().subtract(
+        Duration(days: AppConstants.raphconExpiryDays),
+      );
+      
+      // Query for active raphcons older than one year
+      final querySnapshot = await firestore
+          .collection('raphcons')
+          .where('isActive', isEqualTo: true)
+          .where('createdAt', isLessThan: expiryDate)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        return 0;
+      }
+
+      // Use batch to update all expired raphcons and user counts
+      final batch = firestore.batch();
+      final userRaphconCounts = <String, int>{};
+
+      // Mark raphcons as inactive and count per user
+      for (final doc in querySnapshot.docs) {
+        batch.update(doc.reference, {'isActive': false});
+        
+        final data = doc.data();
+        final userId = data['userId'];
+        
+        // Validate userId exists and is a string before updating counts
+        if (userId != null && userId is String) {
+          userRaphconCounts[userId] = (userRaphconCounts[userId] ?? 0) + 1;
+        }
+      }
+
+      // Update user raphcon counts
+      for (final entry in userRaphconCounts.entries) {
+        final userRef = firestore.collection('users').doc(entry.key);
+        batch.update(userRef, {
+          'raphconCount': FieldValue.increment(-entry.value),
+        });
+      }
+
+      await batch.commit();
+      return querySnapshot.docs.length;
+    } catch (e) {
+      throw ServerException('Failed to expire old raphcons: ${e.toString()}');
+    }
   }
 }

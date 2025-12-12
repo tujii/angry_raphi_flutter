@@ -159,6 +159,7 @@ class AngryRaphiApp extends StatelessWidget {
                 deleteRaphcon,
                 getUserRaphconsStream,
                 getUserRaphconsByTypeStream,
+                raphconRepository,
               );
             },
           ),

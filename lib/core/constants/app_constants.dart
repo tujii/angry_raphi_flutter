@@ -24,6 +24,9 @@ class AppConstants {
   static const int maxDescriptionLength = 500;
   static const int maxImageSizeMB = 5;
 
+  // Raphcon Expiry
+  static const int raphconExpiryDays = 365; // Raphcons expire after 1 year
+
   // UI
   static const double defaultPadding = 16.0;
   static const double smallPadding = 8.0;
