@@ -222,8 +222,10 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                         : null,
                     child: authState.user.photoURL == null
                         ? Text(
-                            authState.user.displayName.isNotEmpty 
-                                ? authState.user.displayName.substring(0, 1).toUpperCase()
+                            authState.user.displayName.isNotEmpty
+                                ? authState.user.displayName
+                                    .substring(0, 1)
+                                    .toUpperCase()
                                 : '?',
                             style: TextStyle(
                               color: Theme.of(context).primaryColor,
@@ -241,7 +243,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                   },
                   itemBuilder: (context) => [
                     // Only show settings for admins
-                    if (_isAdmin) 
+                    if (_isAdmin)
                       PopupMenuItem(
                         value: 'settings',
                         child: Row(
