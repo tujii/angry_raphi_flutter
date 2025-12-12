@@ -192,6 +192,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
 
   Widget _buildUserCard(BuildContext context, User user, int index, int rank,
       {bool showRanking = false}) {
+    final shouldShowBadge = _shouldShowBadge(users, index);
     final rankIcon = _getRankIcon(rank);
     final rankColor = _getRankColor(rank);
 
@@ -204,7 +205,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            gradient: showRanking && rank <= 3
+            gradient: showRanking && shouldShowBadge
                 ? LinearGradient(
                     colors: [
                       rankColor.withValues(alpha: 0.1),
@@ -226,7 +227,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
                     decoration: BoxDecoration(
                       color: rankColor,
                       borderRadius: BorderRadius.circular(16),
-                      boxShadow: rank <= 3
+                      boxShadow: shouldShowBadge
                           ? [
                               BoxShadow(
                                 color: rankColor.withValues(alpha: 0.3),
@@ -237,7 +238,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
                           : null,
                     ),
                     child: Center(
-                      child: rank <= 3
+                      child: shouldShowBadge
                           ? Icon(rankIcon, color: Colors.white, size: 20)
                           : Text(
                               '$rank',
@@ -312,7 +313,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
                     ],
                   ),
                 ),
-                if (showRanking && rank <= 3)
+                if (showRanking && shouldShowBadge)
                   Container(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -374,6 +375,23 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
       default:
         return '';
     }
+  }
+
+  bool _shouldShowBadge(List<User> userList, int index) {
+    if (index >= userList.length) return false;
+    
+    // Get unique raphcon counts in descending order
+    final uniqueCounts = userList
+        .map((user) => user.raphconCount)
+        .toSet()
+        .toList()
+      ..sort((a, b) => b.compareTo(a));
+    
+    // Show badge if user has one of the top 3 unique scores
+    final userCount = userList[index].raphconCount;
+    return uniqueCounts.length >= 3 
+        ? uniqueCounts.take(3).contains(userCount)
+        : uniqueCounts.contains(userCount);
   }
 
   void _showRankingDialog(BuildContext context) {
