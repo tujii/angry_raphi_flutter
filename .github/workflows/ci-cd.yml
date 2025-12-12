@@ -9,6 +9,16 @@ on:
     branches:
       - main
       - master
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'preview'
+        type: choice
+        options:
+          - preview
+          - production
 
 jobs:
   analyze-and-test:
@@ -24,7 +34,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.1'
+          flutter-version: '3.27.4'
           channel: 'stable'
           cache: true
 
@@ -37,16 +47,19 @@ jobs:
       - name: Run tests
         run: flutter test
 
-  build-and-deploy:
-    name: Build and Deploy to Firebase
+  build-and-deploy-preview:
+    name: Build and Deploy Preview
     runs-on: ubuntu-latest
     needs: analyze-and-test
     permissions:
       contents: read
-    # Only deploy on push to main/master, not on PRs
+      pull-requests: write
+    # Deploy preview for PRs and pushes to non-main branches
     if: >
-      github.event_name == 'push' &&
-      (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'push' && 
+       github.ref != 'refs/heads/main' && 
+       github.ref != 'refs/heads/master')
 
     steps:
       - name: Checkout code
@@ -65,7 +78,41 @@ jobs:
       - name: Build web app (debug)
         run: flutter build web --base-href / --web-renderer canvaskit --debug
 
-      - name: Deploy to Firebase Hosting
+      - name: Deploy to Firebase Preview Channel
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          projectId: angryraphi
+          expires: 7d
+
+  build-and-deploy-production:
+    name: Build and Deploy to Production
+    runs-on: ubuntu-latest
+    needs: analyze-and-test
+    permissions:
+      contents: read
+    # Only deploy to production on manual trigger
+    if: github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.1'
+          channel: 'stable'
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build web app (release)
+        run: flutter build web --base-href / --web-renderer canvaskit --release
+
+      - name: Deploy to Firebase Hosting (Production)
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
