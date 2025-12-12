@@ -5,7 +5,7 @@ import '../../../../core/errors/exceptions.dart';
 import '../models/admin_model.dart';
 
 abstract class AdminRemoteDataSource {
-  Future<bool> checkAdminStatus(String userId);
+  Future<bool> checkAdminStatus(String email);
   Future<void> addAdmin(String userId, String email, String displayName);
   Future<void> removeAdmin(String userId);
   Future<List<AdminModel>> getAllAdmins();
@@ -18,10 +18,15 @@ class AdminRemoteDataSourceImpl implements AdminRemoteDataSource {
   AdminRemoteDataSourceImpl(this.firestore);
 
   @override
-  Future<bool> checkAdminStatus(String userId) async {
+  Future<bool> checkAdminStatus(String email) async {
     try {
-      final doc = await firestore.collection('admins').doc(userId).get();
-      return doc.exists && (doc.data()?['isActive'] as bool? ?? false);
+      final querySnapshot = await firestore
+          .collection('admins')
+          .where('email', isEqualTo: email)
+          .where('isActive', isEqualTo: true)
+          .limit(1)
+          .get();
+      return querySnapshot.docs.isNotEmpty;
     } catch (e) {
       throw ServerException('Failed to check admin status: ${e.toString()}');
     }

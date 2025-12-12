@@ -19,10 +19,10 @@ class AdminRepositoryImpl implements AdminRepository {
   });
 
   @override
-  Future<Either<Failure, bool>> checkAdminStatus(String userId) async {
+  Future<Either<Failure, bool>> checkAdminStatus(String email) async {
     if (await networkInfo.isConnected) {
       try {
-        final isAdmin = await remoteDataSource.checkAdminStatus(userId);
+        final isAdmin = await remoteDataSource.checkAdminStatus(email);
         return Right(isAdmin);
       } on ServerException catch (e) {
         return Left(ServerFailure(e.message));
