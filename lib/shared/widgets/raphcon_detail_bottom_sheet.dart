@@ -98,12 +98,10 @@ class _RaphconDetailBottomSheetState extends State<RaphconDetailBottomSheet> {
 
   String _getCreatorDisplayName(String createdBy) {
     if (createdBy.isEmpty) return '';
-
     // Check cache first
     if (_userNameCache.containsKey(createdBy)) {
       return _userNameCache[createdBy]!;
     }
-
     // Return a better formatted fallback while loading
     if (createdBy.contains('@')) {
       // Extract name from email

@@ -75,22 +75,30 @@ class StreamingRaphconDetailBottomSheet extends StatefulWidget {
 
 class _StreamingRaphconDetailBottomSheetState
     extends State<StreamingRaphconDetailBottomSheet> {
-  final Map<String, String> _userNameCache = {};
+  final Map<String, String> _adminUserCache = {};
+  late RaphconBloc _raphconBloc;
 
   @override
   void initState() {
     super.initState();
     _loadUserNames();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Safely store the RaphconBloc reference
+    _raphconBloc = context.read<RaphconBloc>();
     // Start the stream for raphcons of this type for this user
-    context.read<RaphconBloc>().add(
-          StartUserRaphconsByTypeStreamEvent(widget.userId, widget.type),
-        );
+    _raphconBloc.add(
+      StartUserRaphconsByTypeStreamEvent(widget.userId, widget.type),
+    );
   }
 
   @override
   void dispose() {
     // Stop the stream when widget is disposed
-    context.read<RaphconBloc>().add(StopRaphconsStreamEvent());
+    _raphconBloc.add(StopRaphconsStreamEvent());
     super.dispose();
   }
 
@@ -100,23 +108,23 @@ class _StreamingRaphconDetailBottomSheetState
   }
 
   String _getCreatorDisplayName(String createdBy) {
-    return _userNameCache[createdBy] ?? 'Administrator';
+    return _adminUserCache[createdBy] ?? 'Administrator';
   }
 
   void _loadAdminDisplayName(String adminId) async {
-    if (_userNameCache.containsKey(adminId)) return;
+    if (_adminUserCache.containsKey(adminId)) return;
 
     try {
       final doc = await FirebaseFirestore.instance
-          .collection('users')
+          .collection('admins')
           .doc(adminId)
           .get();
       if (doc.exists) {
         final data = doc.data()!;
-        final displayName = data['initials'] as String? ?? 'Administrator';
+        final displayName = data['displayName'] as String? ?? 'Administrator';
         if (mounted) {
           setState(() {
-            _userNameCache[adminId] = displayName;
+            _adminUserCache[adminId] = displayName;
           });
         }
       }
@@ -124,7 +132,7 @@ class _StreamingRaphconDetailBottomSheetState
       // Fallback to generic admin name
       if (mounted) {
         setState(() {
-          _userNameCache[adminId] = 'Administrator';
+          _adminUserCache[adminId] = 'Administrator';
         });
       }
     }
@@ -141,7 +149,7 @@ class _StreamingRaphconDetailBottomSheetState
             if (state is UserLoaded) {
               setState(() {
                 for (final user in state.users) {
-                  _userNameCache[user.id] = user.name;
+                  _adminUserCache[user.id] = user.name;
                 }
               });
             }
@@ -374,7 +382,7 @@ class _StreamingRaphconDetailBottomSheetState
                   final raphcon = sortedRaphcons[index];
 
                   // Pre-load creator name if not cached
-                  if (!_userNameCache.containsKey(raphcon.createdBy) &&
+                  if (!_adminUserCache.containsKey(raphcon.createdBy) &&
                       raphcon.createdBy.isNotEmpty) {
                     _loadAdminDisplayName(raphcon.createdBy);
                   }

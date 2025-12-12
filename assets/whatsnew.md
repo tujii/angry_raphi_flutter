@@ -1,4 +1,13 @@
-Whats new?
-- Möglichkeit ein Ranking anzuzeigen unter Suche
-- Nach Initialen suchen
-- Admins dürfen weitere Admins definieren
+## 🏆 Neue Features
+
+Ranking-System
+- Das Benutzer-Ranking kann jetzt über die Suche angezeigt werden
+- Übersichtliche Darstellung der Top-Performer
+
+Erweiterte Suchfunktion
+- Suche nach Benutzer-Initialen ist jetzt möglich
+- Schnellere Navigation zu spezifischen Benutzern
+
+Admin-Verwaltung
+- Administratoren können jetzt weitere Admins berechtigen
+- Dezentrale Verwaltung der Benutzerrechte

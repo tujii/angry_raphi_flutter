@@ -72,7 +72,6 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
   Future<void> _loadWhatsNewContent() async {
     try {
       final content = await rootBundle.loadString('assets/whatsnew.md');
-      debugPrint(content);
       setState(() {
         if (content.trim().isNotEmpty) {
           _whatsNewContent = content.trim();
@@ -572,7 +571,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    // App description
+
                     Container(
                       constraints: const BoxConstraints(maxWidth: 300),
                       child: Text(
@@ -582,8 +581,8 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                           color: Colors.grey[600],
                           height: 1.2,
                         ),
-                        textAlign: TextAlign.center,
-                        maxLines: 3,
+                        textAlign: TextAlign.left,
+                        maxLines: 20,
                         overflow: TextOverflow.ellipsis,
                         softWrap: true,
                       ),
