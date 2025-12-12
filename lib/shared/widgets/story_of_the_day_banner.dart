@@ -1,17 +1,59 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import '../../core/constants/app_constants.dart';
 
 /// Widget to display the "Story of the Day" banner
-/// Shows a fun, AI-generated story based on weekly Raphcon statistics
-class StoryOfTheDayBanner extends StatelessWidget {
-  final String story;
+/// Shows rotating AI-generated stories based on weekly Raphcon statistics
+class StoryOfTheDayBanner extends StatefulWidget {
+  final List<String> stories;
   final VoidCallback? onTap;
 
   const StoryOfTheDayBanner({
     super.key,
-    required this.story,
+    required this.stories,
     this.onTap,
   });
+
+  @override
+  State<StoryOfTheDayBanner> createState() => _StoryOfTheDayBannerState();
+}
+
+class _StoryOfTheDayBannerState extends State<StoryOfTheDayBanner> {
+  int _currentIndex = 0;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startRotation();
+  }
+
+  @override
+  void didUpdateWidget(StoryOfTheDayBanner oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.stories != widget.stories) {
+      _startRotation();
+    }
+  }
+
+  void _startRotation() {
+    _timer?.cancel();
+    if (widget.stories.length > 1) {
+      _timer = Timer.periodic(const Duration(seconds: 4), (timer) {
+        if (mounted) {
+          setState(() {
+            _currentIndex = (_currentIndex + 1) % widget.stories.length;
+          });
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +84,7 @@ class StoryOfTheDayBanner extends StatelessWidget {
         ],
       ),
       child: InkWell(
-        onTap: onTap,
+        onTap: widget.onTap,
         borderRadius: BorderRadius.circular(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,14 +117,39 @@ class StoryOfTheDayBanner extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            Text(
-              story,
-              style: TextStyle(
-                color: Colors.grey[800],
-                fontSize: 14,
-                height: 1.4,
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 500),
+              child: Text(
+                widget.stories.isNotEmpty ? widget.stories[_currentIndex] : 'Keine Stories verfügbar',
+                key: ValueKey(_currentIndex),
+                style: TextStyle(
+                  color: Colors.grey[800],
+                  fontSize: 14,
+                  height: 1.4,
+                ),
               ),
             ),
+            if (widget.stories.length > 1)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    widget.stories.length,
+                    (index) => Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 2),
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: index == _currentIndex 
+                            ? AppConstants.primaryColor 
+                            : AppConstants.primaryColor.withValues(alpha: 0.3),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

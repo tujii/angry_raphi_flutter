@@ -9,26 +9,36 @@ import 'gemini_ai_service.dart';
 class StoryOfTheDayService {
   final FirebaseFirestore _firestore;
   final GeminiAIService _geminiService;
-  
+
   StoryOfTheDayService(this._firestore, {String? geminiApiKey})
       : _geminiService = GeminiAIService(geminiApiKey);
 
-  /// Get the story of the day based on this week's Raphcon data
-  Future<String> getWeeklyStory(List<User> users) async {
+  /// Get multiple stories of the week based on this week's Raphcon data
+  Future<List<String>> getWeeklyStories(List<User> users) async {
     try {
       // Get the start of the current week (Monday at midnight)
       final now = DateTime.now();
-      final startOfWeek = DateTime(now.year, now.month, now.day - (now.weekday - 1));
-      
-      // Get all Raphcons from this week
+      final daysFromMonday = now.weekday - 1; // Monday = 0, Sunday = 6
+      final startOfWeek = DateTime(now.year, now.month, now.day)
+          .subtract(Duration(days: daysFromMonday));
+
+      // Get all active Raphcons from this week
       final raphconsSnapshot = await _firestore
           .collection('raphcons')
-          .where('createdAt', isGreaterThanOrEqualTo: Timestamp.fromDate(startOfWeek))
+          .where('createdAt',
+              isGreaterThanOrEqualTo: Timestamp.fromDate(startOfWeek))
           .where('isActive', isEqualTo: true)
           .get();
 
+      print('=== RAPHCONS WEEKLY DEBUG ===');
+      print('Current date: $now');
+      print('Start of week (Monday): $startOfWeek');
+      print('Active raphcons this week: ${raphconsSnapshot.docs.length}');
+
       if (raphconsSnapshot.docs.isEmpty) {
-        return _getDefaultStory();
+        print('No active raphcons found -> using default stories');
+        print('=============================');
+        return _getDefaultStories();
       }
 
       // Count Raphcons by user and type
@@ -40,111 +50,217 @@ class StoryOfTheDayService {
         final userId = data['userId'] as String;
         final typeString = data['type'] as String? ?? 'other';
         final type = RaphconType.fromString(typeString);
+        final createdAt = (data['createdAt'] as Timestamp).toDate();
+
+        print(
+            'Active Raphcon: User $userId, Type: $typeString, Date: $createdAt');
 
         userStats.putIfAbsent(userId, () => {});
         userStats[userId]![type] = (userStats[userId]![type] ?? 0) + 1;
         totalByUser[userId] = (totalByUser[userId] ?? 0) + 1;
       }
 
-      // Find interesting stats
-      final stories = <String>[];
-
-      // Find user with most raphcons this week
-      if (totalByUser.isNotEmpty) {
-        final topUser = totalByUser.entries.reduce((a, b) => a.value > b.value ? a : b);
-        final user = users.firstWhere((u) => u.id == topUser.key, orElse: () => users.first);
-        if (topUser.value >= 3) {
-          final story = await _generateTopUserStory(user.initials, topUser.value);
-          stories.add(story);
-        }
-      }
-
-      // Find user with most specific type issues
-      for (var entry in userStats.entries) {
+      print('\n--- USER STATISTICS ---');
+      for (var entry in totalByUser.entries) {
         final userId = entry.key;
-        final user = users.firstWhere((u) => u.id == userId, orElse: () => users.first);
-        
-        for (var typeEntry in entry.value.entries) {
-          if (typeEntry.value >= 2) {
-            final story = await _generateTypeStory(user.initials, typeEntry.key, typeEntry.value);
-            stories.add(story);
+        final userInitials = users
+            .firstWhere((u) => u.id == userId, orElse: () => users.first)
+            .initials;
+        print('User $userInitials ($userId): ${entry.value} raphcons');
+
+        if (userStats[userId] != null) {
+          for (var typeEntry in userStats[userId]!.entries) {
+            print('  - ${typeEntry.key}: ${typeEntry.value}x');
           }
         }
       }
 
-      if (stories.isEmpty) {
-        return _getDefaultStory();
+      // Find interesting stats
+      final storiesSet = <String>{};  // Use Set to avoid duplicates
+
+      // Find user with most raphcons this week  
+      if (totalByUser.isNotEmpty) {
+        final topUser =
+            totalByUser.entries.reduce((a, b) => a.value > b.value ? a : b);
+        final user = users.firstWhere((u) => u.id == topUser.key,
+            orElse: () => users.first);
+        print('\nTop user: ${user.initials} with ${topUser.value} raphcons');
+
+        if (topUser.value >= 3) {
+          print('Generating top user story...');
+          final story = await _generateTopUserStory(user.initials, topUser.value, variation: 0);
+          if (story != null) {
+            print('Generated top user story: $story');
+            storiesSet.add(story);
+          }
+        } else {
+          print('Top user has only ${topUser.value} raphcons (need ≥3 for story)');
+        }
       }
 
-      // Return a random story from the available ones
-      // Use same seed as other methods for consistency
-      final random = Random(now.day + now.weekday);
-      return stories[random.nextInt(stories.length)];
+      // Find users with specific type issues (limit to most interesting ones)
+      print('\n--- CHECKING TYPE STORIES ---');
+      var typeStoriesAdded = 0;
+      var variationCounter = 0;
+      
+      // Sort users by total raphcons for better variety
+      final sortedEntries = userStats.entries.toList()
+        ..sort((a, b) => totalByUser[b.key]!.compareTo(totalByUser[a.key]!));
+      
+      for (var entry in sortedEntries) {
+        if (typeStoriesAdded >= 4) break;  // Max 4 type stories
+        
+        final userId = entry.key;
+        final user = users.firstWhere((u) => u.id == userId, orElse: () => users.first);
+
+        // Find the most problematic type for this user
+        final topTypeEntry = entry.value.entries
+            .where((typeEntry) => typeEntry.value >= 2)
+            .fold<MapEntry<RaphconType, int>?>(null, (prev, curr) => 
+                prev == null || curr.value > prev.value ? curr : prev);
+
+        if (topTypeEntry != null && typeStoriesAdded < 4) {
+          print('Generating type story for ${user.initials}: ${topTypeEntry.key} ${topTypeEntry.value}x');
+          final story = await _generateTypeStory(
+            user.initials, 
+            topTypeEntry.key, 
+            topTypeEntry.value,
+            variation: variationCounter
+          );
+          if (story != null && !storiesSet.contains(story)) {
+            print('Generated type story: $story');
+            storiesSet.add(story);
+            typeStoriesAdded++;
+            variationCounter++;
+          }
+        }
+      }
+
+      // Convert Set to List and limit to max 5 stories
+      final stories = storiesSet.toList();
+      final maxStories = 5;
+      final finalStories = stories.length > maxStories 
+          ? stories.sublist(0, maxStories)
+          : stories;
+
+      print('\n--- FINAL RESULT ---');
+      print('Total unique stories generated: ${stories.length}');
+      print('Returning top ${finalStories.length} stories');
+
+      if (finalStories.isEmpty) {
+        print('No stories generated -> using default stories');
+        final defaultStories = _getDefaultStories().take(maxStories).toList();
+        print('Default stories: $defaultStories');
+        print('=============================');
+        return defaultStories;
+      }
+
+      // Return limited stories for rotation
+      print('Available stories:');
+      for (int i = 0; i < finalStories.length; i++) {
+        print('  [$i] ${finalStories[i]}');
+      }
+      print('=============================');
+
+      return finalStories;
     } catch (e) {
-      return _getDefaultStory();
+      print('ERROR in getWeeklyStories: $e');
+      print('Using fallback default stories');
+      final defaultStories = _getDefaultStories().take(5).toList();
+      print('Default stories: $defaultStories');
+      print('=============================');
+      return defaultStories;
     }
   }
 
-  Future<String> _generateTopUserStory(String userName, int count) async {
+  Future<String?> _generateTopUserStory(String userName, int count,
+      {int variation = 0}) async {
     // Try Gemini AI first
     if (_geminiService.isAvailable) {
       final aiStory = await _geminiService.generateTopUserStory(
         userName: userName,
         count: count,
+        variation: variation,
       );
       if (aiStory != null && aiStory.isNotEmpty) {
         return aiStory;
       }
     }
-    
-    // Fallback to templates
+
+    // More diverse fallback templates
     final now = DateTime.now();
-    final random = Random(now.day + now.weekday); // Use consistent seed
-    final stories = [
+    final random = Random(now.millisecond + variation + userName.hashCode + count);
+    
+    final allTemplates = [
       '🎯 $userName führt diese Woche mit $count Raphcons! Technik ist nicht für jeden...',
-      '🏆 Rekordhalter der Woche: $userName mit $count Raphcons. Glückwunsch? 🤔',
-      '📊 $userName hat $count Raphcons gesammelt diese Woche. Zeit für ein IT-Training?',
-      '⚡ $userName dominiert mit $count Raphcons! Die Technik-Nemesis schlägt wieder zu.',
+      '🏆 Raphcon-Champion: $userName mit $count Sammelstücken diese Woche!',
+      '📊 $userName sammelt Raphcons wie andere Briefmarken: $count diese Woche!',
+      '⚡ Tech-Magnet $userName zieht Probleme an: $count Raphcons!',
+      '🎪 $userName in der Raphcon-Arena: $count Treffer diese Woche!',
+      '💥 Raphcon-Rekord! $userName schafft $count Stück in einer Woche!',
+      '🚀 $userName auf Raphcon-Mission: $count erfolgreich gesammelt!',
+      '🎭 Drama, Baby! $userName mit $count Raphcons diese Woche.',
+      '⭐ $userName brilliert mit $count Raphcons. Welch ein Talent!',
+      '🔥 Hot Streak! $userName knackt $count Raphcons diese Woche!'
     ];
-    return stories[random.nextInt(stories.length)];
+    
+    return allTemplates[random.nextInt(allTemplates.length)];
   }
 
-  Future<String> _generateTypeStory(String userName, RaphconType type, int count) async {
-    // Try Gemini AI first
+  Future<String?> _generateTypeStory(
+      String userName, RaphconType type, int count,
+      {int variation = 0}) async {
+    // Try Gemini AI first with variation
     if (_geminiService.isAvailable) {
       final problemType = _getGermanTypeName(type);
       final aiStory = await _geminiService.generateStory(
         userName: userName,
         problemType: problemType,
         count: count,
+        variation: variation,
       );
       if (aiStory != null && aiStory.isNotEmpty) {
         return aiStory;
       }
     }
+
+    // Fallback to varied templates
+    final now = DateTime.now();
+    final random = Random(now.millisecond + variation + userName.hashCode);
     
-    // Fallback to templates
     switch (type) {
       case RaphconType.headset:
-        return '🎧 $userName hat den Krieg ${count}x gegen sein Headset verloren diese Woche!';
+        final headsetTemplates = [
+          '🎧 $userName hat den Krieg ${count}x gegen sein Headset verloren diese Woche!',
+          '🎵 $userName vs. Headset: $count:0 für das Headset diese Woche!',
+          '🔊 $userName\'s Kopfhörer haben ${count}x rebelliert diese Woche!',
+          '🎧 Headset-Drama bei $userName: ${count}x Totalausfall diese Woche!'
+        ];
+        return headsetTemplates[random.nextInt(headsetTemplates.length)];
       case RaphconType.microphone:
-        return '🎤 $userName und das Mikrofon: Eine Geschichte von $count Missverständnissen diese Woche.';
-      case RaphconType.keyboard:
-        return '⌨️ $userName hat seine Tastatur nicht im Griff - ${count}x diese Woche!';
-      case RaphconType.mouse:
-        return '🖱️ Die Maus von $userName streikt schon wieder... ${count}x diese Woche!';
-      case RaphconType.webcam:
-        return '📹 $userName kämpft mit der Webcam: $count Runden verloren diese Woche.';
-      case RaphconType.network:
-        return '🌐 $userName\'s Internet macht wieder Probleme - ${count}x diese Woche!';
+        final micTemplates = [
+          '🎤 $userName und das Mikrofon: Eine Geschichte von $count Missverständnissen diese Woche.',
+          '🎙️ $userName\'s Mikrofon ist ${count}x stumm geblieben diese Woche!',
+          '🔇 Mikrofon-Chaos bei $userName: ${count}x diese Woche!',
+          '🎤 $userName redet gegen eine Wand: ${count}x Mikrofon-Fail!'
+        ];
+        return micTemplates[random.nextInt(micTemplates.length)];
       case RaphconType.software:
-        return '💻 $userName hat seine Software nicht im Griff, diese Woche sogar ${count}x!';
-      case RaphconType.hardware:
-        return '🔧 Hardware vs. $userName: $count zu 0 für die Hardware diese Woche.';
-      case RaphconType.speakers:
-        return '🔊 $userName\'s Lautsprecher streiken ${count}x diese Woche. Stille Nacht?';
+        final softwareTemplates = [
+          '💻 $userName hat seine Software nicht im Griff, diese Woche sogar ${count}x!',
+          '🐛 Software-Bugs jagen $userName: ${count}x diese Woche erwischt!',
+          '💾 $userName vs. Programme: $count:0 für die Software!',
+          '⚡ $userName\'s Software crasht ${count}x diese Woche. Neustart?'
+        ];
+        return softwareTemplates[random.nextInt(softwareTemplates.length)];
       default:
-        return '❓ $userName hatte ${count}x mysteriöse Tech-Probleme diese Woche...';
+        final genericTemplates = [
+          '❓ $userName hatte ${count}x mysteriöse Tech-Probleme diese Woche...',
+          '🔧 Tech-Gremlins verfolgen $userName: ${count}x diese Woche!',
+          '⚙️ $userName kämpft gegen die Maschinen: ${count}x verloren!',
+          '🤖 Die Technik hasst $userName: ${count}x Beweis diese Woche!'
+        ];
+        return genericTemplates[random.nextInt(genericTemplates.length)];
     }
   }
 
@@ -173,15 +289,16 @@ class StoryOfTheDayService {
     }
   }
 
-  String _getDefaultStory() {
-    final now = DateTime.now();
-    final stories = [
+  List<String> _getDefaultStories() {
+    return [
       '🎉 Neue Woche, neue Raphcons! Wer wird diese Woche die meisten sammeln?',
       '🚀 Die Raphcon-Jagd ist eröffnet! Welche Technik-Pannen erwarten uns?',
       '📱 Noch keine Tech-Probleme diese Woche? Das kann sich noch ändern!',
       '⚙️ Die Technik ist launisch heute... Viel Glück, alle zusammen!',
       '🎲 Raphcon-Roulette: Wer trifft es diese Woche als Erstes?',
+      '💻 Die Server laufen, die Tastaturen klappern, die Raphcons warten...',
+      '🎯 Wer wird heute der glückliche Raphcon-Gewinner? Die Wetten laufen!',
+      '⚡ Technik-Chaos vorprogrammiert! Die Woche fängt gut an.',
     ];
-    return stories[now.day % stories.length];
   }
 }

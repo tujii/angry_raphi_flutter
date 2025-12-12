@@ -42,7 +42,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
   bool _isLoggedIn = false;
   String _appVersion = '1.0.0';
   String _whatsNewContent = '';
-  String _storyOfTheDay = '';
+  List<String> _storiesOfTheWeek = [];
   late StoryOfTheDayService _storyService;
 
   @override
@@ -69,43 +69,53 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
   Future<void> _loadAppVersion() async {
     try {
       final packageInfo = await PackageInfo.fromPlatform();
-      setState(() {
-        _appVersion = packageInfo.version;
-      });
+      if (mounted) {
+        setState(() {
+          _appVersion = packageInfo.version;
+        });
+      }
     } catch (e) {
       // Fallback to hardcoded version if package info fails
-      setState(() {
-        _appVersion = '1.0.1';
-      });
+      if (mounted) {
+        setState(() {
+          _appVersion = '1.0.1';
+        });
+      }
     }
   }
 
   Future<void> _loadWhatsNewContent() async {
     try {
       final content = await rootBundle.loadString('assets/whatsnew.md');
-      setState(() {
-        if (content.trim().isNotEmpty) {
-          _whatsNewContent = content.trim();
-        } else {
-          _whatsNewContent = AppLocalizations.of(context)?.subtitle ??
-              'Bewerte Personen mit Raphcons';
-        }
-      });
+      if (mounted) {
+        setState(() {
+          if (content.trim().isNotEmpty) {
+            _whatsNewContent = content.trim();
+          } else {
+            _whatsNewContent = AppLocalizations.of(context)?.subtitle ??
+                'Bewerte Personen mit Raphcons';
+          }
+        });
+      }
     } catch (e) {
       // Keep default value if file can't be loaded
-      setState(() {
-        _whatsNewContent = AppLocalizations.of(context)?.subtitle ??
-            'Bewerte Personen mit Raphcons';
-      });
+      if (mounted) {
+        setState(() {
+          _whatsNewContent = AppLocalizations.of(context)?.subtitle ??
+              'Bewerte Personen mit Raphcons';
+        });
+      }
     }
   }
 
   void _checkAuthAndAdminStatus() async {
     final currentUser = firebase_auth.FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
-      setState(() {
-        _isLoggedIn = true;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoggedIn = true;
+        });
+      }
 
       // Check if user is admin from CSV configuration
       final isAdminUser = await AdminConfigService.isAdmin(currentUser.email!);
@@ -131,11 +141,11 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
 
   Future<void> _loadStoryOfTheDay(List<user_entity.User> users) async {
     if (users.isEmpty) return;
-    
-    final story = await _storyService.getWeeklyStory(users);
+
+    final stories = await _storyService.getWeeklyStories(users);
     if (mounted) {
       setState(() {
-        _storyOfTheDay = story;
+        _storiesOfTheWeek = stories;
       });
     }
   }
@@ -255,7 +265,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
         listeners: [
           BlocListener<AdminBloc, AdminState>(
             listener: (context, state) {
-              if (state is AdminStatusChecked) {
+              if (state is AdminStatusChecked && mounted) {
                 setState(() {
                   _isAdmin = state.isAdmin;
                 });
@@ -264,7 +274,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
           ),
           BlocListener<AuthBloc, AuthState>(
             listener: (context, state) {
-              if (state is AuthAuthenticated) {
+              if (state is AuthAuthenticated && mounted) {
                 setState(() {
                   _isLoggedIn = true;
                 });
@@ -273,7 +283,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                     .read<AdminBloc>()
                     .add(CheckAdminStatusEvent(state.user.id));
                 Navigator.of(context).pop(); // Close login dialog
-              } else if (state is AuthUnauthenticated) {
+              } else if (state is AuthUnauthenticated && mounted) {
                 setState(() {
                   _isLoggedIn = false;
                   _isAdmin = false;
@@ -300,8 +310,10 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
           ),
           BlocListener<UserBloc, UserState>(
             listener: (context, state) {
-              // Load story when users are loaded
-              if (state is UserLoaded && state.users.isNotEmpty && _storyOfTheDay.isEmpty) {
+              // Load stories when users are loaded
+              if (state is UserLoaded &&
+                  state.users.isNotEmpty &&
+                  _storiesOfTheWeek.isEmpty) {
                 _loadStoryOfTheDay(state.users);
               }
             },
@@ -391,10 +403,10 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
 
     return Column(
       children: [
-        // Story of the Day banner (replaces login banner)
-        if (_storyOfTheDay.isNotEmpty)
+        // Story of the Week banner (replaces login banner)
+        if (_storiesOfTheWeek.isNotEmpty)
           StoryOfTheDayBanner(
-            story: _storyOfTheDay,
+            stories: _storiesOfTheWeek,
             onTap: !_isLoggedIn ? () => _showLoginDialog(context) : null,
           ),
 

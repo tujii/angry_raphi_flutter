@@ -1,5 +1,13 @@
 ## 🏆 Neue Features
 
+**Story of the Week 2.0 (Dezember 2025)**
+- 🎬 Animierte Story-Rotation: Stories wechseln alle 4 Sekunden
+- 🎯 Intelligente Story-Generierung mit bis zu 5 verschiedenen Stories
+- 🤖 Verbesserte KI-Integration mit 5 verschiedenen Schreibstilen
+- 📊 Optimierte Algorithmen für relevantere und vielfältigere Stories
+- 🎪 Dot-Indikatoren zeigen aktuelle Story-Position
+- ⚙️ Duplikat-Vermeidung für einzigartige Inhalte
+
 **Performance & Loading (Dezember 2025)**
 - ⚡ Deutlich verbessertes Loading-Verhalten beim App-Start
 - 🚀 Optimierte Service Worker Konfiguration für schnellere Ladezeiten
