@@ -174,9 +174,6 @@ void main() {
 
       final top3UniqueScores = uniqueScores.take(3).toList();
       expect(top3UniqueScores, equals([15, 10, 7]));
-
-      print('Unique scores: $uniqueScores');
-      print('Top 3 for badges: $top3UniqueScores');
     });
 
     test('should distribute badges correctly: 2 Gold, 4 Silver, 10 Bronze', () {
@@ -203,13 +200,8 @@ void main() {
               bronzeCount++;
               break;
           }
-
-          print(
-              '${testUsers[i].initials} (${testUsers[i].raphconCount}) → $badgeText');
         } else {
           noBadgeCount++;
-          print(
-              '${testUsers[i].initials} (${testUsers[i].raphconCount}) → NO BADGE');
         }
       }
 
@@ -221,13 +213,6 @@ void main() {
           reason: 'Should have exactly 10 Bronze badges');
       expect(noBadgeCount, equals(5),
           reason: 'Should have exactly 5 users without badges');
-
-      print('\n=== BADGE DISTRIBUTION SUMMARY ===');
-      print('🥇 Gold: $goldCount users');
-      print('🥈 Silver: $silverCount users');
-      print('🥉 Bronze: $bronzeCount users');
-      print('❌ No Badge: $noBadgeCount users');
-      print('Total: ${testUsers.length} users');
     });
 
     test('should assign badges based on unique scores, not positions', () {
