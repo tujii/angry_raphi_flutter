@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,25 +43,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-  try {
-    // Initialize Firebase with performance optimizations
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-
-    // Enable offline persistence for Firestore (improves load times)
-    FirebaseFirestore.instance.settings = const Settings(
-      persistenceEnabled: true,
-      cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
-    );
-
-    // Initialize admin service and check for admin
-    await _initializeAdmin();
-  } catch (e) {
-    // Graceful error handling - app should still start
-    debugPrint('Firebase initialization error: $e');
-  }
+  // Initialize admin service
+  await _initializeAdmin();
 
   runApp(const AngryRaphiApp());
 }

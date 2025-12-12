@@ -35,12 +35,17 @@
   <meta name="msapplication-TileColor" content="#8B0000">
   
   <!-- Resource Hints for Performance -->
-  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="dns-prefetch" href="https://firestore.googleapis.com">
   <link rel="dns-prefetch" href="https://firebase.googleapis.com">
   <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com">
   <link rel="dns-prefetch" href="https://storage.googleapis.com">
+  
+  <!-- Preload critical resources -->
+  <link rel="preload" href="flutter_bootstrap.js" as="script">
+  <link rel="preload" href="flutter.js" as="script">
+  <link rel="preload" href="main.dart.js" as="script">
   
   <!-- iOS Icons -->
   <link rel="apple-touch-icon" href="icons/icon-removebg.png">
@@ -150,26 +155,47 @@
   </div>
   
   <script>
-    // Performance optimization: Faster loading
-    window.addEventListener('flutter-first-frame', function () {
+    let loadingHidden = false;
+    
+    function hideLoadingScreen() {
+      if (loadingHidden) return;
+      loadingHidden = true;
+      
       const loading = document.getElementById('loading');
       if (loading) {
+        loading.style.transition = 'opacity 0.3s';
         loading.style.opacity = '0';
-        loading.style.transition = 'opacity 0.2s ease-out';
-        setTimeout(() => {
-          loading.remove();
-        }, 200);
+        setTimeout(() => loading.remove(), 300);
       }
-    });
-    
-    // Optimize resource loading
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => {
-        // Non-critical resource loading
-      });
     }
     
-    // Service worker registration now handled by flutter.js automatically
+    // Method 1: Flutter first frame event (should work most of the time)
+    window.addEventListener('flutter-first-frame', hideLoadingScreen);
+    
+    // Method 2: Check for Flutter elements every 500ms
+    let attempts = 0;
+    const checkForFlutter = setInterval(() => {
+      attempts++;
+      
+      // Look for Flutter-rendered elements
+      const flutterElements = document.querySelectorAll('flt-scene, canvas, flutter-view');
+      const hasContent = document.body.children.length > 1; // More than just the loading div
+      
+      if (flutterElements.length > 0 || hasContent) {
+        clearInterval(checkForFlutter);
+        setTimeout(hideLoadingScreen, 200); // Small delay to ensure everything is rendered
+        return;
+      }
+      
+      // Maximum 6 attempts = 3 seconds
+      if (attempts >= 6) {
+        clearInterval(checkForFlutter);
+        hideLoadingScreen();
+      }
+    }, 500);
+    
+    // Emergency fallback - 5 seconds max
+    setTimeout(hideLoadingScreen, 5000);
   </script>
   
   <script src="flutter_bootstrap.js" async></script>
