@@ -50,6 +50,21 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     context.read<AdminBloc>().add(CheckAdminStatusEvent(currentUser.email!));
   }
 
+  Future<void> _ensureAdminEmailExists() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser?.email != null) {
+      try {
+        // Create adminEmails document for efficient rule checking
+        await FirebaseFirestore.instance
+            .collection('adminEmails')
+            .doc(currentUser!.email!)
+            .set({'isAdmin': true, 'createdAt': FieldValue.serverTimestamp()});
+      } catch (e) {
+        // Ignore errors - document might already exist
+      }
+    }
+  }
+
   Future<void> _loadAdminData() async {
     setState(() => _loading = true);
 
@@ -109,6 +124,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
         if (state is AdminStatusChecked) {
           if (state.isAdmin) {
             setState(() => _isAdmin = true);
+            _ensureAdminEmailExists();
             _loadAdminData();
           } else {
             // User is not admin, redirect to home

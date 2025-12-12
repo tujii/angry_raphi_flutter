@@ -244,7 +244,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                       final currentUser =
                           firebase_auth.FirebaseAuth.instance.currentUser;
                       if (currentUser != null && _isAdmin) {
-                        context.push(AppRouter.adminSettings);
+                        context.go(AppRouter.adminSettings);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

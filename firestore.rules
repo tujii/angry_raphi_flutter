@@ -9,7 +9,8 @@ service cloud.firestore {
     
     function isAdmin() {
       return isAuthenticated() && 
-             exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+             request.auth.token.email != null &&
+             exists(/databases/$(database)/documents/adminEmails/$(request.auth.token.email));
     }
     
     function isValidUser(data) {
@@ -44,6 +45,12 @@ service cloud.firestore {
     // Admins Collection - Anyone can read display names, only Admins can write
     match /admins/{adminId} {
       allow read: if true; // Allow anyone to read admin display names
+      allow write: if isAdmin();
+    }
+    
+    // AdminEmails Collection - For efficient admin checking
+    match /adminEmails/{email} {
+      allow read: if isAuthenticated();
       allow write: if isAdmin();
     }
     
