@@ -46,15 +46,16 @@ class GeminiAIService {
     try {
       final styles = [
         'witzig und sarkastisch',
-        'übertrieben dramatisch', 
+        'übertrieben dramatisch',
         'wie ein Sportkommentator',
         'poetisch und melancholisch',
         'wie eine Zeitungsschlagzeile'
       ];
-      
+
       final currentStyle = styles[variation % styles.length];
-      final randomSeed = DateTime.now().millisecond + variation + userName.hashCode;
-      
+      final randomSeed =
+          DateTime.now().millisecond + variation + userName.hashCode;
+
       final prompt = '''
 Generiere einen kurzen, lustigen deutschen Satz (maximal 15 Wörter) über Technik-Probleme.
 

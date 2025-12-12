@@ -120,7 +120,9 @@ class _StoryOfTheDayBannerState extends State<StoryOfTheDayBanner> {
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 500),
               child: Text(
-                widget.stories.isNotEmpty ? widget.stories[_currentIndex] : 'Keine Stories verfügbar',
+                widget.stories.isNotEmpty
+                    ? widget.stories[_currentIndex]
+                    : 'Keine Stories verfügbar',
                 key: ValueKey(_currentIndex),
                 style: TextStyle(
                   color: Colors.grey[800],
@@ -141,8 +143,8 @@ class _StoryOfTheDayBannerState extends State<StoryOfTheDayBanner> {
                       width: 6,
                       height: 6,
                       decoration: BoxDecoration(
-                        color: index == _currentIndex 
-                            ? AppConstants.primaryColor 
+                        color: index == _currentIndex
+                            ? AppConstants.primaryColor
                             : AppConstants.primaryColor.withValues(alpha: 0.3),
                         shape: BoxShape.circle,
                       ),

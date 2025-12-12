@@ -76,9 +76,9 @@ class StoryOfTheDayService {
       }
 
       // Find interesting stats
-      final storiesSet = <String>{};  // Use Set to avoid duplicates
+      final storiesSet = <String>{}; // Use Set to avoid duplicates
 
-      // Find user with most raphcons this week  
+      // Find user with most raphcons this week
       if (totalByUser.isNotEmpty) {
         final topUser =
             totalByUser.entries.reduce((a, b) => a.value > b.value ? a : b);
@@ -88,13 +88,16 @@ class StoryOfTheDayService {
 
         if (topUser.value >= 3) {
           print('Generating top user story...');
-          final story = await _generateTopUserStory(user.initials, topUser.value, variation: 0);
+          final story = await _generateTopUserStory(
+              user.initials, topUser.value,
+              variation: 0);
           if (story != null) {
             print('Generated top user story: $story');
             storiesSet.add(story);
           }
         } else {
-          print('Top user has only ${topUser.value} raphcons (need ≥3 for story)');
+          print(
+              'Top user has only ${topUser.value} raphcons (need ≥3 for story)');
         }
       }
 
@@ -102,31 +105,32 @@ class StoryOfTheDayService {
       print('\n--- CHECKING TYPE STORIES ---');
       var typeStoriesAdded = 0;
       var variationCounter = 0;
-      
+
       // Sort users by total raphcons for better variety
       final sortedEntries = userStats.entries.toList()
         ..sort((a, b) => totalByUser[b.key]!.compareTo(totalByUser[a.key]!));
-      
+
       for (var entry in sortedEntries) {
-        if (typeStoriesAdded >= 4) break;  // Max 4 type stories
-        
+        if (typeStoriesAdded >= 4) break; // Max 4 type stories
+
         final userId = entry.key;
-        final user = users.firstWhere((u) => u.id == userId, orElse: () => users.first);
+        final user =
+            users.firstWhere((u) => u.id == userId, orElse: () => users.first);
 
         // Find the most problematic type for this user
         final topTypeEntry = entry.value.entries
             .where((typeEntry) => typeEntry.value >= 2)
-            .fold<MapEntry<RaphconType, int>?>(null, (prev, curr) => 
-                prev == null || curr.value > prev.value ? curr : prev);
+            .fold<MapEntry<RaphconType, int>?>(
+                null,
+                (prev, curr) =>
+                    prev == null || curr.value > prev.value ? curr : prev);
 
         if (topTypeEntry != null && typeStoriesAdded < 4) {
-          print('Generating type story for ${user.initials}: ${topTypeEntry.key} ${topTypeEntry.value}x');
+          print(
+              'Generating type story for ${user.initials}: ${topTypeEntry.key} ${topTypeEntry.value}x');
           final story = await _generateTypeStory(
-            user.initials, 
-            topTypeEntry.key, 
-            topTypeEntry.value,
-            variation: variationCounter
-          );
+              user.initials, topTypeEntry.key, topTypeEntry.value,
+              variation: variationCounter);
           if (story != null && !storiesSet.contains(story)) {
             print('Generated type story: $story');
             storiesSet.add(story);
@@ -139,7 +143,7 @@ class StoryOfTheDayService {
       // Convert Set to List and limit to max 5 stories
       final stories = storiesSet.toList();
       final maxStories = 5;
-      final finalStories = stories.length > maxStories 
+      final finalStories = stories.length > maxStories
           ? stories.sublist(0, maxStories)
           : stories;
 
@@ -189,8 +193,9 @@ class StoryOfTheDayService {
 
     // More diverse fallback templates
     final now = DateTime.now();
-    final random = Random(now.millisecond + variation + userName.hashCode + count);
-    
+    final random =
+        Random(now.millisecond + variation + userName.hashCode + count);
+
     final allTemplates = [
       '🎯 $userName führt diese Woche mit $count Raphcons! Technik ist nicht für jeden...',
       '🏆 Raphcon-Champion: $userName mit $count Sammelstücken diese Woche!',
@@ -203,7 +208,7 @@ class StoryOfTheDayService {
       '⭐ $userName brilliert mit $count Raphcons. Welch ein Talent!',
       '🔥 Hot Streak! $userName knackt $count Raphcons diese Woche!'
     ];
-    
+
     return allTemplates[random.nextInt(allTemplates.length)];
   }
 
@@ -227,7 +232,7 @@ class StoryOfTheDayService {
     // Fallback to varied templates
     final now = DateTime.now();
     final random = Random(now.millisecond + variation + userName.hashCode);
-    
+
     switch (type) {
       case RaphconType.headset:
         final headsetTemplates = [

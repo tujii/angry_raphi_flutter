@@ -45,7 +45,7 @@ class _TypewriterTextState extends State<TypewriterText> {
     _timer?.cancel();
     _currentIndex = 0;
     _displayedText = '';
-    
+
     if (widget.text.isNotEmpty) {
       _timer = Timer.periodic(widget.speed, (timer) {
         if (mounted && _currentIndex < widget.text.length) {
@@ -56,7 +56,7 @@ class _TypewriterTextState extends State<TypewriterText> {
         } else {
           timer.cancel();
           widget.onComplete?.call();
-          
+
           if (widget.repeat) {
             Future.delayed(const Duration(seconds: 2), () {
               if (mounted) {
