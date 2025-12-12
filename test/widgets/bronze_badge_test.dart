@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:angry_raphi/core/utils/ranking_utils.dart';
 import 'package:angry_raphi/features/user/domain/entities/user.dart';

@@ -64,28 +64,6 @@ void main() {
 
     test('verify the bronze fix covers edge cases', () {
       // Test case: All users have same score (should all get gold)
-      final tiedUsers = [
-        User(
-            id: '1',
-            initials: 'A.A.',
-            raphconCount: 5,
-            createdAt: DateTime.now()),
-        User(
-            id: '2',
-            initials: 'B.B.',
-            raphconCount: 5,
-            createdAt: DateTime.now()),
-        User(
-            id: '3',
-            initials: 'C.C.',
-            raphconCount: 5,
-            createdAt: DateTime.now()),
-        User(
-            id: '4',
-            initials: 'D.D.',
-            raphconCount: 5,
-            createdAt: DateTime.now()),
-      ];
 
       // With new logic, first 3 positions get badges regardless of ties:
       // Position 1: A.A. -> Gold badge (display rank 1)
