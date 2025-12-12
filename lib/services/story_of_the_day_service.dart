@@ -12,9 +12,9 @@ class StoryOfTheDayService {
   /// Get the story of the day based on this week's Raphcon data
   Future<String> getWeeklyStory(List<User> users) async {
     try {
-      // Get the start of the current week (Monday)
+      // Get the start of the current week (Monday at midnight)
       final now = DateTime.now();
-      final startOfWeek = now.subtract(Duration(days: now.weekday - 1, hours: now.hour, minutes: now.minute, seconds: now.second));
+      final startOfWeek = DateTime(now.year, now.month, now.day - (now.weekday - 1));
       
       // Get all Raphcons from this week
       final raphconsSnapshot = await _firestore
@@ -71,7 +71,8 @@ class StoryOfTheDayService {
       }
 
       // Return a random story from the available ones
-      final random = Random(now.day + now.weekday); // Same story for the same day
+      // Use same seed as other methods for consistency
+      final random = Random(now.day + now.weekday);
       return stories[random.nextInt(stories.length)];
     } catch (e) {
       return _getDefaultStory();
@@ -79,13 +80,15 @@ class StoryOfTheDayService {
   }
 
   String _generateTopUserStory(String userName, int count) {
+    final now = DateTime.now();
+    final random = Random(now.day + now.weekday); // Use consistent seed
     final stories = [
       '🎯 $userName führt diese Woche mit $count Raphcons! Technik ist nicht für jeden...',
       '🏆 Rekordhalter der Woche: $userName mit $count Raphcons. Glückwunsch? 🤔',
       '📊 $userName hat $count Raphcons gesammelt diese Woche. Zeit für ein IT-Training?',
       '⚡ $userName dominiert mit $count Raphcons! Die Technik-Nemesis schlägt wieder zu.',
     ];
-    return stories[Random().nextInt(stories.length)];
+    return stories[random.nextInt(stories.length)];
   }
 
   String _generateTypeStory(String userName, RaphconType type, int count) {

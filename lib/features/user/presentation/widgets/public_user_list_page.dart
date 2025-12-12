@@ -294,6 +294,14 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
               }
             },
           ),
+          BlocListener<UserBloc, UserState>(
+            listener: (context, state) {
+              // Load story when users are loaded
+              if (state is UserLoaded && state.users.isNotEmpty && _storyOfTheDay.isEmpty) {
+                _loadStoryOfTheDay(state.users);
+              }
+            },
+          ),
         ],
         child: BlocBuilder<UserBloc, UserState>(
           builder: (context, state) {
@@ -353,11 +361,6 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
   }
 
   Widget _buildUsersList(BuildContext context, List<user_entity.User> users) {
-    // Load story when users are available
-    if (_storyOfTheDay.isEmpty && users.isNotEmpty) {
-      _loadStoryOfTheDay(users);
-    }
-
     if (users.isEmpty) {
       return Center(
         child: Column(
