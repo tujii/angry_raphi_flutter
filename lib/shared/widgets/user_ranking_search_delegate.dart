@@ -194,8 +194,10 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
       {bool showRanking = false}) {
     final shouldShowBadge = _shouldShowBadge(users, index);
     final badgePosition = _getBadgePosition(users, index);
-    final rankIcon = shouldShowBadge ? _getBadgeIcon(badgePosition) : _getRankIcon(rank);
-    final rankColor = shouldShowBadge ? _getBadgeColor(badgePosition) : _getRankColor(rank);
+    final rankIcon =
+        shouldShowBadge ? _getBadgeIcon(badgePosition) : _getRankIcon(rank);
+    final rankColor =
+        shouldShowBadge ? _getBadgeColor(badgePosition) : _getRankColor(rank);
 
     return Card(
       elevation: showRanking && rank <= 3 ? 8 : 4,
@@ -323,7 +325,9 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      shouldShowBadge ? _getBadgeText(badgePosition) : _getRankText(rank),
+                      shouldShowBadge
+                          ? _getBadgeText(badgePosition)
+                          : _getRankText(rank),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 8,
@@ -397,13 +401,13 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
 
   int _getBadgePosition(List<User> userList, int index) {
     if (index >= userList.length) return 0;
-    
+
     final uniqueCounts = userList
         .map((user) => user.raphconCount)
         .toSet()
         .toList()
       ..sort((a, b) => b.compareTo(a));
-    
+
     final userCount = userList[index].raphconCount;
     return uniqueCounts.indexOf(userCount) + 1; // 1-based position
   }
