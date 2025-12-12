@@ -101,6 +101,20 @@
             ]
         },
         {
+            "collectionGroup": "raphcons",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "isActive",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "createdAt",
+                    "order": "ASCENDING"
+                }
+            ]
+        },
+        {
             "collectionGroup": "users",
             "queryScope": "COLLECTION",
             "fields": [

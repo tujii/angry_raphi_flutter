@@ -5,8 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/config/ai_config.dart';
 import '../../../../core/enums/raphcon_type.dart';
 import '../../domain/entities/user.dart' as user_entity;
 import '../../../admin/presentation/bloc/admin_bloc.dart';
@@ -21,9 +23,11 @@ import '../../../../shared/widgets/raphcon_type_selection_dialog.dart';
 import '../../../../shared/widgets/raphcon_statistics_bottom_sheet.dart';
 import '../../../../shared/widgets/streaming_raphcon_detail_bottom_sheet.dart';
 import '../../../../services/admin_config_service.dart';
+import '../../../../services/story_of_the_day_service.dart';
 import '../../../admin/presentation/pages/admin_settings_page.dart';
 import '../../../../shared/widgets/user_ranking_search_delegate.dart';
 import '../../../../shared/widgets/markdown_content_widget.dart';
+import '../../../../shared/widgets/story_of_the_day_banner.dart';
 import '../../../../core/utils/responsive_helper.dart';
 
 class PublicUserListPage extends StatefulWidget {
@@ -38,10 +42,16 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
   bool _isLoggedIn = false;
   String _appVersion = '1.0.0';
   String _whatsNewContent = '';
+  List<String> _storiesOfTheWeek = [];
+  late StoryOfTheDayService _storyService;
 
   @override
   void initState() {
     super.initState();
+    _storyService = StoryOfTheDayService(
+      FirebaseFirestore.instance,
+      geminiApiKey: AIConfig.geminiApiKey,
+    );
     _checkAuthAndAdminStatus();
     _loadAppVersion();
     // Set initial localized content
@@ -59,43 +69,53 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
   Future<void> _loadAppVersion() async {
     try {
       final packageInfo = await PackageInfo.fromPlatform();
-      setState(() {
-        _appVersion = packageInfo.version;
-      });
+      if (mounted) {
+        setState(() {
+          _appVersion = packageInfo.version;
+        });
+      }
     } catch (e) {
       // Fallback to hardcoded version if package info fails
-      setState(() {
-        _appVersion = '1.0.1';
-      });
+      if (mounted) {
+        setState(() {
+          _appVersion = '1.0.1';
+        });
+      }
     }
   }
 
   Future<void> _loadWhatsNewContent() async {
     try {
       final content = await rootBundle.loadString('assets/whatsnew.md');
-      setState(() {
-        if (content.trim().isNotEmpty) {
-          _whatsNewContent = content.trim();
-        } else {
-          _whatsNewContent = AppLocalizations.of(context)?.subtitle ??
-              'Bewerte Personen mit Raphcons';
-        }
-      });
+      if (mounted) {
+        setState(() {
+          if (content.trim().isNotEmpty) {
+            _whatsNewContent = content.trim();
+          } else {
+            _whatsNewContent = AppLocalizations.of(context)?.subtitle ??
+                'Bewerte Personen mit Raphcons';
+          }
+        });
+      }
     } catch (e) {
       // Keep default value if file can't be loaded
-      setState(() {
-        _whatsNewContent = AppLocalizations.of(context)?.subtitle ??
-            'Bewerte Personen mit Raphcons';
-      });
+      if (mounted) {
+        setState(() {
+          _whatsNewContent = AppLocalizations.of(context)?.subtitle ??
+              'Bewerte Personen mit Raphcons';
+        });
+      }
     }
   }
 
   void _checkAuthAndAdminStatus() async {
     final currentUser = firebase_auth.FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
-      setState(() {
-        _isLoggedIn = true;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoggedIn = true;
+        });
+      }
 
       // Check if user is admin from CSV configuration
       final isAdminUser = await AdminConfigService.isAdmin(currentUser.email!);
@@ -116,6 +136,17 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
           context.read<AdminBloc>().add(CheckAdminStatusEvent(currentUser.uid));
         }
       }
+    }
+  }
+
+  Future<void> _loadStoryOfTheDay(List<user_entity.User> users) async {
+    if (users.isEmpty) return;
+
+    final stories = await _storyService.getWeeklyStories(users);
+    if (mounted) {
+      setState(() {
+        _storiesOfTheWeek = stories;
+      });
     }
   }
 
@@ -234,7 +265,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
         listeners: [
           BlocListener<AdminBloc, AdminState>(
             listener: (context, state) {
-              if (state is AdminStatusChecked) {
+              if (state is AdminStatusChecked && mounted) {
                 setState(() {
                   _isAdmin = state.isAdmin;
                 });
@@ -243,7 +274,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
           ),
           BlocListener<AuthBloc, AuthState>(
             listener: (context, state) {
-              if (state is AuthAuthenticated) {
+              if (state is AuthAuthenticated && mounted) {
                 setState(() {
                   _isLoggedIn = true;
                 });
@@ -252,7 +283,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                     .read<AdminBloc>()
                     .add(CheckAdminStatusEvent(state.user.id));
                 Navigator.of(context).pop(); // Close login dialog
-              } else if (state is AuthUnauthenticated) {
+              } else if (state is AuthUnauthenticated && mounted) {
                 setState(() {
                   _isLoggedIn = false;
                   _isAdmin = false;
@@ -274,6 +305,16 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                     backgroundColor: Colors.red,
                   ),
                 );
+              }
+            },
+          ),
+          BlocListener<UserBloc, UserState>(
+            listener: (context, state) {
+              // Load stories when users are loaded
+              if (state is UserLoaded &&
+                  state.users.isNotEmpty &&
+                  _storiesOfTheWeek.isEmpty) {
+                _loadStoryOfTheDay(state.users);
               }
             },
           ),
@@ -362,52 +403,10 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
 
     return Column(
       children: [
-        // Info banner for guests
-        if (!_isLoggedIn)
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            margin: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppConstants.primaryColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: AppConstants.primaryColor.withValues(alpha: 0.3),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.info_outline,
-                      color: AppConstants.primaryColor,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        AppLocalizations.of(context)?.loginAsAdmin ??
-                            'Melden Sie sich als Admin an, um Benutzer zu verwalten und Raphcons zu erstellen.',
-                        style: TextStyle(
-                          color: AppConstants.primaryColor,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () => _showLoginDialog(context),
-                    child:
-                        Text(AppLocalizations.of(context)?.login ?? 'Anmelden'),
-                  ),
-                ),
-              ],
-            ),
+        // Story of the Week banner (replaces login banner)
+        if (_storiesOfTheWeek.isNotEmpty)
+          StoryOfTheDayBanner(
+            stories: _storiesOfTheWeek,
           ),
 
         // User list
