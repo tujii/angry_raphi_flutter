@@ -12,12 +12,12 @@ abstract class AdminEvent extends Equatable {
 }
 
 class CheckAdminStatusEvent extends AdminEvent {
-  final String userId;
+  final String email;
 
-  CheckAdminStatusEvent(this.userId);
+  CheckAdminStatusEvent(this.email);
 
   @override
-  List<Object> get props => [userId];
+  List<Object> get props => [email];
 }
 
 class EnsureCurrentUserIsAdminEvent extends AdminEvent {
@@ -83,7 +83,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
   ) async {
     emit(AdminLoading());
 
-    final result = await _checkAdminStatus(event.userId);
+    final result = await _checkAdminStatus(event.email);
     result.fold(
       (failure) => emit(AdminError(failure.message)),
       (isAdmin) => emit(AdminStatusChecked(isAdmin)),
@@ -97,7 +97,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     emit(AdminLoading());
 
     // First check if user is already admin
-    final checkResult = await _checkAdminStatus(event.userId);
+    final checkResult = await _checkAdminStatus(event.email);
 
     await checkResult.fold(
       (failure) async => emit(AdminError(failure.message)),

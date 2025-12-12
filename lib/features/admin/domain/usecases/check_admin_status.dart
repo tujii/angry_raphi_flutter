@@ -10,7 +10,7 @@ class CheckAdminStatus {
 
   CheckAdminStatus(this.repository);
 
-  Future<Either<Failure, bool>> call(String userId) async {
-    return await repository.checkAdminStatus(userId);
+  Future<Either<Failure, bool>> call(String email) async {
+    return await repository.checkAdminStatus(email);
   }
 }

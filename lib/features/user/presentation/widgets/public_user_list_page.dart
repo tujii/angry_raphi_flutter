@@ -113,7 +113,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
           }
         } else {
           // For other users, just check admin status
-          context.read<AdminBloc>().add(CheckAdminStatusEvent(currentUser.uid));
+          context.read<AdminBloc>().add(CheckAdminStatusEvent(currentUser.email!));
         }
       }
     }
@@ -250,7 +250,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                 // Check admin status after login
                 context
                     .read<AdminBloc>()
-                    .add(CheckAdminStatusEvent(state.user.id));
+                    .add(CheckAdminStatusEvent(state.user.email));
                 Navigator.of(context).pop(); // Close login dialog
               } else if (state is AuthUnauthenticated) {
                 setState(() {
