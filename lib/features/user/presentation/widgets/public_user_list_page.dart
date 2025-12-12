@@ -241,13 +241,15 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                       context.read<AuthBloc>().add(AuthSignOutRequested());
                     } else if (value == 'settings') {
                       // Double check: only allow if user is authenticated and admin
-                      final currentUser = firebase_auth.FirebaseAuth.instance.currentUser;
+                      final currentUser =
+                          firebase_auth.FirebaseAuth.instance.currentUser;
                       if (currentUser != null && _isAdmin) {
                         context.push(AppRouter.adminSettings);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Zugriff verweigert. Sie müssen als Administrator angemeldet sein.'),
+                            content: Text(
+                                'Zugriff verweigert. Sie müssen als Administrator angemeldet sein.'),
                             backgroundColor: Colors.red,
                           ),
                         );
