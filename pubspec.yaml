@@ -2,7 +2,7 @@ name: angry_raphi
 description: "AngryRaphi - Person rating app with raphcons"
 publish_to: 'none'
 
-version: 2.1.1+4
+version: 2.3.0+5
 
 environment:
   sdk: ^3.6.1
@@ -35,6 +35,9 @@ dependencies:
   lottie: ^3.1.2
   cached_network_image: ^3.4.1
   image_picker: ^1.1.2
+  
+  # Navigation
+  go_router: ^14.6.2
   
   # Authentication
   google_sign_in: ^6.2.1

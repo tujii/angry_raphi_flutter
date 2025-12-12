@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/routing/app_router.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
-import 'terms_of_service_page.dart';
-import 'privacy_policy_page.dart';
 
 class LoginPage extends StatelessWidget {
   final bool isDialog;
@@ -198,11 +198,13 @@ class LoginPage extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const TermsOfServicePage(),
-                  ),
-                );
+                if (isDialog) {
+                  // Close dialog first, then navigate
+                  Navigator.of(context).pop();
+                  context.go(AppRouter.terms);
+                } else {
+                  context.push(AppRouter.terms);
+                }
               },
               child: Text(
                 AppLocalizations.of(context)!.termsOfService,
@@ -220,11 +222,13 @@ class LoginPage extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const PrivacyPolicyPage(),
-                  ),
-                );
+                if (isDialog) {
+                  // Close dialog first, then navigate
+                  Navigator.of(context).pop();
+                  context.go(AppRouter.privacy);
+                } else {
+                  context.push(AppRouter.privacy);
+                }
               },
               child: Text(
                 AppLocalizations.of(context)!.privacyPolicy,

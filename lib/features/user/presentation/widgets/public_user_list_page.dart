@@ -6,9 +6,11 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/config/ai_config.dart';
+import '../../../../core/routing/app_router.dart';
 import '../../../../core/enums/raphcon_type.dart';
 import '../../domain/entities/user.dart' as user_entity;
 import '../../../admin/presentation/bloc/admin_bloc.dart';
@@ -24,7 +26,6 @@ import '../../../../shared/widgets/raphcon_statistics_bottom_sheet.dart';
 import '../../../../shared/widgets/streaming_raphcon_detail_bottom_sheet.dart';
 import '../../../../services/admin_config_service.dart';
 import '../../../../services/story_of_the_day_service.dart';
-import '../../../admin/presentation/pages/admin_settings_page.dart';
 import '../../../../shared/widgets/user_ranking_search_delegate.dart';
 import '../../../../shared/widgets/markdown_content_widget.dart';
 import '../../../../shared/widgets/story_of_the_day_banner.dart';
@@ -133,7 +134,9 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
           }
         } else {
           // For other users, just check admin status
-          context.read<AdminBloc>().add(CheckAdminStatusEvent(currentUser.email!));
+          context
+              .read<AdminBloc>()
+              .add(CheckAdminStatusEvent(currentUser.email ?? ''));
         }
       }
     }
@@ -212,31 +215,62 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
           ),
           BlocBuilder<AuthBloc, AuthState>(
             builder: (context, authState) {
-              if (authState is AuthAuthenticated && _isAdmin) {
+              if (authState is AuthAuthenticated) {
                 return PopupMenuButton<String>(
+                  icon: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    backgroundImage: authState.user.photoURL != null
+                        ? NetworkImage(authState.user.photoURL!)
+                        : null,
+                    child: authState.user.photoURL == null
+                        ? Text(
+                            authState.user.displayName.isNotEmpty
+                                ? authState.user.displayName
+                                    .substring(0, 1)
+                                    .toUpperCase()
+                                : '?',
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        : null,
+                  ),
                   onSelected: (value) {
                     if (value == 'logout') {
                       context.read<AuthBloc>().add(AuthSignOutRequested());
                     } else if (value == 'settings') {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const AdminSettingsPage(),
-                        ),
-                      );
+                      // Double check: only allow if user is authenticated and admin
+                      final currentUser =
+                          firebase_auth.FirebaseAuth.instance.currentUser;
+                      if (currentUser != null && _isAdmin) {
+                        context.go(AppRouter.adminSettings);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                                'Zugriff verweigert. Sie müssen als Administrator angemeldet sein.'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
                     }
                   },
                   itemBuilder: (context) => [
-                    PopupMenuItem(
-                      value: 'settings',
-                      child: Row(
-                        children: [
-                          Icon(Icons.settings),
-                          SizedBox(width: 8),
-                          Text(AppLocalizations.of(context)?.settings ??
-                              'Einstellungen'),
-                        ],
+                    // Only show settings for admins
+                    if (_isAdmin)
+                      PopupMenuItem(
+                        value: 'settings',
+                        child: Row(
+                          children: [
+                            Icon(Icons.settings),
+                            SizedBox(width: 8),
+                            Text(AppLocalizations.of(context)?.settings ??
+                                'Einstellungen'),
+                          ],
+                        ),
                       ),
-                    ),
+                    // Show logout for all authenticated users
                     PopupMenuItem(
                       value: 'logout',
                       child: Row(
@@ -244,7 +278,6 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                           Icon(Icons.logout),
                           SizedBox(width: 8),
                           Text(AppLocalizations.of(context)?.signOut ??
-                              AppLocalizations.of(context)?.signOut ??
                               'Abmelden'),
                         ],
                       ),

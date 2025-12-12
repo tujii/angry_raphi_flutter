@@ -93,11 +93,6 @@ void main() {
       expect(igBadgeColor, equals(0xFFCD7F32),
           reason: 'Badge position 3 should show bronze color');
 
-      print('✅ I.G. Fix Verification:');
-      print('   Badge Position: $igBadgePosition');
-      print('   Badge Text: $igBadgeText');
-      print(
-          '   Badge Color: 0x${igBadgeColor.toRadixString(16).toUpperCase()}');
     });
 
     test('Verify all users get correct badge positions', () {
