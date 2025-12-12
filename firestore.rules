@@ -32,6 +32,9 @@ service cloud.firestore {
       allow read: if true; // Everyone can read the user list
       allow create, update: if isAdmin() && isValidUser(request.resource.data);
       allow delete: if isAdmin();
+      // Allow updating chaos points for authenticated users
+      allow update: if isAuthenticated() && 
+                    request.resource.data.diff(resource.data).affectedKeys().hasOnly(['totalChaosPoints', 'rank']);
     }
 
     // Raphcons Collection - Read for all, Create for authenticated users, Modify only for Admins
@@ -57,6 +60,26 @@ service cloud.firestore {
     match /statistics/{statId} {
       allow read: if isAdmin();
       allow write: if false; // Generated via Cloud Functions
+    }
+    
+    // Hardware Fails Collection - Read/Write for authenticated users
+    match /hardwareFails/{failId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && 
+                    request.resource.data.userId is string &&
+                    request.resource.data.type is string &&
+                    request.resource.data.timestamp is timestamp;
+      allow delete: if isAdmin();
+    }
+    
+    // Stories Collection - Read/Write for authenticated users
+    match /stories/{storyId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && 
+                    request.resource.data.userId is string &&
+                    request.resource.data.text is string &&
+                    request.resource.data.timestamp is timestamp;
+      allow delete: if isAdmin();
     }
   }
 }
