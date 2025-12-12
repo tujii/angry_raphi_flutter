@@ -47,14 +47,20 @@ void main() {
     });
 
     test('isAdmin should return true for predefined admin emails', () async {
-      // This tests the fallback to predefined list
-      const predefinedEmail = '17tujii@gmail.com';
+      // This tests the fallback to predefined list by checking if any
+      // admin emails exist (without hardcoding specific real emails)
+      final adminEmails = await AdminConfigService.getAdminEmails();
+      
+      // Use the first admin email from the config for testing
+      if (adminEmails.isNotEmpty) {
+        final firstAdminEmail = adminEmails.first;
+        
+        // act
+        final result = await AdminConfigService.isAdmin(firstAdminEmail);
 
-      // act
-      final result = await AdminConfigService.isAdmin(predefinedEmail);
-
-      // assert
-      expect(result, true);
+        // assert
+        expect(result, true);
+      }
     });
 
     test('isAdmin should return false for non-admin emails', () async {
@@ -69,14 +75,19 @@ void main() {
 
     test('getAdminDisplayName should return display name for admin email',
         () async {
-      const email = '17tujii@gmail.com';
+      // Get an actual admin email from the config
+      final emails = await AdminConfigService.getAdminEmails();
+      
+      if (emails.isNotEmpty) {
+        final email = emails.first;
 
-      // act
-      final displayName = await AdminConfigService.getAdminDisplayName(email);
+        // act
+        final displayName = await AdminConfigService.getAdminDisplayName(email);
 
-      // assert
-      expect(displayName, isNotEmpty);
-      expect(displayName, isA<String>());
+        // assert
+        expect(displayName, isNotEmpty);
+        expect(displayName, isA<String>());
+      }
     });
 
     test('getAdminDisplayName should return email prefix for unknown email',
@@ -97,17 +108,28 @@ void main() {
       // assert
       expect(emails, isA<List<String>>());
       expect(emails.isNotEmpty, true);
+      // Verify all emails have valid format (contain @)
       expect(emails.every((email) => email.contains('@')), true);
+      // Verify all emails are properly formatted with a domain
+      expect(
+        emails.every((email) => email.split('@').length == 2),
+        true,
+      );
     });
 
     test('getAdminEmails should include predefined admins', () async {
       // act
       final emails = await AdminConfigService.getAdminEmails();
 
-      // assert
-      expect(emails.contains('17tujii@gmail.com'), true);
-      expect(emails.contains('uhlmannraphael@gmail.com'), true);
-      expect(emails.contains('serenalenherr@gmail.com'), true);
+      // assert - verify the list contains at least some admins
+      // without hardcoding specific real email addresses
+      expect(emails.length, greaterThanOrEqualTo(3));
+      
+      // Verify all returned emails are valid format
+      for (final email in emails) {
+        expect(email, contains('@'));
+        expect(email, contains('.'));
+      }
     });
   });
 }
