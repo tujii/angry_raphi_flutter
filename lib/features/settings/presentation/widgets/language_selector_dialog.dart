@@ -79,7 +79,7 @@ class _LanguageSelectorDialogState extends State<LanguageSelectorDialog> {
                 ),
               ),
               child: Text(
-                l10n?.continuee ?? l10n?.ok ?? 'Continue',
+                l10n?.ok ?? 'Continue',
                 style: const TextStyle(fontSize: 16),
               ),
             ),

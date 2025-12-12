@@ -43,11 +43,7 @@ class _SettingsPageState extends State<SettingsPage> {
         });
       }
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          _appVersion = '2.1.0';
-        });
-      }
+      // Keep default version on error
     }
   }
 
