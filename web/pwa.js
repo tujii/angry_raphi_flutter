@@ -36,6 +36,15 @@
     }
   });
 
+  // Show iOS install instructions after app loads
+  window.addEventListener('DOMContentLoaded', () => {
+    if (isIOS() && isSafari() && !isAppInstalled()) {
+      setTimeout(() => {
+        showIOSInstallBanner();
+      }, 3000); // Wait 3 seconds after page load
+    }
+  });
+
   // Create and show install banner
   function showInstallBanner() {
     // Don't show if already dismissed recently
@@ -152,19 +161,19 @@
       // Show a delayed prompt for iOS users (who don't get beforeinstallprompt)
       setTimeout(() => {
         if (/iPhone|iPad|iPod/i.test(navigator.userAgent) && !isAppInstalled()) {
-          showIOSInstallHint();
+          showIOSInstallBanner();
         }
       }, 3000);
     }
   });
 
-  // iOS Install Hint (since iOS doesn't support beforeinstallprompt)
-  function showIOSInstallHint() {
+  // iOS Install Banner (since iOS doesn't support beforeinstallprompt)
+  function showIOSInstallBanner() {
     const dismissed = localStorage.getItem('angryraphi-ios-hint-dismissed');
     const dismissedTime = dismissed ? parseInt(dismissed) : 0;
     const daysSinceDismissed = (Date.now() - dismissedTime) / (1000 * 60 * 60 * 24);
     
-    if (daysSinceDismissed < 14) return; // Don't show again for 14 days
+    if (daysSinceDismissed < 7) return; // Don't show again for 7 days
 
     const iosHint = document.createElement('div');
     iosHint.style.cssText = `
