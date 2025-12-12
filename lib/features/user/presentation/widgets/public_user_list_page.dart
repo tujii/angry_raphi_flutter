@@ -213,8 +213,25 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
           ),
           BlocBuilder<AuthBloc, AuthState>(
             builder: (context, authState) {
-              if (authState is AuthAuthenticated && _isAdmin) {
+              if (authState is AuthAuthenticated) {
                 return PopupMenuButton<String>(
+                  icon: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    backgroundImage: authState.user.photoURL != null
+                        ? NetworkImage(authState.user.photoURL!)
+                        : null,
+                    child: authState.user.photoURL == null
+                        ? Text(
+                            authState.user.displayName.isNotEmpty 
+                                ? authState.user.displayName.substring(0, 1).toUpperCase()
+                                : '?',
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        : null,
+                  ),
                   onSelected: (value) {
                     if (value == 'logout') {
                       context.read<AuthBloc>().add(AuthSignOutRequested());
@@ -223,17 +240,20 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                     }
                   },
                   itemBuilder: (context) => [
-                    PopupMenuItem(
-                      value: 'settings',
-                      child: Row(
-                        children: [
-                          Icon(Icons.settings),
-                          SizedBox(width: 8),
-                          Text(AppLocalizations.of(context)?.settings ??
-                              'Einstellungen'),
-                        ],
+                    // Only show settings for admins
+                    if (_isAdmin) 
+                      PopupMenuItem(
+                        value: 'settings',
+                        child: Row(
+                          children: [
+                            Icon(Icons.settings),
+                            SizedBox(width: 8),
+                            Text(AppLocalizations.of(context)?.settings ??
+                                'Einstellungen'),
+                          ],
+                        ),
                       ),
-                    ),
+                    // Show logout for all authenticated users
                     PopupMenuItem(
                       value: 'logout',
                       child: Row(
@@ -241,7 +261,6 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                           Icon(Icons.logout),
                           SizedBox(width: 8),
                           Text(AppLocalizations.of(context)?.signOut ??
-                              AppLocalizations.of(context)?.signOut ??
                               'Abmelden'),
                         ],
                       ),
