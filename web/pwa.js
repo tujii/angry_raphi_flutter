@@ -1,9 +1,12 @@
-// AngryRaphi PWA Service Worker
+// AngryRaphi PWA Service Worker - Disabled to prevent timeout issues
   // Service Worker Registration for PWA functionality
+  // Commented out to avoid conflicts with Flutter's internal service worker
+  /*
   if ('serviceWorker' in navigator) {
     window.addEventListener('flutter-first-frame', function () {
       navigator.serviceWorker.register('flutter_service_worker.js', {
-        scope: '/'
+        scope: '/',
+        updateViaCache: 'none'
       }).then(function(registration) {
         console.log('AngryRaphi SW registered successfully');
       }).catch(function(error) {
@@ -11,6 +14,7 @@
       });
     });
   }
+  */
 
   // Mobile Device Detection
   function isMobile() {
