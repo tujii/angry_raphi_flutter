@@ -31,10 +31,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Read Flutter version
+        id: flutter-version
+        run: echo "version=$(cat .dart_tool/version)" >> $GITHUB_OUTPUT
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.4'
+          flutter-version: '${{ steps.flutter-version.outputs.version }}'
           channel: 'stable'
           cache: true
 
@@ -65,10 +69,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Read Flutter version
+        id: flutter-version
+        run: echo "version=$(cat .dart_tool/version)" >> $GITHUB_OUTPUT
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.1'
+          flutter-version: '${{ steps.flutter-version.outputs.version }}'
           channel: 'stable'
           cache: true
 
@@ -99,10 +107,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Read Flutter version
+        id: flutter-version
+        run: echo "version=$(cat .dart_tool/version)" >> $GITHUB_OUTPUT
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.1'
+          flutter-version: '${{ steps.flutter-version.outputs.version }}'
           channel: 'stable'
           cache: true
 
