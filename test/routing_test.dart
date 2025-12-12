@@ -28,11 +28,12 @@ void main() {
 
     test('Router has all required routes configured', () {
       final router = AppRouter.createRouter();
-      
+
       // Verify router is configured and has routes
       expect(router, isA<GoRouter>());
       expect(router.configuration.routes, isNotEmpty);
-      expect(router.configuration.routes.length, equals(5)); // home, login, terms, privacy, admin
+      expect(router.configuration.routes.length,
+          equals(5)); // home, login, terms, privacy, admin
     });
   });
 }
