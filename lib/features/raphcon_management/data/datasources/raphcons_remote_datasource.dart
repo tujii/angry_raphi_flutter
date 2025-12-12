@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/enums/raphcon_type.dart';
+import '../../../../core/constants/app_constants.dart';
 import '../models/raphcon_model.dart';
 
 abstract class RaphconsRemoteDataSource {
@@ -205,13 +206,15 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
   Future<int> expireOldRaphcons() async {
     try {
       // Calculate date one year ago from now
-      final oneYearAgo = DateTime.now().subtract(const Duration(days: 365));
+      final expiryDate = DateTime.now().subtract(
+        Duration(days: AppConstants.raphconExpiryDays),
+      );
       
       // Query for active raphcons older than one year
       final querySnapshot = await firestore
           .collection('raphcons')
           .where('isActive', isEqualTo: true)
-          .where('createdAt', isLessThan: oneYearAgo)
+          .where('createdAt', isLessThan: expiryDate)
           .get();
 
       if (querySnapshot.docs.isEmpty) {
@@ -226,8 +229,13 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
       for (final doc in querySnapshot.docs) {
         batch.update(doc.reference, {'isActive': false});
         
-        final userId = doc.data()['userId'] as String;
-        userRaphconCounts[userId] = (userRaphconCounts[userId] ?? 0) + 1;
+        final data = doc.data();
+        final userId = data['userId'];
+        
+        // Validate userId exists and is a string before updating counts
+        if (userId != null && userId is String) {
+          userRaphconCounts[userId] = (userRaphconCounts[userId] ?? 0) + 1;
+        }
       }
 
       // Update user raphcon counts
