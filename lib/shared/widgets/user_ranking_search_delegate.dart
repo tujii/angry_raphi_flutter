@@ -161,7 +161,8 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
       padding: const EdgeInsets.all(8),
       itemCount: userList.length,
       itemBuilder: (context, index) {
-        return _buildUserCard(context, userList[index], index,
+        final rank = _calculateRank(userList, index);
+        return _buildUserCard(context, userList[index], index, rank,
             showRanking: showRanking);
       },
     );
@@ -181,19 +182,20 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
       ),
       itemCount: userList.length,
       itemBuilder: (context, index) {
-        return _buildUserCard(context, userList[index], index,
+        final rank = _calculateRank(userList, index);
+        return _buildUserCard(context, userList[index], index, rank,
             showRanking: showRanking);
       },
     );
   }
 
-  Widget _buildUserCard(BuildContext context, User user, int index,
+  Widget _buildUserCard(BuildContext context, User user, int index, int rank,
       {bool showRanking = false}) {
-    final rankIcon = _getRankIcon(index);
-    final rankColor = _getRankColor(index);
+    final rankIcon = _getRankIcon(rank);
+    final rankColor = _getRankColor(rank);
 
     return Card(
-      elevation: showRanking && index < 3 ? 8 : 4,
+      elevation: showRanking && rank <= 3 ? 8 : 4,
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       child: InkWell(
         onTap: () => close(context, user.id),
@@ -201,7 +203,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            gradient: showRanking && index < 3
+            gradient: showRanking && rank <= 3
                 ? LinearGradient(
                     colors: [
                       rankColor.withValues(alpha: 0.1),
@@ -223,7 +225,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
                     decoration: BoxDecoration(
                       color: rankColor,
                       borderRadius: BorderRadius.circular(16),
-                      boxShadow: index < 3
+                      boxShadow: rank <= 3
                           ? [
                               BoxShadow(
                                 color: rankColor.withValues(alpha: 0.3),
@@ -234,10 +236,10 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
                           : null,
                     ),
                     child: Center(
-                      child: index < 3
+                      child: rank <= 3
                           ? Icon(rankIcon, color: Colors.white, size: 20)
                           : Text(
-                              '${index + 1}',
+                              '$rank',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -309,7 +311,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
                     ],
                   ),
                 ),
-                if (showRanking && index < 3)
+                if (showRanking && rank <= 3)
                   Container(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -318,7 +320,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      _getRankText(index),
+                      _getRankText(rank),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 8,
@@ -334,35 +336,51 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
     );
   }
 
-  IconData _getRankIcon(int index) {
-    switch (index) {
-      case 0:
-        return Icons.emoji_events; // Trophy
+  /// Calculates the rank of a user at a given index, accounting for ties.
+  /// Users with the same raphconCount get the same rank.
+  /// Returns a 1-based rank (1 = Gold, 2 = Silver, 3 = Bronze).
+  int _calculateRank(List<User> userList, int index) {
+    if (index == 0) return 1;
+    
+    int rank = 1;
+    for (int i = 0; i < index; i++) {
+      // Only increment rank when raphconCount changes
+      if (userList[i].raphconCount != userList[i + 1].raphconCount) {
+        rank = i + 2; // +2 because rank is 1-based and we're at i+1 position
+      }
+    }
+    return rank;
+  }
+
+  IconData _getRankIcon(int rank) {
+    switch (rank) {
       case 1:
-        return Icons.workspace_premium; // Silver medal
+        return Icons.emoji_events; // Trophy
       case 2:
+        return Icons.workspace_premium; // Silver medal
+      case 3:
         return Icons.military_tech; // Bronze medal
       default:
         return Icons.person;
     }
   }
 
-  Color _getRankColor(int index) {
-    switch (index) {
-      case 0:
-        return const Color(0xFFFFD700); // Gold
+  Color _getRankColor(int rank) {
+    switch (rank) {
       case 1:
-        return const Color(0xFFC0C0C0); // Silver
+        return const Color(0xFFFFD700); // Gold
       case 2:
+        return const Color(0xFFC0C0C0); // Silver
+      case 3:
         return const Color(0xFFCD7F32); // Bronze
       default:
         return AppConstants.primaryColor;
     }
   }
 
-  String _getRankText(int index) {
-    switch (index) {
-      case 0:
+  String _getRankText(int rank) {
+    switch (rank) {
+      case 1:
         return localizations.gold;
       case 2:
         return localizations.silver;
