@@ -83,7 +83,7 @@ Verschiedene Ansätze je nach Variation:
 Generiere NUR den Satz, ohne Anführungszeichen. SEI KREATIV und vermeide Wiederholungen!
 ''';
 
-      final response = await _model!.generateContent([Content.text(prompt)]);
+      final response = await _model.generateContent([Content.text(prompt)]);
       final text = response.text?.trim();
 
       if (text != null && text.isNotEmpty) {

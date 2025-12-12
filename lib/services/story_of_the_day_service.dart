@@ -30,14 +30,8 @@ class StoryOfTheDayService {
           .where('isActive', isEqualTo: true)
           .get();
 
-      print('=== RAPHCONS WEEKLY DEBUG ===');
-      print('Current date: $now');
-      print('Start of week (Monday): $startOfWeek');
-      print('Active raphcons this week: ${raphconsSnapshot.docs.length}');
 
       if (raphconsSnapshot.docs.isEmpty) {
-        print('No active raphcons found -> using default stories');
-        print('=============================');
         return _getDefaultStories();
       }
 
@@ -50,27 +44,20 @@ class StoryOfTheDayService {
         final userId = data['userId'] as String;
         final typeString = data['type'] as String? ?? 'other';
         final type = RaphconType.fromString(typeString);
-        final createdAt = (data['createdAt'] as Timestamp).toDate();
+        (data['createdAt'] as Timestamp).toDate();
 
-        print(
-            'Active Raphcon: User $userId, Type: $typeString, Date: $createdAt');
 
         userStats.putIfAbsent(userId, () => {});
         userStats[userId]![type] = (userStats[userId]![type] ?? 0) + 1;
         totalByUser[userId] = (totalByUser[userId] ?? 0) + 1;
       }
 
-      print('\n--- USER STATISTICS ---');
       for (var entry in totalByUser.entries) {
         final userId = entry.key;
-        final userInitials = users
-            .firstWhere((u) => u.id == userId, orElse: () => users.first)
-            .initials;
-        print('User $userInitials ($userId): ${entry.value} raphcons');
 
         if (userStats[userId] != null) {
+          // ignore: unused_local_variable
           for (var typeEntry in userStats[userId]!.entries) {
-            print('  - ${typeEntry.key}: ${typeEntry.value}x');
           }
         }
       }
@@ -84,25 +71,19 @@ class StoryOfTheDayService {
             totalByUser.entries.reduce((a, b) => a.value > b.value ? a : b);
         final user = users.firstWhere((u) => u.id == topUser.key,
             orElse: () => users.first);
-        print('\nTop user: ${user.initials} with ${topUser.value} raphcons');
 
         if (topUser.value >= 3) {
-          print('Generating top user story...');
           final story = await _generateTopUserStory(
               user.initials, topUser.value,
               variation: 0);
           if (story != null) {
-            print('Generated top user story: $story');
             storiesSet.add(story);
           }
         } else {
-          print(
-              'Top user has only ${topUser.value} raphcons (need ≥3 for story)');
         }
       }
 
       // Find users with specific type issues (limit to most interesting ones)
-      print('\n--- CHECKING TYPE STORIES ---');
       var typeStoriesAdded = 0;
       var variationCounter = 0;
 
@@ -126,13 +107,10 @@ class StoryOfTheDayService {
                     prev == null || curr.value > prev.value ? curr : prev);
 
         if (topTypeEntry != null && typeStoriesAdded < 4) {
-          print(
-              'Generating type story for ${user.initials}: ${topTypeEntry.key} ${topTypeEntry.value}x');
           final story = await _generateTypeStory(
               user.initials, topTypeEntry.key, topTypeEntry.value,
               variation: variationCounter);
           if (story != null && !storiesSet.contains(story)) {
-            print('Generated type story: $story');
             storiesSet.add(story);
             typeStoriesAdded++;
             variationCounter++;
@@ -147,32 +125,19 @@ class StoryOfTheDayService {
           ? stories.sublist(0, maxStories)
           : stories;
 
-      print('\n--- FINAL RESULT ---');
-      print('Total unique stories generated: ${stories.length}');
-      print('Returning top ${finalStories.length} stories');
 
       if (finalStories.isEmpty) {
-        print('No stories generated -> using default stories');
         final defaultStories = _getDefaultStories().take(maxStories).toList();
-        print('Default stories: $defaultStories');
-        print('=============================');
         return defaultStories;
       }
 
       // Return limited stories for rotation
-      print('Available stories:');
       for (int i = 0; i < finalStories.length; i++) {
-        print('  [$i] ${finalStories[i]}');
       }
-      print('=============================');
 
       return finalStories;
     } catch (e) {
-      print('ERROR in getWeeklyStories: $e');
-      print('Using fallback default stories');
       final defaultStories = _getDefaultStories().take(5).toList();
-      print('Default stories: $defaultStories');
-      print('=============================');
       return defaultStories;
     }
   }
