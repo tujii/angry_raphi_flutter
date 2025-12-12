@@ -1,3 +1,147 @@
+  // ============================================
+  // SERVICE WORKER UPDATE HANDLING
+  // ============================================
+  
+  // Check for service worker updates on app start
+  function checkForUpdates() {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then((registration) => {
+        console.log('[PWA] Checking for updates...');
+        registration.update().catch((error) => {
+          console.error('[PWA] Update check failed:', error);
+        });
+      });
+    }
+  }
+
+  // Handle service worker updates
+  function handleServiceWorkerUpdate(registration) {
+    const newWorker = registration.waiting || registration.installing;
+    
+    if (newWorker) {
+      newWorker.addEventListener('statechange', () => {
+        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          // New service worker is ready
+          console.log('[PWA] New version available, reloading...');
+          showUpdateNotification(newWorker);
+        }
+      });
+    }
+  }
+
+  // Show update notification to user
+  function showUpdateNotification(newWorker) {
+    // Create update notification
+    const updateBanner = document.createElement('div');
+    updateBanner.id = 'update-banner';
+    updateBanner.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, #4CAF50, #45a049);
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      z-index: 10001;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      animation: slideDown 0.3s ease-out;
+    `;
+
+    updateBanner.innerHTML = `
+      <div style="flex: 1;">
+        <div style="font-weight: bold;">🎉 Neue Version verfügbar!</div>
+        <div style="font-size: 13px; opacity: 0.9;">Lade die App neu, um die neueste Version zu nutzen.</div>
+      </div>
+      <button id="reload-btn" style="
+        background: rgba(255,255,255,0.9);
+        border: none;
+        color: #4CAF50;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 14px;
+        margin-left: 12px;
+      ">Aktualisieren</button>
+    `;
+
+    // Add animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideDown {
+        from { transform: translateY(-100%); }
+        to { transform: translateY(0); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    document.body.appendChild(updateBanner);
+
+    // Handle reload button click
+    document.getElementById('reload-btn').addEventListener('click', () => {
+      // Tell the new service worker to skip waiting
+      newWorker.postMessage({ type: 'SKIP_WAITING' });
+      // Reload the page after a short delay
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+    });
+
+    // Auto-reload after 5 seconds
+    setTimeout(() => {
+      if (updateBanner && updateBanner.parentNode) {
+        console.log('[PWA] Auto-reloading to apply update...');
+        newWorker.postMessage({ type: 'SKIP_WAITING' });
+        window.location.reload();
+      }
+    }, 5000);
+  }
+
+  // Register service worker with update handling
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/flutter_service_worker.js').then((registration) => {
+        console.log('[PWA] Service Worker registered');
+        
+        // Check for updates immediately on load
+        checkForUpdates();
+        
+        // Handle updates
+        handleServiceWorkerUpdate(registration);
+        
+        // Check for updates when the page becomes visible
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden) {
+            checkForUpdates();
+          }
+        });
+        
+        // Check for updates periodically (every 30 seconds when tab is active)
+        setInterval(() => {
+          if (!document.hidden) {
+            checkForUpdates();
+          }
+        }, 30000);
+        
+        // Listen for controllerchange (new service worker activated)
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          console.log('[PWA] New service worker activated, reloading...');
+          window.location.reload();
+        });
+        
+      }).catch((error) => {
+        console.error('[PWA] Service Worker registration failed:', error);
+      });
+    });
+  }
+
+  // ============================================
+  // MOBILE AND DEVICE DETECTION
+  // ============================================
 
   // Mobile Device Detection
   function isMobile() {
