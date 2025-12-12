@@ -19,7 +19,8 @@ class MarkdownContentWidget extends StatelessWidget {
   Widget _buildMarkdownContent(BuildContext context, String content) {
     if (content.isEmpty) {
       return Text(
-        AppLocalizations.of(context)?.subtitle ?? 'Bewerte Personen mit Raphcons',
+        AppLocalizations.of(context)?.subtitle ??
+            'Bewerte Personen mit Raphcons',
         style: TextStyle(
           fontSize: 14,
           color: Colors.grey[600],
@@ -68,13 +69,13 @@ class MarkdownContentWidget extends StatelessWidget {
         String listItem = line.substring(2);
         String emoji = '';
         String text = listItem;
-        
+
         // Check if line starts with emoji
         if (listItem.length > 2 && _isEmoji(listItem.substring(0, 2))) {
           emoji = listItem.substring(0, 2);
           text = listItem.substring(2).trim();
         }
-        
+
         widgets.add(Padding(
           padding: const EdgeInsets.only(left: 16, bottom: 4),
           child: Row(
@@ -134,7 +135,7 @@ class MarkdownContentWidget extends StatelessWidget {
     if (text.isEmpty) return false;
     final codeUnit = text.codeUnitAt(0);
     return (codeUnit >= 0x1F300 && codeUnit <= 0x1F9FF) || // Misc symbols
-           (codeUnit >= 0x2600 && codeUnit <= 0x26FF) ||   // Misc symbols
-           (codeUnit >= 0x2700 && codeUnit <= 0x27BF);     // Dingbats
+        (codeUnit >= 0x2600 && codeUnit <= 0x26FF) || // Misc symbols
+        (codeUnit >= 0x2700 && codeUnit <= 0x27BF); // Dingbats
   }
 }
