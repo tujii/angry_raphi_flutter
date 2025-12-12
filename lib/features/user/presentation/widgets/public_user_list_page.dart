@@ -25,6 +25,7 @@ import '../../../admin/presentation/pages/admin_settings_page.dart';
 import '../../../../shared/widgets/user_ranking_search_delegate.dart';
 import '../../../../shared/widgets/markdown_content_widget.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import '../../../gamification/presentation/pages/chaos_dashboard_page.dart';
 
 class PublicUserListPage extends StatefulWidget {
   const PublicUserListPage({super.key});
@@ -192,9 +193,25 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                           builder: (context) => const AdminSettingsPage(),
                         ),
                       );
+                    } else if (value == 'chaos') {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ChaosDashboardPage(),
+                        ),
+                      );
                     }
                   },
                   itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 'chaos',
+                      child: Row(
+                        children: [
+                          Icon(Icons.bolt, color: Colors.deepOrange),
+                          SizedBox(width: 8),
+                          Text('Chaos Dashboard'),
+                        ],
+                      ),
+                    ),
                     PopupMenuItem(
                       value: 'settings',
                       child: Row(
@@ -214,6 +231,44 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                           SizedBox(width: 8),
                           Text(AppLocalizations.of(context)?.signOut ??
                               AppLocalizations.of(context)?.signOut ??
+                              'Abmelden'),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              } else if (authState is AuthAuthenticated && !_isAdmin) {
+                // Menu for logged-in non-admin users
+                return PopupMenuButton<String>(
+                  onSelected: (value) {
+                    if (value == 'logout') {
+                      context.read<AuthBloc>().add(AuthSignOutRequested());
+                    } else if (value == 'chaos') {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ChaosDashboardPage(),
+                        ),
+                      );
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 'chaos',
+                      child: Row(
+                        children: [
+                          Icon(Icons.bolt, color: Colors.deepOrange),
+                          SizedBox(width: 8),
+                          Text('Chaos Dashboard'),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'logout',
+                      child: Row(
+                        children: [
+                          Icon(Icons.logout),
+                          SizedBox(width: 8),
+                          Text(AppLocalizations.of(context)?.signOut ??
                               'Abmelden'),
                         ],
                       ),
