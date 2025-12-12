@@ -37,7 +37,7 @@ class AdminService {
     String email,
     String displayName,
   ) async {
-    final adminCheckResult = await adminRepository.checkAdminStatus(userId);
+    final adminCheckResult = await adminRepository.checkAdminStatus(email);
 
     adminCheckResult.fold(
       (failure) => {}, // Error checking admin status - silent in production
@@ -88,7 +88,7 @@ class AdminService {
     // Check if user is already admin in database
     if (currentUser != null) {
       final adminCheckResult =
-          await adminRepository.checkAdminStatus(currentUser.uid);
+          await adminRepository.checkAdminStatus(currentUser.email!);
       return adminCheckResult.fold((failure) => false, (isAdmin) => isAdmin);
     }
 
