@@ -22,21 +22,46 @@ Die Story of the Day Feature kann optional Google's Gemini AI nutzen, um dynamis
 
 ### 2. API Key konfigurieren
 
+Es gibt zwei Methoden, den API-Key zu konfigurieren:
+
+#### Option A: Environment Variable (Empfohlen für Codespaces/CI)
+
+**Für GitHub Codespaces:**
+1. Gehe zu Repository Settings → Secrets and variables → Codespaces
+2. Klicke auf "New repository secret"
+3. Name: `GEMINI_API_KEY`
+4. Value: Dein API-Key
+5. Starte Codespace neu
+
+**Für lokale Entwicklung:**
+```bash
+export GEMINI_API_KEY='DEIN_API_KEY_HIER'
+flutter run --dart-define=GEMINI_API_KEY=$GEMINI_API_KEY
+```
+
+#### Option B: Hardcoded (Für lokale Entwicklung)
+
 Öffne `lib/core/config/ai_config.dart` und setze deinen API-Key:
 
 ```dart
 class AIConfig {
-  static const String? geminiApiKey = 'DEIN_API_KEY_HIER'; // Ersetze mit deinem Key
-  
-  static bool get isEnabled => geminiApiKey != null && geminiApiKey.isNotEmpty;
+  static const String? _hardcodedApiKey = 'DEIN_API_KEY_HIER'; // Ersetze mit deinem Key
+  ...
 }
 ```
+
+⚠️ **Wichtig**: Committe niemals deinen API-Key ins Repository!
 
 ### 3. App neu bauen
 
 ```bash
 flutter pub get
 flutter run
+```
+
+Oder mit Dart Define:
+```bash
+flutter run --dart-define=GEMINI_API_KEY=DEIN_API_KEY
 ```
 
 ## Funktionsweise
