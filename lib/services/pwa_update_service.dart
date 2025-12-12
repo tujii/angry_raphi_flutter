@@ -7,9 +7,6 @@ import 'pwa_update_service_stub.dart'
 /// Service to handle PWA updates and version checking
 /// This ensures the app automatically loads the latest version
 class PwaUpdateService {
-  static const String _storageKey = 'angry_raphi_last_version_check';
-  static const int _checkIntervalMinutes = 5;
-
   /// Check if we're running as a web app
   bool get isWeb => kIsWeb;
 
