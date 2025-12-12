@@ -230,7 +230,6 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                           Icon(Icons.logout),
                           SizedBox(width: 8),
                           Text(AppLocalizations.of(context)?.signOut ??
-                              AppLocalizations.of(context)?.signOut ??
                               'Abmelden'),
                         ],
                       ),

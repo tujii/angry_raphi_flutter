@@ -242,7 +242,7 @@ class _ChaosDashboardState extends State<ChaosDashboard> {
                 type: type,
               ),
             );
-        NotificationService.showHardwareFail(label, widget.userName);
+        // Notification is shown in BLoC listener after successful add
       },
       icon: Icon(_getHardwareIcon(type)),
       label: Text(label),

@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
@@ -123,8 +124,8 @@ class GamificationRepositoryImpl implements GamificationRepository {
       'Houston, wir haben ein Problem: $hardwareName $count× ausgefallen! 🚀',
     ];
 
-    // Select random message
-    final randomIndex = DateTime.now().millisecond % messages.length;
+    // Select random message using proper random number generator
+    final randomIndex = Random().nextInt(messages.length);
     return messages[randomIndex];
   }
 
