@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/enums/raphcon_type.dart';
@@ -21,9 +22,11 @@ import '../../../../shared/widgets/raphcon_type_selection_dialog.dart';
 import '../../../../shared/widgets/raphcon_statistics_bottom_sheet.dart';
 import '../../../../shared/widgets/streaming_raphcon_detail_bottom_sheet.dart';
 import '../../../../services/admin_config_service.dart';
+import '../../../../services/story_of_the_day_service.dart';
 import '../../../admin/presentation/pages/admin_settings_page.dart';
 import '../../../../shared/widgets/user_ranking_search_delegate.dart';
 import '../../../../shared/widgets/markdown_content_widget.dart';
+import '../../../../shared/widgets/story_of_the_day_banner.dart';
 import '../../../../core/utils/responsive_helper.dart';
 
 class PublicUserListPage extends StatefulWidget {
@@ -38,10 +41,13 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
   bool _isLoggedIn = false;
   String _appVersion = '1.0.0';
   String _whatsNewContent = '';
+  String _storyOfTheDay = '';
+  late StoryOfTheDayService _storyService;
 
   @override
   void initState() {
     super.initState();
+    _storyService = StoryOfTheDayService(FirebaseFirestore.instance);
     _checkAuthAndAdminStatus();
     _loadAppVersion();
     // Set initial localized content
@@ -116,6 +122,17 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
           context.read<AdminBloc>().add(CheckAdminStatusEvent(currentUser.uid));
         }
       }
+    }
+  }
+
+  Future<void> _loadStoryOfTheDay(List<user_entity.User> users) async {
+    if (users.isEmpty) return;
+    
+    final story = await _storyService.getWeeklyStory(users);
+    if (mounted) {
+      setState(() {
+        _storyOfTheDay = story;
+      });
     }
   }
 
@@ -336,6 +353,11 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
   }
 
   Widget _buildUsersList(BuildContext context, List<user_entity.User> users) {
+    // Load story when users are available
+    if (_storyOfTheDay.isEmpty && users.isNotEmpty) {
+      _loadStoryOfTheDay(users);
+    }
+
     if (users.isEmpty) {
       return Center(
         child: Column(
@@ -362,52 +384,11 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
 
     return Column(
       children: [
-        // Info banner for guests
-        if (!_isLoggedIn)
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            margin: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppConstants.primaryColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: AppConstants.primaryColor.withValues(alpha: 0.3),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.info_outline,
-                      color: AppConstants.primaryColor,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        AppLocalizations.of(context)?.loginAsAdmin ??
-                            'Melden Sie sich als Admin an, um Benutzer zu verwalten und Raphcons zu erstellen.',
-                        style: TextStyle(
-                          color: AppConstants.primaryColor,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () => _showLoginDialog(context),
-                    child:
-                        Text(AppLocalizations.of(context)?.login ?? 'Anmelden'),
-                  ),
-                ),
-              ],
-            ),
+        // Story of the Day banner (replaces login banner)
+        if (_storyOfTheDay.isNotEmpty)
+          StoryOfTheDayBanner(
+            story: _storyOfTheDay,
+            onTap: !_isLoggedIn ? () => _showLoginDialog(context) : null,
           ),
 
         // User list
