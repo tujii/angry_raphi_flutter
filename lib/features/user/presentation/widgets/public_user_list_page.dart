@@ -25,13 +25,25 @@ import '../../../../shared/widgets/streaming_raphcon_detail_bottom_sheet.dart';
 import '../../../../services/admin_config_service.dart';
 import '../../../../services/story_of_the_day_service.dart';
 import '../../../admin/presentation/pages/admin_settings_page.dart';
+import '../../../settings/presentation/pages/settings_page.dart';
 import '../../../../shared/widgets/user_ranking_search_delegate.dart';
 import '../../../../shared/widgets/markdown_content_widget.dart';
 import '../../../../shared/widgets/story_of_the_day_banner.dart';
 import '../../../../core/utils/responsive_helper.dart';
 
 class PublicUserListPage extends StatefulWidget {
-  const PublicUserListPage({super.key});
+  final Function(Locale) onLanguageChanged;
+  final Function(ThemeMode) onThemeChanged;
+  final Locale currentLocale;
+  final ThemeMode currentTheme;
+
+  const PublicUserListPage({
+    super.key,
+    required this.onLanguageChanged,
+    required this.onThemeChanged,
+    required this.currentLocale,
+    required this.currentTheme,
+  });
 
   @override
   State<PublicUserListPage> createState() => _PublicUserListPageState();
@@ -210,6 +222,22 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
               context.read<UserBloc>().add(RefreshUsersEvent());
             },
           ),
+          IconButton(
+            icon: const Icon(Icons.settings),
+            tooltip: AppLocalizations.of(context)?.settings ?? 'Settings',
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => SettingsPage(
+                    onLanguageChanged: widget.onLanguageChanged,
+                    onThemeChanged: widget.onThemeChanged,
+                    currentLocale: widget.currentLocale,
+                    currentTheme: widget.currentTheme,
+                  ),
+                ),
+              );
+            },
+          ),
           BlocBuilder<AuthBloc, AuthState>(
             builder: (context, authState) {
               if (authState is AuthAuthenticated && _isAdmin) {
@@ -217,7 +245,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                   onSelected: (value) {
                     if (value == 'logout') {
                       context.read<AuthBloc>().add(AuthSignOutRequested());
-                    } else if (value == 'settings') {
+                    } else if (value == 'admin_settings') {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const AdminSettingsPage(),
@@ -227,13 +255,13 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                   },
                   itemBuilder: (context) => [
                     PopupMenuItem(
-                      value: 'settings',
+                      value: 'admin_settings',
                       child: Row(
                         children: [
-                          Icon(Icons.settings),
+                          Icon(Icons.admin_panel_settings),
                           SizedBox(width: 8),
-                          Text(AppLocalizations.of(context)?.settings ??
-                              'Einstellungen'),
+                          Text(AppLocalizations.of(context)?.adminSettings ??
+                              'Admin Settings'),
                         ],
                       ),
                     ),
@@ -244,7 +272,6 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                           Icon(Icons.logout),
                           SizedBox(width: 8),
                           Text(AppLocalizations.of(context)?.signOut ??
-                              AppLocalizations.of(context)?.signOut ??
                               'Abmelden'),
                         ],
                       ),

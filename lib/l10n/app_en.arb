@@ -1162,5 +1162,45 @@
         "type": "String"
       }
     }
+  },
+  "language": "Language",
+  "selectLanguage": "Select Language",
+  "theme": "Theme",
+  "lightMode": "Light Mode",
+  "darkMode": "Dark Mode",
+  "githubContributors": "Contributors on GitHub",
+  "githubContributorsDescription": "See who's contributing to this project",
+  "selectYourLanguage": "Select Your Language",
+  "welcomeSelectLanguage": "Welcome! Please select your preferred language:",
+  "continue": "Continue",
+  "@language": {
+    "description": "Language label"
+  },
+  "@selectLanguage": {
+    "description": "Select language label"
+  },
+  "@theme": {
+    "description": "Theme label"
+  },
+  "@lightMode": {
+    "description": "Light mode label"
+  },
+  "@darkMode": {
+    "description": "Dark mode label"
+  },
+  "@githubContributors": {
+    "description": "GitHub contributors link text"
+  },
+  "@githubContributorsDescription": {
+    "description": "GitHub contributors description"
+  },
+  "@selectYourLanguage": {
+    "description": "Select your language title"
+  },
+  "@welcomeSelectLanguage": {
+    "description": "Welcome message for language selection"
+  },
+  "@continue": {
+    "description": "Continue button text"
   }
 }

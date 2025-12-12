@@ -13,6 +13,7 @@ import 'features/user/data/repositories/firestore_user_repository.dart';
 import 'features/user/domain/usecases/user_usecases.dart';
 import 'features/user/presentation/bloc/user_bloc.dart';
 import 'services/admin_service.dart';
+import 'services/preferences_service.dart';
 import 'features/admin/data/repositories/admin_repository_impl.dart';
 import 'features/admin/data/datasources/admin_remote_datasource.dart';
 import 'features/admin/domain/usecases/check_admin_status.dart';
@@ -38,6 +39,7 @@ import 'features/authentication/presentation/bloc/auth_event.dart';
 import 'shared/widgets/app_wrapper.dart';
 import 'core/network/network_info.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'features/settings/presentation/widgets/language_selector_dialog.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -78,15 +80,98 @@ Future<void> _initializeAdmin() async {
   }
 }
 
-class AngryRaphiApp extends StatelessWidget {
+class AngryRaphiApp extends StatefulWidget {
   const AngryRaphiApp({super.key});
 
   @override
+  State<AngryRaphiApp> createState() => _AngryRaphiAppState();
+}
+
+class _AngryRaphiAppState extends State<AngryRaphiApp> {
+  final PreferencesService _preferencesService = PreferencesService();
+  Locale _locale = const Locale('en');
+  ThemeMode _themeMode = ThemeMode.light;
+  bool _isInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeSettings();
+  }
+
+  Future<void> _initializeSettings() async {
+    // Load saved preferences
+    final savedLanguage = await _preferencesService.getLanguage();
+    final savedTheme = await _preferencesService.getTheme();
+    final isFirstLaunch = await _preferencesService.isFirstLaunch();
+
+    setState(() {
+      if (savedLanguage != null) {
+        _locale = Locale(savedLanguage);
+      }
+      if (savedTheme != null) {
+        _themeMode = savedTheme == 'dark' ? ThemeMode.dark : ThemeMode.light;
+      }
+      _isInitialized = true;
+    });
+
+    // Show language selector on first launch
+    if (isFirstLaunch) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showLanguageSelector();
+      });
+    }
+  }
+
+  void _showLanguageSelector() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => LanguageSelectorDialog(
+        currentLocale: _locale,
+        onLanguageSelected: (locale) async {
+          await _preferencesService.setLanguage(locale.languageCode);
+          await _preferencesService.setNotFirstLaunch();
+          setState(() {
+            _locale = locale;
+          });
+        },
+      ),
+    );
+  }
+
+  void _changeLanguage(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
+
+  void _changeTheme(ThemeMode themeMode) {
+    setState(() {
+      _themeMode = themeMode;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!_isInitialized) {
+      return const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      );
+    }
+
     return MaterialApp(
       title: AppConstants.appName,
-      theme: _buildTheme(),
+      theme: _buildLightTheme(),
+      darkTheme: _buildDarkTheme(),
+      themeMode: _themeMode,
       debugShowCheckedModeBanner: false,
+      locale: _locale,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -96,6 +181,7 @@ class AngryRaphiApp extends StatelessWidget {
       supportedLocales: const [
         Locale('en'),
         Locale('de'),
+        Locale('gsw'),
       ],
       home: MultiBlocProvider(
         providers: [
@@ -197,12 +283,17 @@ class AngryRaphiApp extends StatelessWidget {
             },
           ),
         ],
-        child: const AppWrapper(),
+        child: AppWrapper(
+          onLanguageChanged: _changeLanguage,
+          onThemeChanged: _changeTheme,
+          currentLocale: _locale,
+          currentTheme: _themeMode,
+        ),
       ),
     );
   }
 
-  ThemeData _buildTheme() {
+  ThemeData _buildLightTheme() {
     return ThemeData(
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(
@@ -210,6 +301,41 @@ class AngryRaphiApp extends StatelessWidget {
         brightness: Brightness.light,
       ),
       appBarTheme: const AppBarTheme(
+        backgroundColor: AppConstants.primaryColor,
+        foregroundColor: Colors.white,
+        elevation: 2,
+        centerTitle: true,
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppConstants.primaryColor,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppConstants.defaultPadding,
+            vertical: AppConstants.smallPadding,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+          ),
+        ),
+      ),
+      cardTheme: CardTheme(
+        elevation: AppConstants.cardElevation,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+        ),
+      ),
+    );
+  }
+
+  ThemeData _buildDarkTheme() {
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: AppConstants.primaryColor,
+        brightness: Brightness.dark,
+      ),
+      appBarTheme: AppBarTheme(
         backgroundColor: AppConstants.primaryColor,
         foregroundColor: Colors.white,
         elevation: 2,

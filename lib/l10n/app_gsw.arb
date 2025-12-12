@@ -1,0 +1,402 @@
+{
+  "@@locale": "gsw",
+  "appTitle": "AngryRaphi",
+  "welcome": "Willkomme bi AngryRaphi!",
+  "subtitle": "Bewärt Persone mit Raphcons",
+  "signIn": "Aamälde",
+  "signInWithGoogle": "Mit Google aamälde",
+  "signOut": "Abmälde",
+  "loading": "Ladet...",
+  "error": "Fähler",
+  "retry": "Nomal probiere",
+  "cancel": "Abbräche",
+  "confirm": "Bestätige",
+  "delete": "Lösche",
+  "add": "Hinzuefüege",
+  "name": "Name",
+  "description": "Beschriibig",
+  "comingSoon": "🚧 Meh Features chömed bald! 🚧",
+  "termsAndPrivacy": "Mit dr Aamäldig stimmsch du öisne Nutzigsbedingige und Dateschutzbestimmige zue",
+  "errorOccurred": "Uups! Öppis isch schief gloffe",
+  "users": "Benutzer",
+  "totalRaphcons": "Total Raphcons",
+  "topCollector": "Top Sammler",
+  "loadingUsers": "Lade Benutzer...",
+  "noUsersFound": "Käi Benutzer gfunde",
+  "addFirstUser": "Füeg de erst Benutzer hinzue!",
+  "addUser": "Benutzer hinzuefüege",
+  "initials": "Initiale",
+  "firstInitial": "Erschte Buechstab",
+  "secondInitial": "Zweite Buechstab",
+  "pleaseEnterFirstInitial": "Bitte gib de erst Buechstab ii",
+  "pleaseEnterSecondInitial": "Bitte gib de zweit Buechstab ii",
+  "initialMustBeLetter": "Mues en Buechstab sii",
+  "settings": "Iistellige",
+  "settingsComingSoon": "Iistellige chömed bald!",
+  "addUserDialogTitle": "Benutzer hinzuefüege",
+  "addUserDialogContent": "Die Funktion isch no in Entwicklig. Bald chasch du neui Benutzer hinzuefüege!",
+  "ok": "OK",
+  "raphcons": "Raphcons",
+  "login": "Aamälde",
+  "adminLogin": "Admin Aamäldig",
+  "loginRequired": "Aamäldig erforderlich",
+  "loginToManage": "Mäld dich aa zum Benutzer verwalte",
+  "notAdmin": "Käi Admin-Berächtigung",
+  "notAdminMessage": "Du hesch käi Berächtigung für die Aktion.",
+  "loginSuccess": "Erfolgrych aamäldet",
+  "loginError": "Aamäldefähler",
+  "signInCancelled": "Aamäldig abbbroche",
+  "noInternetConnection": "Käi Internetverbindig",
+  "networkRequestFailed": "Netzwerkaafrag isch fählgschlage",
+  "tooManyRequests": "Z'viel Aafrage. Probier's spöter nomol.",
+  "userDisabled": "Benutzerkonto deaktiviert",
+  "userNotFound": "Benutzer nöd gfunde",
+  "operationNotAllowed": "Vorgang nöd erloubt",
+  "invalidCredential": "Ungültigi Aamälddate",
+  "credentialAlreadyInUse": "Aamälddate scho bruucht",
+  "invalidEmail": "Ungültigi E-Mail-Adrässe",
+  "wrongPassword": "Falschs Passwort",
+  "weakPassword": "Passwort z'schwach",
+  "emailAlreadyInUse": "E-Mail scho bruucht",
+  "enterName": "Name iigää",
+  "nameRequired": "Name isch erforderlich",
+  "addingUser": "Benutzer wird hinzuegfüegt...",
+  "userAdded": "Benutzer hinzuegfüegt",
+  "failedToAddUser": "Fähler bim Hinzuefüege vom Benutzer",
+  "creatingRaphcon": "Raphcon wird erstellt...",
+  "raphconCreated": "Raphcon erstellt! 🎉",
+  "failedToCreateRaphcon": "Fähler bim Erstelle vom Raphcon",
+  "confirmDeleteUser": "Benutzer lösche bestätige",
+  "confirmDeleteUserMessage": "Möchtsch du dä Benutzer würklich lösche? Die Aktion cha nöd rückgängig gmacht wärde.",
+  "deletingUser": "Benutzer wird glöscht...",
+  "userDeleted": "Benutzer glöscht",
+  "failedToDeleteUser": "Fähler bim Lösche vom Benutzer",
+  "adminFunctionsOnly": "Nur für Administratore",
+  "loginToAccess": "Mäld dich aa zum uf die Funktion zuegriife",
+  "checkingAdminStatus": "Prüef Admin-Status...",
+  "failedToCheckAdmin": "Fähler bim Prüefe vom Admin-Status",
+  "loggedInAs": "Aamäldet als",
+  "unknownError": "Unbekannte Fähler isch uftrete",
+  "tryAgain": "Nomal probiere",
+  "close": "Schliesse",
+  "loadingUsers2": "Lade Benutzer...",
+  "addFirstUserHint": "Füeg de erst Benutzer hinzue!",
+  "usersCount": "Benutzer",
+  "manageUsers": "Benutzer verwalte",
+  "manageUsersMessage": "Möchtsch Biispiil-Benutzer zur Datebank hinzuefüege oder en neue Benutzer erstelle?",
+  "createUserComingSoon": "Benutzer erstelle chunnt bald!",
+  "newUser": "Neue Benutzer",
+  "noDataAvailable": "Käi Date verfüegbar",
+  "settingsComingSoon2": "Iistellige chömed bald!",
+  "mustBeLoggedIn": "Du muesch aamäldet sii",
+  "createRaphconFor": "Raphcon für {name} erstelle",
+  "loginFailed": "Aamäldig fählgschlage",
+  "adminRequired": "Admin-Berächtigung erforderlich",
+  "loginToCreateRaphcons": "Mäld dich aa zum Raphcons erstelle",
+  "createdAgo": "Erstellt: {timeAgo}",
+  "dayAgo": "vor {days} Tag",
+  "daysAgo": "vor {count} Tag{plural}",
+  "hourAgo": "vor {hours} Stund",
+  "hoursAgo": "vor {count} Stund{plural}",
+  "justNow": "grad äbe",
+  "pleaseEnterName": "Bitte gib en Name ii",
+  "nameMaxLength": "Name darf höchstens 50 Zeiche haa",
+  "descriptionOptional": "Beschriibig (optional)",
+  "descriptionMaxLength": "Beschriibig darf höchstens 500 Zeiche haa",
+  "loginAsAdmin": "Mäld dich als Admin aa zum Benutzer verwalte und Raphcons erstelle.",
+  "addPersonWithInitials": "Person mit Initiale hinzuefüege",
+  "enterTwoInitials": "Gib zwei Initiale ii (z.B. J.D.)",
+  "initialsFormat": "Format: Erste Buechstab + Zweite Buechstab",
+  "ratePersonsWithRaphcons": "Bewärt Persone mit Raphcons",
+  "termsOfService": "Nutzigsbedingige",
+  "privacyPolicy": "Dateschutzerklärig",
+  "bySigningInYouAgree": "Mit dr Aamäldig stimmsch du öisne",
+  "and": "und dr",
+  "agreeTo": "zue.",
+  "raphconTypeMouse": "Muus",
+  "raphconTypeKeyboard": "Tastatur",
+  "raphconTypeMicrophone": "Mikrofon",
+  "raphconTypeHeadset": "Headset",
+  "raphconTypeWebcam": "Webcam",
+  "raphconTypeSpeakers": "Lüütsprecher",
+  "raphconTypeNetwork": "Netzwärk",
+  "raphconTypeSoftware": "Software",
+  "raphconTypeHardware": "Hardware",
+  "raphconTypeOther": "Sonschtigs",
+  "selectProblemType": "Problem-Typ uuswähle",
+  "whatKindOfProblem": "Was für es Problem?",
+  "showDetails": "Details aazeige",
+  "problemStatisticsFor": "Problem vo {userName}",
+  "sortedByType": "Nach Problemtyp sortiert",
+  "totalCount": "Gsamtaazahl:",
+  "problems": "Problem",
+  "noProblemsReported": "Käi Problem gmäldet!",
+  "noTechnicalProblemsYet": "Dä Benutzer het bis jetzt käi technischi Problem.",
+  "errorLoadingStatistics": "Fähler bim Lade vo de Statistike: {message}",
+  "tryAgainButton": "Nomal probiere",
+  "cancelButton": "Abbräche",
+  "createdTimeAgo": "Erstellt: {timeAgo}",
+  "daysAgoSingular": "vor {days} Tag",
+  "daysAgoPlural": "vor {days} Täg",
+  "hoursAgoSingular": "vor {hours} Stund",
+  "hoursAgoPlural": "vor {hours} Stunde",
+  "justCreated": "grad äbe",
+  "raphconsCount": "Raphcons: {count}",
+  "memberSince": "Mitgliid sit {date}",
+  "noEntriesForThisType": "Käi Iiträg für dä Typ",
+  "createdBy": "Erstellt vo: {name}",
+  "noComment": "Kä Kommentar",
+  "confirmDeleteRaphcon": "Raphcon lösche",
+  "confirmDeleteRaphconMessage": "Bisch sicher dass du dä Iitrag möchtsch lösche?",
+  "raphconDeleted": "Raphcon glöscht",
+  "errorRaphconIdNotFound": "Fähler: Raphcon ID nöd gfunde",
+  "adminSettings": "Admin Iistellige",
+  "configuredAdminsCSV": "Konfigurierti Admins (CSV)",
+  "activeAdminsFirebase": "Aktivi Admins (Firebase)",
+  "promoteUserToAdmin": "User zu Admin befördere",
+  "selectAndPromoteUser": "User uuswähle und befördere",
+  "removeAdmin": "Admin entferne",
+  "searchUser": "User sueche",
+  "enterEmailAddress": "E-Mail-Adrässe iigää",
+  "emailAddress": "E-Mail-Adrässe",
+  "termsOfServiceTitle": "Nutzigsbedingige für AngryRaphi",
+  "privacyPolicyTitle": "Dateschutzerklärig für AngryRaphi",
+  "lastUpdated": "Stand: {date}",
+  "termsSection1Title": "1. Gältigsbereich",
+  "termsSection1Content": "Die Nutzigsbedingige reglet d'Nutzig vo dr AngryRaphi-App (\"d'App\"), emene System zur Bewertig vo Persone mit \"Raphcons\". Mit dr Nutzig vo dr App stimmsch du dene Bedingige zue.",
+  "termsSection2Title": "2. Beschriibig vo de Dienscht",
+  "termsSection2Content": "AngryRaphi isch en Aawändig zur humorvolle Bewertig vo Persone in gschlossene Gruppe. Benutzer chönd:\n\n• Persone zur Bewertigsliste hinzuefüege\n• Raphcons (Bewertige) für verschideni Problemberiich vergää\n• Statistike und Ranglischte aaluege\n• Als Administrator zuesätzlichi Verwaltigsfunktione nutze",
+  "termsSection3Title": "3. Benutzerkonte und Zuegang",
+  "termsSection3Content": "Dr Zuegang zur App erfolgt über Google-Authentifizirig. Du bisch verantwortlich für:\n\n• D'Gheimhaltig vo dine Aamälddate\n• Alli Aktivitäte under dim Konto\n• D'Benochrichtiging bi unbfuegter Nutzig",
+  "termsSection4Title": "4. Aagmässeni Nutzig",
+  "termsSection4Content": "Du verpflichtesch dich zur aagmässene Nutzig vo dr App:\n\n• Käi Beleidigunge oder Diskriminirig\n• Respektvolle Umgang mit andere Benutzer\n• Käi missbräuchlichi Nutzig vo dr Bewertigsfunktion\n• Wahrig vo dr Privatsphäre vo andere Persone",
+  "termsSection5Title": "5. Dateschutz",
+  "termsSection5Content": "Dini Privatsphäre isch öis wichtig. Details zur Dateerhebig und -verarbeitig findsch in öisere Dateschutzerklärig, wo integrale Bestandteil vo dene Nutzigsbedingige isch.",
+  "termsSection6Title": "6. Geischtigs Eigetum",
+  "termsSection6Content": "Alli Inhalt vo dr App, iischliesslich Design, Code und Grafike, sind urheberrächtlich gschützt. D'Nutzig isch nur im Rahme vo dr beschtimmigsgemässe Verwändig vo dr App gstattet.",
+  "termsSection7Title": "7. Haftigsusschluss",
+  "termsSection7Content": "D'App wird \"wie gseh\" bereitgstellt. Mir übernähmed käi Gwähr für:\n\n• Kontinuierlichi Verfüegbarkeit\n• Fählerfröiheit vo dr Software\n• Eignet für beschtimmti Zwäck\n• Schäde dür d'Nutzig vo dr App",
+  "termsSection8Title": "8. Änderige vo de Bedingige",
+  "termsSection8Content": "Mir behaltet öis s'Rächt vor, die Nutzigsbedingige jederzit z'ändere. Änderige werdet in dr App bekannt gää und träted mit dr Fortsätzig vo dr Nutzig in Chraft.",
+  "termsSection9Title": "9. Kündiging",
+  "termsSection9Content": "Du chasch dis Konto jederzit lösche. Mir behaltet öis vor, Konte bi Verschtöss gege die Bedingige z'sperre oder z'lösche.",
+  "termsSection10Title": "10. Aawändbers Rächt",
+  "termsSection10Content": "Die Nutzigsbedingige understönd em Rächt vo dr Schwiz. Grichtsstand isch Olten, Schwiz.\n\n**WICHTIGE HIIWIS:** AngryRaphi isch en reine Spass-App ohni ernsthafti Absicht. Bi Problem nimm bitte zerscht Kontakt uf, bevor rächtlichi Schritt iigleitet werdet.",
+  "contactTitle": "Kontakt",
+  "termsContactContent": "Bi Frage zu dene Nutzigsbedingige wänd dich bitte aa:\n\nInthusan Gunasiri\nAarauerstrasse 132\n4600 Olten\nE-Mail: inthusan@hotmail.de\n\nApp: AngryRaphi v{version}",
+  "privacySection1Title": "1. Verantwortliche",
+  "privacySection1Content": "Verantwortlich für d'Dateverarbeitig in dr AngryRaphi-App isch:\n\nInthusan Gunasiri\nAarauerstrasse 132\n4600 Olten, Schwiz\nE-Mail: inthusan@hotmail.de\n\n**HIIWIS:** Das isch en Spass-App ohni kommerzielli Absichte.",
+  "privacySection2Title": "2. Erhobeni Date",
+  "privacySection2Content": "Mir erhebet und verarbeitet folgendi Date:\n\n**Authentifizirigsddate:**\n• Google-Account-Informatione (Name, E-Mail, Profilbild)\n• Eindütigi Benutzer-ID\n\n**App-Nutzigsdate:**\n• Erstellti Persone und dere Name/Initiale\n• Raphcon-Bewertige mit Ziitstämpel\n• Admin-Status und Berächtigung\n\n**Technischi Date:**\n• Gerätinformatione\n• App-Nutzigsstatistike\n• Crash-Reports (anonymisiert)",
+  "privacySection3Title": "3. Zwäck vo dr Dateverarbeitig",
+  "privacySection3Content": "D'Dateverarbeitig erfolgt zu folgede Zwäck:\n\n• **Bereitstellig vo de App-Funktione:** Authentifizirig, Benutzerverwaltung\n• **Personebewertige:** Speicherig und Aazeig vo Raphcons\n• **Administration:** Verwaltung vo Benutzer und Berächtigung\n• **Verbesserig vo dr App:** Analys vo Nutzigsmuschter\n• **Sicherheit:** Schutz vor Missbruch",
+  "privacySection4Title": "4. Rächtsgrundlag",
+  "privacySection4Content": "D'Verarbeitig erfolgt uf Basis vo:\n\n• **Art. 6 Abs. 1 lit. b DSGVO:** Vertragserfüllig\n• **Art. 6 Abs. 1 lit. f DSGVO:** Berächtigti Interesse\n• **Art. 6 Abs. 1 lit. a DSGVO:** Iiverschtändnis (wo erforderlich)",
+  "privacySection5Title": "5. Datespeicherig und -Sicherheit",
+  "privacySection5Content": "**Speicherort:**\nDini Date werdet in Google Firebase/Firestore gspeicheret, wo de EU-Dateschutzstandards entspricht.\n\n**Sicherheitsmassnähme:**\n• Verschlüsselti Dateübertragig (HTTPS)\n• Sicheri Authentifizirig über Google\n• Regelmässigi Sicherheits-Updates\n• Zuegriffskontrolle über Firebase Security Rules",
+  "privacySection6Title": "6. Datewitergoob",
+  "privacySection6Content": "En Witergoob vo dine Date erfolgt nur:\n\n• Aa Google Firebase (als technische Dienstleischter)\n• Bi rächtlicher Verpflichtig\n• Mit dinere usdrückliche Iiwilliging\n\nEn kommerzielli Witergoob findet nöd statt.",
+  "privacySection7Title": "7. Speicherduur",
+  "privacySection7Content": "**Benutzerkonto:** Bis zur Löschig dür dich\n**Raphcon-Date:** Bis zur manuelle Löschig\n**Log-Date:** 30 Täg\n**Crash-Reports:** 90 Täg (anonymisiert)",
+  "privacySection8Title": "8. Dini Rächt",
+  "privacySection8Content": "Du hesch folgendi Rächt bezüglich dinere Date:\n\n• **Uskunft:** Information über gspeicherti Date\n• **Berichtiging:** Korrektur vo falsche Date\n• **Löschig:** Entfernig vo dine Date\n• **Iischränkig:** Beschränkig vo dr Verarbeitig\n• **Dateübertragbarkeit:** Export vo dine Date\n• **Widerspruch:** Widerspruch gege d'Verarbeitig\n\nKontaktier öis under: privacy@angryraphi.app",
+  "privacySection9Title": "9. Google Services",
+  "privacySection9Content": "D'App nutzt Google-Dienscht:\n\n• **Firebase Authentication:** Sicheri Aamäldig\n• **Cloud Firestore:** Datespeicherig\n• **Firebase Storage:** Bildspeicherig\n\nGoogle's Dateschutzbeschtimmige gälted für die Dienscht: https://policies.google.com/privacy",
+  "privacySection10Title": "10. Minderjährigi",
+  "privacySection10Content": "D'App isch nöd für Persone under 16 Jahr beschtimmt. Mir erhebet wissentlich käi Date vo Minderjährige.",
+  "privacySection11Title": "11. Änderige",
+  "privacySection11Content": "Die Dateschutzerklärig cha aktualisiert wärde. Änderige werdet in dr App bekannt gää.",
+  "privacyContactTitle": "Dateschutz-Kontakt",
+  "privacyContactContent": "Bi Frage zum Dateschutz:\n\nInthusan Gunasiri\nE-Mail: inthusan@hotmail.de\nBetreff: \"Dateschutz AngryRaphi\"\n\nBitte nimm zerscht Kontakt uf, bevor du dich aa Ufsichtsbehörde wändsch. Die App dient nur em Spass!",
+  "searchUsers": "Benutzer sueche...",
+  "showRanking": "Ranglischte aazeige",
+  "noResultsFor": "Käi Resultat für \"{query}\"",
+  "noUsersAvailable": "Käi Benutzer verfüegbar",
+  "fullRanking": "Vollständigi Ranglischte",
+  "topRanking": "Top 5 Ranglischte",
+  "showFullRanking": "Vollständigi Ranglischte aazeige ({count} Benutzer)",
+  "gold": "GOLD",
+  "silver": "SILBER",
+  "bronze": "BRONZE",
+  "commentExample": "z.B. \"Muus klickt nöd richtig\"",
+  "rateWithRaphcons": "Bewärt Persone mit Raphcons!",
+  "termsPrivacyAgreement": "Mit dr Aamäldig stimmsch du öisne Nutzigsbedingige und Dateschutzrichtiinie zue",
+  "errorLoadingAdminData": "Fähler bim Lade vo de Admin-Date: {error}",
+  "csvAdminsDescription": "Die Admins sind in dr CSV-Konfiguration definiert:",
+  "noConfiguredAdmins": "Käi konfigurierti Admins gfunde.",
+  "firebaseAdminsDescription": "Die Admins sind aktuell in Firebase registriert:",
+  "noActiveAdmins": "Käi aktivi Admins in Firebase gfunde.",
+  "registeredUsers": "Registrierti Benutzer",
+  "registeredUsersDescription": "Die Benutzer händ sich bereits mit Google aamäldet:",
+  "noRegisteredUsers": "Käi registrierti Benutzer gfunde.",
+  "lastLogin": "Letschte Login: {date}",
+  "alreadyAdmin": "Bereits Admin",
+  "promoteToAdmin": "Zu Admin befördere",
+  "minutesAgo": "vor {count} Minute{plural}",
+  "addAdminManually": "Manuell en neue Admin hinzuefüege:",
+  "addAdminManuallyButton": "Manuell Admin hinzuefüege",
+  "superAdmin": "Super Admin",
+  "admin": "Admin",
+  "confirmRemoveAdmin": "Möchtsch {email} würklich als Admin entferne?",
+  "remove": "Entferne",
+  "errorRemoving": "Fähler bim Entferne: {error}",
+  "promoteUserDialogTitle": "User zu Admin befördere",
+  "promoteUserDescription": "Gib d'Date vom Benutzer ii, wo zu Admin beförderet söll wärde:",
+  "emailAddressLabel": "E-Mail-Adrässe",
+  "emailAddressHint": "bispil@email.com",
+  "displayNameLabel": "Aazeigname (optional)",
+  "displayNameHint": "Max Muschter",
+  "googleAccountRequired": "Dr Benutzer mues bereits es Google-Konto haa und sich mindischtens eimol in dr App aamäldet haa.",
+  "promoteToAdminButton": "Zu Admin befördere",
+  "errorPromoting": "Fähler bim Befördere: {error}",
+  "manageUsersDescription": "Möchtsch Biispiil-Benutzer zur Datebank hinzuefüege oder en neue Benutzer erstelle?",
+  "sampleData": "Biispiil-Date",
+  "searchAndRanking": "Sueche & Ranglischte",
+  "logout": "Abmälde",
+  "adminLoginPrompt": "Mäld dich als Admin aa zum Benutzer verwalte und Raphcons erstelle.",
+  "version": "Version {version}",
+  "language": "Sproch",
+  "selectLanguage": "Sproch uuswähle",
+  "theme": "Design",
+  "lightMode": "Hälle Modus",
+  "darkMode": "Dunkle Modus",
+  "githubContributors": "Contributors uf GitHub",
+  "githubContributorsDescription": "Lueg wär aa däm Projekt mitarbeitet",
+  "selectYourLanguage": "Wähl dini Sproch",
+  "welcomeSelectLanguage": "Willkomme! Wähl bitte dini bevorzugti Sproch:",
+  "continue": "Wiiter",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "@welcome": {
+    "description": "Welcome message"
+  },
+  "@subtitle": {
+    "description": "App subtitle"
+  },
+  "@signIn": {
+    "description": "Sign in button text"
+  },
+  "@signInWithGoogle": {
+    "description": "Google sign in button text"
+  },
+  "@signOut": {
+    "description": "Sign out button text"
+  },
+  "@loading": {
+    "description": "Loading text"
+  },
+  "@error": {
+    "description": "Generic error text"
+  },
+  "@retry": {
+    "description": "Retry button text"
+  },
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  "@confirm": {
+    "description": "Confirm button text"
+  },
+  "@delete": {
+    "description": "Delete button text"
+  },
+  "@add": {
+    "description": "Add button text"
+  },
+  "@name": {
+    "description": "Name field label"
+  },
+  "@description": {
+    "description": "Description field label"
+  },
+  "@comingSoon": {
+    "description": "Coming soon message"
+  },
+  "@termsAndPrivacy": {
+    "description": "Terms and privacy notice"
+  },
+  "@errorOccurred": {
+    "description": "Error occurred message"
+  },
+  "@users": {
+    "description": "Users label"
+  },
+  "@totalRaphcons": {
+    "description": "Total raphcons label"
+  },
+  "@topCollector": {
+    "description": "Top collector label"
+  },
+  "@loadingUsers": {
+    "description": "Loading users message"
+  },
+  "@noUsersFound": {
+    "description": "No users found message"
+  },
+  "@addFirstUser": {
+    "description": "Add first user message"
+  },
+  "@addUser": {
+    "description": "Add user button text"
+  },
+  "@initials": {
+    "description": "Initials label"
+  },
+  "@firstInitial": {
+    "description": "First initial input label"
+  },
+  "@secondInitial": {
+    "description": "Second initial input label"
+  },
+  "@pleaseEnterFirstInitial": {
+    "description": "Validation message for first initial"
+  },
+  "@pleaseEnterSecondInitial": {
+    "description": "Validation message for second initial"
+  },
+  "@initialMustBeLetter": {
+    "description": "Validation message for invalid initial"
+  },
+  "@settings": {
+    "description": "Settings menu item"
+  },
+  "@version": {
+    "description": "Version text",
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "@language": {
+    "description": "Language label"
+  },
+  "@selectLanguage": {
+    "description": "Select language label"
+  },
+  "@theme": {
+    "description": "Theme label"
+  },
+  "@lightMode": {
+    "description": "Light mode label"
+  },
+  "@darkMode": {
+    "description": "Dark mode label"
+  },
+  "@githubContributors": {
+    "description": "GitHub contributors link text"
+  },
+  "@githubContributorsDescription": {
+    "description": "GitHub contributors description"
+  },
+  "@selectYourLanguage": {
+    "description": "Select your language title"
+  },
+  "@welcomeSelectLanguage": {
+    "description": "Welcome message for language selection"
+  },
+  "@continue": {
+    "description": "Continue button text"
+  }
+}
