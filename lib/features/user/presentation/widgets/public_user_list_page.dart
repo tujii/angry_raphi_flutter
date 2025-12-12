@@ -134,7 +134,9 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
           }
         } else {
           // For other users, just check admin status
-          context.read<AdminBloc>().add(CheckAdminStatusEvent(currentUser.email ?? ''));
+          context
+              .read<AdminBloc>()
+              .add(CheckAdminStatusEvent(currentUser.email ?? ''));
         }
       }
     }
