@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/user/presentation/widgets/public_user_list_page.dart';
 import '../../features/authentication/presentation/pages/login_page.dart';
 import '../../features/authentication/presentation/pages/terms_of_service_page.dart';
 import '../../features/authentication/presentation/pages/privacy_policy_page.dart';

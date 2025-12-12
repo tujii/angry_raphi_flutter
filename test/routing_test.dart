@@ -1,6 +1,7 @@
 // Basic routing test for GoRouter implementation
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:angry_raphi/core/routing/app_router.dart';
 
 void main() {
@@ -27,10 +28,11 @@ void main() {
 
     test('Router has all required routes configured', () {
       final router = AppRouter.createRouter();
-      final routerConfig = router.routerDelegate.configuration;
       
-      // Verify router is configured (non-null configuration)
-      expect(routerConfig, isNotNull);
+      // Verify router is configured and has routes
+      expect(router, isA<GoRouter>());
+      expect(router.configuration.routes, isNotEmpty);
+      expect(router.configuration.routes.length, equals(5)); // home, login, terms, privacy, admin
     });
   });
 }
