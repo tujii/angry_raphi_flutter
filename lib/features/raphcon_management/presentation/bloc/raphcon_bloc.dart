@@ -10,7 +10,6 @@ import '../../domain/usecases/get_user_raphcons_by_type.dart';
 import '../../domain/usecases/delete_raphcon.dart';
 import '../../domain/usecases/get_user_raphcons_stream.dart';
 import '../../domain/usecases/get_user_raphcons_by_type_stream.dart';
-import '../../domain/usecases/get_all_raphcons_stream.dart';
 import '../../domain/repositories/raphcons_repository.dart';
 import '../../../../core/enums/raphcon_type.dart';
 
@@ -189,7 +188,6 @@ class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
   final DeleteRaphcon _deleteRaphcon;
   final GetUserRaphconsStream _getUserRaphconsStream;
   final GetUserRaphconsByTypeStream _getUserRaphconsByTypeStream;
-  final GetAllRaphconsStream _getAllRaphconsStream;
 
   StreamSubscription? _raphconsStreamSubscription;
 
@@ -199,8 +197,7 @@ class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
       this._getUserRaphconsByType,
       this._deleteRaphcon,
       this._getUserRaphconsStream,
-      this._getUserRaphconsByTypeStream,
-      this._getAllRaphconsStream)
+      this._getUserRaphconsByTypeStream)
       : super(RaphconInitial()) {
     on<AddRaphconEvent>(_onAddRaphcon);
     on<LoadUserRaphconStatisticsEvent>(_onLoadUserRaphconStatistics);

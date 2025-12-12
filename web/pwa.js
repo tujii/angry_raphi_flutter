@@ -1,26 +1,19 @@
-// AngryRaphi PWA Service Worker - Disabled to prevent timeout issues
-  // Service Worker Registration for PWA functionality
-  // Commented out to avoid conflicts with Flutter's internal service worker
-  /*
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('flutter-first-frame', function () {
-      navigator.serviceWorker.register('flutter_service_worker.js', {
-        scope: '/',
-        updateViaCache: 'none'
-      }).then(function(registration) {
-        console.log('AngryRaphi SW registered successfully');
-      }).catch(function(error) {
-        console.log('AngryRaphi SW registration failed');
-      });
-    });
-  }
-  */
 
   // Mobile Device Detection
   function isMobile() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
            (window.innerWidth <= 768) ||
            ('ontouchstart' in window);
+  }
+
+  // iOS Device Detection
+  function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  }
+
+  // Check if running in Safari (not in PWA mode)
+  function isSafari() {
+    return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
   }
 
   // Check if app is already installed
