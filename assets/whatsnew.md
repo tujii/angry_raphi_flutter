@@ -1,5 +1,11 @@
 ## 🏆 Neue Features
 
+**Version 2.3.0 (Dezember 2025)**
+- 🌐 Saubere URLs: URL-Pfade werden jetzt korrekt in der Browser-Adressleiste angezeigt (ohne # Hash)
+- ↩️ Navigation: Zurück-Buttons für Nutzungsbedingungen, Datenschutz und Admin-Einstellungen
+- 🛡️ Zugriffskontrolle: Nicht-Admins sehen aussagekräftige "Zugriff verweigert" Seite statt Weiterleitung
+- 🔧 Firestore-Regeln: Optimierte Sicherheitsregeln für registrierte Benutzer und Admin-Zugriff
+
 **Version 2.2.0 (Dezember 2025)**
 - 🥉 Bronze Badge Fix: Bronze Badges werden jetzt korrekt für alle berechtigten Benutzer angezeigt
 - 🔐 Logout für alle: Jeder angemeldete Benutzer kann sich jetzt über das Menü abmelden (nicht nur Admins)
