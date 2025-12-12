@@ -68,7 +68,6 @@ flutter:
   generate: true
   
   assets:
-    - assets/animations/
     - assets/images/
     - assets/data/
     - assets/whatsnew.md
