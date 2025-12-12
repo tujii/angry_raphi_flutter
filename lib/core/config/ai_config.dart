@@ -12,6 +12,7 @@ class AIConfig {
   /// Free tier includes 60 requests per minute
   static const String? geminiApiKey = null; // Set your API key here
   
-  /// Whether AI features are enabled
-  static bool get isEnabled => geminiApiKey != null && geminiApiKey.isNotEmpty;
+  /// Gemini model to use
+  /// 'gemini-1.5-flash' is recommended for fast, cost-effective generation
+  static const String geminiModel = 'gemini-1.5-flash';
 }

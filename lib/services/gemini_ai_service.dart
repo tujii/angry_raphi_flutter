@@ -1,4 +1,5 @@
 import 'package:google_generative_ai/google_generative_ai.dart';
+import '../core/config/ai_config.dart';
 
 /// Service for generating AI content using Google Gemini API
 class GeminiAIService {
@@ -7,7 +8,7 @@ class GeminiAIService {
   GeminiAIService(String? apiKey)
       : _model = apiKey != null && apiKey.isNotEmpty
             ? GenerativeModel(
-                model: 'gemini-1.5-flash',
+                model: AIConfig.geminiModel,
                 apiKey: apiKey,
               )
             : null;
@@ -49,8 +50,7 @@ Generiere NUR den Satz, ohne Anführungszeichen oder zusätzliche Erklärungen.
       final text = response.text?.trim();
       
       if (text != null && text.isNotEmpty) {
-        // Clean up the response (remove quotes if present)
-        return text.replaceAll('"', '').replaceAll("'", '').trim();
+        return _cleanResponse(text);
       }
       
       return null;
@@ -90,12 +90,17 @@ Generiere NUR den Satz, ohne Anführungszeichen oder zusätzliche Erklärungen.
       final text = response.text?.trim();
       
       if (text != null && text.isNotEmpty) {
-        return text.replaceAll('"', '').replaceAll("'", '').trim();
+        return _cleanResponse(text);
       }
       
       return null;
     } catch (e) {
       return null;
     }
+  }
+
+  /// Clean up AI response by removing quotes and extra whitespace
+  String _cleanResponse(String text) {
+    return text.replaceAll('"', '').replaceAll("'", '').trim();
   }
 }
