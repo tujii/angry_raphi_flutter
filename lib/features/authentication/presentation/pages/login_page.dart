@@ -198,7 +198,13 @@ class LoginPage extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                context.push(AppRouter.terms);
+                if (isDialog) {
+                  // Close dialog first, then navigate
+                  Navigator.of(context).pop();
+                  context.go(AppRouter.terms);
+                } else {
+                  context.push(AppRouter.terms);
+                }
               },
               child: Text(
                 AppLocalizations.of(context)!.termsOfService,
@@ -216,7 +222,13 @@ class LoginPage extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                context.push(AppRouter.privacy);
+                if (isDialog) {
+                  // Close dialog first, then navigate
+                  Navigator.of(context).pop();
+                  context.go(AppRouter.privacy);
+                } else {
+                  context.push(AppRouter.privacy);
+                }
               },
               child: Text(
                 AppLocalizations.of(context)!.privacyPolicy,

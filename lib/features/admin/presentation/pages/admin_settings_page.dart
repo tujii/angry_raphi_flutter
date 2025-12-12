@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../services/admin_config_service.dart';
 import '../../../../services/registered_users_service.dart';
+import '../../../../core/routing/app_router.dart';
+import '../bloc/admin_bloc.dart';
 
 /// Admin Settings Page - Manage admins and promote users
 class AdminSettingsPage extends StatefulWidget {
@@ -19,6 +24,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
   List<Map<String, dynamic>> _firebaseAdmins = [];
   List<Map<String, dynamic>> _registeredUsers = [];
   bool _loading = true;
+  bool _isAdmin = false;
   late RegisteredUsersService _registeredUsersService;
 
   @override
@@ -26,7 +32,22 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     super.initState();
     _registeredUsersService =
         RegisteredUsersService(FirebaseFirestore.instance);
-    _loadAdminData();
+    _checkAdminStatusAndLoad();
+  }
+
+  Future<void> _checkAdminStatusAndLoad() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser == null || currentUser.email == null) {
+      // User not logged in, redirect to home
+      if (mounted) {
+        context.go(AppRouter.home);
+      }
+      return;
+    }
+
+    // Check if user is admin
+    context.read<AdminBloc>().add(CheckAdminStatusEvent(currentUser.email!));
   }
 
   Future<void> _loadAdminData() async {
@@ -83,36 +104,85 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppConstants.backgroundColor,
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)?.adminSettings ??
-            'Admin Einstellungen'),
-        backgroundColor: AppConstants.primaryColor,
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
-              onRefresh: _loadAdminData,
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(16.0),
+    return BlocListener<AdminBloc, AdminState>(
+      listener: (context, state) {
+        if (state is AdminStatusChecked) {
+          if (state.isAdmin) {
+            setState(() => _isAdmin = true);
+            _loadAdminData();
+          } else {
+            // User is not admin, redirect to home
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content:
+                      Text('Zugriff verweigert. Sie sind kein Administrator.'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+              context.go(AppRouter.home);
+            }
+          }
+        } else if (state is AdminError) {
+          // Error checking admin status, redirect to home
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                    'Fehler beim Prüfen der Admin-Berechtigung: ${state.message}'),
+                backgroundColor: Colors.red,
+              ),
+            );
+            context.go(AppRouter.home);
+          }
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppConstants.backgroundColor,
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)?.adminSettings ??
+              'Admin Einstellungen'),
+          backgroundColor: AppConstants.primaryColor,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.go(AppRouter.home),
+          ),
+        ),
+        body: !_isAdmin
+            ? const Center(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildCSVAdminsSection(),
-                    const SizedBox(height: 24),
-                    _buildFirebaseAdminsSection(),
-                    const SizedBox(height: 24),
-                    _buildRegisteredUsersSection(),
-                    const SizedBox(height: 24),
-                    _buildPromoteUserSection(),
+                    CircularProgressIndicator(),
+                    SizedBox(height: 16),
+                    Text('Prüfe Admin-Berechtigung...'),
                   ],
                 ),
-              ),
-            ),
+              )
+            : _loading
+                ? const Center(child: CircularProgressIndicator())
+                : RefreshIndicator(
+                    onRefresh: _loadAdminData,
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildCSVAdminsSection(),
+                          const SizedBox(height: 24),
+                          _buildFirebaseAdminsSection(),
+                          const SizedBox(height: 24),
+                          _buildRegisteredUsersSection(),
+                          const SizedBox(height: 24),
+                          _buildPromoteUserSection(),
+                        ],
+                      ),
+                    ),
+                  ),
+      ),
     );
   }
 
