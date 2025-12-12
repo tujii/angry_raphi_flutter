@@ -38,7 +38,9 @@ void main() {
     mockAddUserUseCase = MockAddUserUseCase();
     mockDeleteUserUseCase = MockDeleteUserUseCase();
 
-    // Mock stream to return empty stream by default to prevent auto-start issues
+    // Mock stream to return empty stream by default
+    // UserBloc automatically starts a stream on initialization (in constructor),
+    // so we need to provide a default mock to prevent null errors during bloc creation
     when(mockGetUsersStreamUseCase.execute())
         .thenAnswer((_) => Stream.value([]));
   });

@@ -5,6 +5,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:angry_raphi/services/registered_users_service.dart';
 
+// Note: Firestore types are generic, so we need custom mocks with specific types.
+// The customMocks section creates type-safe mocks for Firestore's generic classes
+// like CollectionReference<Map<String, dynamic>>. This is required because Firestore
+// operations return strongly-typed references, and standard mocks don't support generics.
 @GenerateMocks([
   FirebaseFirestore,
   CollectionReference,
