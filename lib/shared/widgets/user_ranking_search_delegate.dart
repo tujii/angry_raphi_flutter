@@ -379,17 +379,17 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
 
   bool _shouldShowBadge(List<User> userList, int index) {
     if (index >= userList.length) return false;
-    
+
     // Get unique raphcon counts in descending order
     final uniqueCounts = userList
         .map((user) => user.raphconCount)
         .toSet()
         .toList()
       ..sort((a, b) => b.compareTo(a));
-    
+
     // Show badge if user has one of the top 3 unique scores
     final userCount = userList[index].raphconCount;
-    return uniqueCounts.length >= 3 
+    return uniqueCounts.length >= 3
         ? uniqueCounts.take(3).contains(userCount)
         : uniqueCounts.contains(userCount);
   }
