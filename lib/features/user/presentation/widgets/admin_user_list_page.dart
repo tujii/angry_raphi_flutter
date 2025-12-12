@@ -29,8 +29,10 @@ class _AdminUserListPageState extends State<AdminUserListPage> {
 
   void _checkAdminStatus() {
     final currentUser = firebase_auth.FirebaseAuth.instance.currentUser;
-    if (currentUser?.email != null) {
-      context.read<AdminBloc>().add(CheckAdminStatusEvent(currentUser!.email!));
+    if (currentUser != null) {
+      context
+          .read<AdminBloc>()
+          .add(CheckAdminStatusEvent(currentUser.email ?? ''));
     }
   }
 

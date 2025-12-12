@@ -88,7 +88,7 @@ class AdminService {
     // Check if user is already admin in database
     if (currentUser != null) {
       final adminCheckResult =
-          await adminRepository.checkAdminStatus(currentUser.email!);
+          await adminRepository.checkAdminStatus(currentUser.email ?? '');
       return adminCheckResult.fold((failure) => false, (isAdmin) => isAdmin);
     }
 
