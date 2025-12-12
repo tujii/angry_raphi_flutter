@@ -8,6 +8,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/config/ai_config.dart';
 import '../../../../core/enums/raphcon_type.dart';
 import '../../domain/entities/user.dart' as user_entity;
 import '../../../admin/presentation/bloc/admin_bloc.dart';
@@ -47,7 +48,10 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
   @override
   void initState() {
     super.initState();
-    _storyService = StoryOfTheDayService(FirebaseFirestore.instance);
+    _storyService = StoryOfTheDayService(
+      FirebaseFirestore.instance,
+      geminiApiKey: AIConfig.geminiApiKey,
+    );
     _checkAuthAndAdminStatus();
     _loadAppVersion();
     // Set initial localized content

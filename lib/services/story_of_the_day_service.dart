@@ -2,12 +2,16 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../core/enums/raphcon_type.dart';
 import '../features/user/domain/entities/user.dart';
+import 'gemini_ai_service.dart';
 
 /// Service to generate funny "Story of the Day" based on weekly Raphcon statistics
+/// Uses Gemini AI when available, falls back to templates
 class StoryOfTheDayService {
   final FirebaseFirestore _firestore;
+  final GeminiAIService _geminiService;
   
-  StoryOfTheDayService(this._firestore);
+  StoryOfTheDayService(this._firestore, {String? geminiApiKey})
+      : _geminiService = GeminiAIService(geminiApiKey);
 
   /// Get the story of the day based on this week's Raphcon data
   Future<String> getWeeklyStory(List<User> users) async {
@@ -50,7 +54,8 @@ class StoryOfTheDayService {
         final topUser = totalByUser.entries.reduce((a, b) => a.value > b.value ? a : b);
         final user = users.firstWhere((u) => u.id == topUser.key, orElse: () => users.first);
         if (topUser.value >= 3) {
-          stories.add(_generateTopUserStory(user.initials, topUser.value));
+          final story = await _generateTopUserStory(user.initials, topUser.value);
+          stories.add(story);
         }
       }
 
@@ -61,7 +66,8 @@ class StoryOfTheDayService {
         
         for (var typeEntry in entry.value.entries) {
           if (typeEntry.value >= 2) {
-            stories.add(_generateTypeStory(user.initials, typeEntry.key, typeEntry.value));
+            final story = await _generateTypeStory(user.initials, typeEntry.key, typeEntry.value);
+            stories.add(story);
           }
         }
       }
@@ -79,7 +85,19 @@ class StoryOfTheDayService {
     }
   }
 
-  String _generateTopUserStory(String userName, int count) {
+  Future<String> _generateTopUserStory(String userName, int count) async {
+    // Try Gemini AI first
+    if (_geminiService.isAvailable) {
+      final aiStory = await _geminiService.generateTopUserStory(
+        userName: userName,
+        count: count,
+      );
+      if (aiStory != null && aiStory.isNotEmpty) {
+        return aiStory;
+      }
+    }
+    
+    // Fallback to templates
     final now = DateTime.now();
     final random = Random(now.day + now.weekday); // Use consistent seed
     final stories = [
@@ -91,7 +109,21 @@ class StoryOfTheDayService {
     return stories[random.nextInt(stories.length)];
   }
 
-  String _generateTypeStory(String userName, RaphconType type, int count) {
+  Future<String> _generateTypeStory(String userName, RaphconType type, int count) async {
+    // Try Gemini AI first
+    if (_geminiService.isAvailable) {
+      final problemType = _getGermanTypeName(type);
+      final aiStory = await _geminiService.generateStory(
+        userName: userName,
+        problemType: problemType,
+        count: count,
+      );
+      if (aiStory != null && aiStory.isNotEmpty) {
+        return aiStory;
+      }
+    }
+    
+    // Fallback to templates
     switch (type) {
       case RaphconType.headset:
         return '🎧 $userName hat den Krieg ${count}x gegen sein Headset verloren diese Woche!';
@@ -113,6 +145,31 @@ class StoryOfTheDayService {
         return '🔊 $userName\'s Lautsprecher streiken ${count}x diese Woche. Stille Nacht?';
       default:
         return '❓ $userName hatte ${count}x mysteriöse Tech-Probleme diese Woche...';
+    }
+  }
+
+  String _getGermanTypeName(RaphconType type) {
+    switch (type) {
+      case RaphconType.headset:
+        return 'Headset';
+      case RaphconType.microphone:
+        return 'Mikrofon';
+      case RaphconType.keyboard:
+        return 'Tastatur';
+      case RaphconType.mouse:
+        return 'Maus';
+      case RaphconType.webcam:
+        return 'Webcam';
+      case RaphconType.network:
+        return 'Netzwerk/Internet';
+      case RaphconType.software:
+        return 'Software';
+      case RaphconType.hardware:
+        return 'Hardware';
+      case RaphconType.speakers:
+        return 'Lautsprecher';
+      default:
+        return 'Technik';
     }
   }
 
