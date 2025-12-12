@@ -42,7 +42,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Configure URL strategy for web to show clean URLs without #
   usePathUrlStrategy();
 
@@ -88,7 +88,7 @@ class AngryRaphiApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final router = AppRouter.createRouter();
-    
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(
