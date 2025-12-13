@@ -1,4 +1,4 @@
-# Running Tests
+# Test Documentation
 
 This directory contains unit tests for the AngryRaphi Flutter application.
 

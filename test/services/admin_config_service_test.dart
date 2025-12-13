@@ -121,9 +121,9 @@ void main() {
       // act
       final emails = await AdminConfigService.getAdminEmails();
 
-      // assert - verify the list contains at least some admins
-      // without hardcoding specific real email addresses
-      expect(emails.length, greaterThanOrEqualTo(3));
+      // assert - verify the list is non-empty and contains valid email formats
+      // without depending on specific configuration data
+      expect(emails.isNotEmpty, true);
       
       // Verify all returned emails are valid format
       for (final email in emails) {
