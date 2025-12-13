@@ -154,6 +154,7 @@
   
   <script>
     let loadingHidden = false;
+    const TRANSITION_DURATION = 200; // milliseconds
     
     function hideLoadingScreen() {
       if (loadingHidden) return;
@@ -161,9 +162,9 @@
       
       const loading = document.getElementById('loading');
       if (loading) {
-        loading.style.transition = 'opacity 0.2s';
+        loading.style.transition = `opacity ${TRANSITION_DURATION / 1000}s`;
         loading.style.opacity = '0';
-        setTimeout(() => loading.remove(), 200);
+        setTimeout(() => loading.remove(), TRANSITION_DURATION);
       }
     }
     

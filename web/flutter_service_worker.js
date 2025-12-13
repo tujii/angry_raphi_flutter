@@ -21,12 +21,14 @@ self.addEventListener('install', (event) => {
       .then(cache => {
         // Cache critical resources, but don't fail if any fail
         return Promise.allSettled(
-          PRECACHE_URLS.map(url => 
-            cache.add(url).catch(err => {
-              console.warn(`Failed to cache ${url}:`, err);
-            })
-          )
-        );
+          PRECACHE_URLS.map(url => cache.add(url))
+        ).then(results => {
+          results.forEach((result, index) => {
+            if (result.status === 'rejected') {
+              console.warn(`Failed to cache ${PRECACHE_URLS[index]}:`, result.reason);
+            }
+          });
+        });
       })
       .then(() => self.skipWaiting())
   );
@@ -60,8 +62,8 @@ self.addEventListener('fetch', (event) => {
   }
   
   // Skip Firebase and API requests from caching (but still fetch them)
-  if (url.pathname.includes('/firebase/') || 
-      url.pathname.includes('/api/') ||
+  if (url.pathname.startsWith('/firebase/') || 
+      url.pathname.startsWith('/api/') ||
       url.hostname === 'firestore.googleapis.com' ||
       url.hostname === 'firebase.googleapis.com' ||
       url.hostname.endsWith('.firebaseio.com') ||
