@@ -61,13 +61,10 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  // Skip Firebase and API requests from caching (but still fetch them)
+  // Skip Firebase and API paths from caching (but still fetch them)
+  // Note: This handles same-origin Firebase/API endpoints
   if (url.pathname.startsWith('/firebase/') || 
-      url.pathname.startsWith('/api/') ||
-      url.hostname === 'firestore.googleapis.com' ||
-      url.hostname === 'firebase.googleapis.com' ||
-      url.hostname.endsWith('.firebaseio.com') ||
-      url.hostname.endsWith('.cloudfunctions.net')) {
+      url.pathname.startsWith('/api/')) {
     event.respondWith(fetch(request));
     return;
   }
@@ -86,7 +83,10 @@ async function networkFirstStrategy(request) {
     const networkResponse = await fetch(request);
     if (networkResponse.ok) {
       const cache = await caches.open(RUNTIME_CACHE);
-      cache.put(request, networkResponse.clone());
+      // Cache in background, don't wait for it
+      cache.put(request, networkResponse.clone()).catch(err => {
+        console.warn('Failed to cache response:', err);
+      });
     }
     return networkResponse;
   } catch (error) {
@@ -106,7 +106,10 @@ async function cacheFirstStrategy(request) {
     const networkResponse = await fetch(request);
     if (networkResponse.ok) {
       const cache = await caches.open(RUNTIME_CACHE);
-      cache.put(request, networkResponse.clone());
+      // Cache in background, don't wait for it
+      cache.put(request, networkResponse.clone()).catch(err => {
+        console.warn('Failed to cache response:', err);
+      });
     }
     return networkResponse;
   } catch (error) {
