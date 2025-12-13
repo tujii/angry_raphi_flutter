@@ -53,22 +53,24 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
   
-  // Skip cross-origin requests
+  // Skip cross-origin requests (let browser handle them)
   if (url.origin !== location.origin) {
+    event.respondWith(fetch(request));
     return;
   }
   
-  // Skip Firebase and API requests from caching
+  // Skip Firebase and API requests from caching (but still fetch them)
   if (url.pathname.includes('/firebase/') || 
       url.pathname.includes('/api/') ||
       url.hostname.includes('firestore.googleapis.com') ||
       url.hostname.includes('firebase.googleapis.com')) {
+    event.respondWith(fetch(request));
     return;
   }
   
   event.respondWith(
     // Network first strategy for HTML, cache for other assets
-    (request.destination === 'document' || request.mode === 'navigate')
+    (request.destination === 'document' || request.url.endsWith('.html'))
       ? networkFirstStrategy(request)
       : cacheFirstStrategy(request)
   );
