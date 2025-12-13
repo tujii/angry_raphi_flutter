@@ -62,8 +62,10 @@ self.addEventListener('fetch', (event) => {
   // Skip Firebase and API requests from caching (but still fetch them)
   if (url.pathname.includes('/firebase/') || 
       url.pathname.includes('/api/') ||
-      url.hostname.includes('firestore.googleapis.com') ||
-      url.hostname.includes('firebase.googleapis.com')) {
+      url.hostname === 'firestore.googleapis.com' ||
+      url.hostname === 'firebase.googleapis.com' ||
+      url.hostname.endsWith('.firebaseio.com') ||
+      url.hostname.endsWith('.cloudfunctions.net')) {
     event.respondWith(fetch(request));
     return;
   }
