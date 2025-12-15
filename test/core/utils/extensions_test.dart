@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:angry_raphi/core/utils/extensions.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('StringExtensions', () {
@@ -129,7 +129,7 @@ void main() {
       });
 
       test('pads single digit day and month', () {
-        final date = DateTime(2024, 1);
+        final date = DateTime(2024);
         expect(date.formattedDate, equals('01.01.2024'));
       });
 

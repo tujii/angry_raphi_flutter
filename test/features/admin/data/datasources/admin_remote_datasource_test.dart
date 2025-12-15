@@ -1,10 +1,12 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
-import 'package:mockito/annotations.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// ignore_for_file: void_checks
+
+import 'package:angry_raphi/core/errors/exceptions.dart';
 import 'package:angry_raphi/features/admin/data/datasources/admin_remote_datasource.dart';
 import 'package:angry_raphi/features/admin/data/models/admin_model.dart';
-import 'package:angry_raphi/core/errors/exceptions.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 
 import 'admin_remote_datasource_test.mocks.dart';
 
@@ -66,7 +68,7 @@ void main() {
         when(mockAdminsCollection.doc(testUserId)).thenReturn(mockAdminDoc);
         when(mockAdminEmailsCollection.doc(testEmail))
             .thenReturn(mockAdminEmailDoc);
-        when(mockBatch.set(any, any)).thenReturn(());
+        when(mockBatch.set(any, any)).thenReturn(mockBatch);
         when(mockBatch.commit()).thenAnswer((_) async => []);
 
         // Act
@@ -89,7 +91,7 @@ void main() {
         when(mockAdminsCollection.doc(testUserId)).thenReturn(mockAdminDoc);
         when(mockAdminEmailsCollection.doc(testEmail))
             .thenReturn(mockAdminEmailDoc);
-        when(mockBatch.set(any, any)).thenReturn(());
+        when(mockBatch.set(any, any)).thenReturn(mockBatch);
         when(mockBatch.commit()).thenThrow(Exception('Firestore error'));
 
         // Act & Assert
@@ -118,8 +120,8 @@ void main() {
         when(mockAdminsCollection.doc(testUserId)).thenReturn(mockAdminDoc);
         when(mockAdminEmailsCollection.doc(testEmail))
             .thenReturn(mockAdminEmailDoc);
-        when(mockBatch.update(any, any)).thenReturn(());
-        when(mockBatch.delete(any)).thenReturn(());
+        when(mockBatch.update(any, any)).thenReturn(mockBatch);
+        when(mockBatch.delete(any)).thenReturn(mockBatch);
         when(mockBatch.commit()).thenAnswer((_) async => []);
 
         // Act
@@ -162,8 +164,8 @@ void main() {
         when(mockAdminsCollection.doc(testUserId)).thenReturn(mockAdminDoc);
         when(mockAdminEmailsCollection.doc(testEmail))
             .thenReturn(mockAdminEmailDoc);
-        when(mockBatch.update(any, any)).thenReturn(());
-        when(mockBatch.delete(any)).thenReturn(());
+        when(mockBatch.update(any, any)).thenReturn(mockBatch);
+        when(mockBatch.delete(any)).thenReturn(mockBatch);
         when(mockBatch.commit()).thenThrow(Exception('Firestore error'));
 
         // Act & Assert

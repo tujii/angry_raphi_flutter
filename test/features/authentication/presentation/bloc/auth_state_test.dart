@@ -1,10 +1,10 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:angry_raphi/features/authentication/presentation/bloc/auth_state.dart';
 import 'package:angry_raphi/features/authentication/domain/entities/user_entity.dart';
+import 'package:angry_raphi/features/authentication/presentation/bloc/auth_state.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('AuthState', () {
-    final testDate = DateTime(2024, 1);
+    final testDate = DateTime(2024);
     final testUser = UserEntity(
       id: 'user123',
       email: 'test@example.com',

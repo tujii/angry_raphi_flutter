@@ -1,9 +1,9 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:angry_raphi/features/authentication/domain/entities/user_entity.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('UserEntity', () {
-    final testDate = DateTime(2024, 1);
+    final testDate = DateTime(2024);
 
     test('creates user entity with required fields', () {
       final user = UserEntity(

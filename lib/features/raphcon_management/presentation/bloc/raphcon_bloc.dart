@@ -1,17 +1,18 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/enums/raphcon_type.dart';
 import '../../domain/entities/raphcon_entity.dart';
+import '../../domain/repositories/raphcons_repository.dart';
 import '../../domain/usecases/add_raphcon.dart';
+import '../../domain/usecases/delete_raphcon.dart';
 import '../../domain/usecases/get_user_raphcon_statistics.dart';
 import '../../domain/usecases/get_user_raphcons_by_type.dart';
-import '../../domain/usecases/delete_raphcon.dart';
-import '../../domain/usecases/get_user_raphcons_stream.dart';
 import '../../domain/usecases/get_user_raphcons_by_type_stream.dart';
-import '../../domain/repositories/raphcons_repository.dart';
-import '../../../../core/enums/raphcon_type.dart';
+import '../../domain/usecases/get_user_raphcons_stream.dart';
 
 // Events
 abstract class RaphconEvent extends Equatable {

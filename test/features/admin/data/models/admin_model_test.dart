@@ -1,6 +1,6 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:angry_raphi/features/admin/data/models/admin_model.dart';
 import 'package:angry_raphi/features/admin/domain/entities/admin_entity.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 // Mock Timestamp class for testing
 class MockTimestamp {
@@ -11,7 +11,7 @@ class MockTimestamp {
 
 void main() {
   group('AdminModel', () {
-    final testDate = DateTime(2024, 1);
+    final testDate = DateTime(2024);
 
     test('creates admin model with all fields', () {
       final model = AdminModel(

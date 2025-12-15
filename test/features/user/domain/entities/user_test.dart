@@ -1,9 +1,9 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:angry_raphi/features/user/domain/entities/user.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('User', () {
-    final testDate = DateTime(2024, 1);
+    final testDate = DateTime(2024);
     final testLastRaphconDate = DateTime(2024, 1, 15);
 
     test('creates user with required fields', () {
