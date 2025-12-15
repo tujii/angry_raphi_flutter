@@ -10,97 +10,178 @@ import 'add_admin_test.mocks.dart';
 
 @GenerateMocks([AdminRepository])
 void main() {
-  group('AddAdmin', () {
-    late AddAdmin usecase;
-    late MockAdminRepository mockRepository;
+  late AddAdmin usecase;
+  late MockAdminRepository mockRepository;
 
-    setUp(() {
-      mockRepository = MockAdminRepository();
-      usecase = AddAdmin(mockRepository);
-    });
+  setUp(() {
+    mockRepository = MockAdminRepository();
+    usecase = AddAdmin(mockRepository);
+  });
 
-    const String testUserId = 'test_user_id';
-    const String testEmail = 'test@example.com';
-    const String testDisplayName = 'Test Admin';
+  const tUserId = 'user-123';
+  const tEmail = 'admin@example.com';
+  const tDisplayName = 'Test Admin';
 
-    test('should return Right(null) when repository call succeeds', () async {
-      // Arrange
-      when(mockRepository.addAdmin(testUserId, testEmail, testDisplayName))
+  test('should add admin through repository', () async {
+    // arrange
+    when(mockRepository.addAdmin(any, any, any))
+        .thenAnswer((_) async => const Right(null));
+
+    // act
+    final result = await usecase(
+      userId: tUserId,
+      email: tEmail,
+      displayName: tDisplayName,
+    );
+
+    // assert
+    expect(result, const Right(null));
+    verify(mockRepository.addAdmin(tUserId, tEmail, tDisplayName));
+    verifyNoMoreInteractions(mockRepository);
+  });
+
+  test('should return failure when repository fails', () async {
+    // arrange
+    const tFailure = ServerFailure('Server error');
+    when(mockRepository.addAdmin(any, any, any))
+        .thenAnswer((_) async => const Left(tFailure));
+
+    // act
+    final result = await usecase(
+      userId: tUserId,
+      email: tEmail,
+      displayName: tDisplayName,
+    );
+
+    // assert
+    expect(result, const Left(tFailure));
+    verify(mockRepository.addAdmin(tUserId, tEmail, tDisplayName));
+    verifyNoMoreInteractions(mockRepository);
+  });
+
+  test('should return NetworkFailure when no internet connection', () async {
+    // arrange
+    const tFailure = NetworkFailure();
+    when(mockRepository.addAdmin(any, any, any))
+        .thenAnswer((_) async => const Left(tFailure));
+
+    // act
+    final result = await usecase(
+      userId: tUserId,
+      email: tEmail,
+      displayName: tDisplayName,
+    );
+
+    // assert
+    expect(result, const Left(tFailure));
+    verify(mockRepository.addAdmin(tUserId, tEmail, tDisplayName));
+    verifyNoMoreInteractions(mockRepository);
+  });
+
+  group('input validation', () {
+    test('should handle valid inputs correctly', () async {
+      // arrange
+      when(mockRepository.addAdmin(any, any, any))
           .thenAnswer((_) async => const Right(null));
 
-      // Act
-      final result = await usecase.call(
-        userId: testUserId,
-        email: testEmail,
-        displayName: testDisplayName,
+      // act
+      final result = await usecase(
+        userId: 'valid-id',
+        email: 'valid@email.com',
+        displayName: 'Valid Name',
       );
 
-      // Assert
-      expect(result, equals(const Right<Failure, void>(null)));
-      verify(mockRepository.addAdmin(testUserId, testEmail, testDisplayName))
-          .called(1);
-      verifyNoMoreInteractions(mockRepository);
+      // assert
+      expect(result, const Right(null));
+      verify(mockRepository.addAdmin('valid-id', 'valid@email.com', 'Valid Name'));
     });
 
-    test(
-        'should return Left(ServerFailure) when repository call fails with ServerFailure',
-        () async {
-      // Arrange
-      const failure = ServerFailure('Failed to add admin');
-      when(mockRepository.addAdmin(testUserId, testEmail, testDisplayName))
-          .thenAnswer((_) async => const Left(failure));
-
-      // Act
-      final result = await usecase.call(
-        userId: testUserId,
-        email: testEmail,
-        displayName: testDisplayName,
-      );
-
-      // Assert
-      expect(result, equals(const Left<Failure, void>(failure)));
-      verify(mockRepository.addAdmin(testUserId, testEmail, testDisplayName))
-          .called(1);
-      verifyNoMoreInteractions(mockRepository);
-    });
-
-    test(
-        'should return Left(NetworkFailure) when repository call fails with NetworkFailure',
-        () async {
-      // Arrange
-      const failure = NetworkFailure();
-      when(mockRepository.addAdmin(testUserId, testEmail, testDisplayName))
-          .thenAnswer((_) async => const Left(failure));
-
-      // Act
-      final result = await usecase.call(
-        userId: testUserId,
-        email: testEmail,
-        displayName: testDisplayName,
-      );
-
-      // Assert
-      expect(result, equals(const Left<Failure, void>(failure)));
-      verify(mockRepository.addAdmin(testUserId, testEmail, testDisplayName))
-          .called(1);
-      verifyNoMoreInteractions(mockRepository);
-    });
-
-    test('should pass all parameters correctly to repository', () async {
-      // Arrange
-      when(mockRepository.addAdmin(testUserId, testEmail, testDisplayName))
+    test('should pass through empty strings if repository allows', () async {
+      // arrange
+      when(mockRepository.addAdmin(any, any, any))
           .thenAnswer((_) async => const Right(null));
 
-      // Act
+      // act
+      final result = await usecase(
+        userId: '',
+        email: '',
+        displayName: '',
+      );
+
+      // assert
+      expect(result, const Right(null));
+      verify(mockRepository.addAdmin('', '', ''));
+    });
+  });
+
+  group('error handling', () {
+    test('should handle ServerException from repository', () async {
+      // arrange
+      const tFailure = ServerFailure('Database connection failed');
+      when(mockRepository.addAdmin(any, any, any))
+          .thenAnswer((_) async => const Left(tFailure));
+
+      // act
+      final result = await usecase(
+        userId: tUserId,
+        email: tEmail,
+        displayName: tDisplayName,
+      );
+
+      // assert
+      expect(result, const Left(tFailure));
+    });
+
+    test('should handle CacheException from repository', () async {
+      // arrange
+      const tFailure = CacheFailure();
+      when(mockRepository.addAdmin(any, any, any))
+          .thenAnswer((_) async => const Left(tFailure));
+
+      // act
+      final result = await usecase(
+        userId: tUserId,
+        email: tEmail,
+        displayName: tDisplayName,
+      );
+
+      // assert
+      expect(result, const Left(tFailure));
+    });
+  });
+
+  group('use case call method', () {
+    test('should correctly call repository method with named parameters',
+        () async {
+      // arrange
+      when(mockRepository.addAdmin(any, any, any))
+          .thenAnswer((_) async => const Right(null));
+
+      // act
       await usecase.call(
-        userId: testUserId,
-        email: testEmail,
-        displayName: testDisplayName,
+        userId: tUserId,
+        email: tEmail,
+        displayName: tDisplayName,
       );
 
-      // Assert
-      verify(mockRepository.addAdmin(testUserId, testEmail, testDisplayName))
-          .called(1);
+      // assert
+      verify(mockRepository.addAdmin(tUserId, tEmail, tDisplayName)).called(1);
+    });
+
+    test('should work with function call operator', () async {
+      // arrange
+      when(mockRepository.addAdmin(any, any, any))
+          .thenAnswer((_) async => const Right(null));
+
+      // act
+      await usecase(
+        userId: tUserId,
+        email: tEmail,
+        displayName: tDisplayName,
+      );
+
+      // assert
+      verify(mockRepository.addAdmin(tUserId, tEmail, tDisplayName)).called(1);
     });
   });
 }

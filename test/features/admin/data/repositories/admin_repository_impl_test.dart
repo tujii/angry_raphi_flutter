@@ -3,6 +3,7 @@ import 'package:angry_raphi/core/errors/failures.dart';
 import 'package:angry_raphi/core/network/network_info.dart';
 import 'package:angry_raphi/features/admin/data/datasources/admin_remote_datasource.dart';
 import 'package:angry_raphi/features/admin/data/repositories/admin_repository_impl.dart';
+import 'package:angry_raphi/features/admin/domain/entities/admin_entity.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -12,210 +13,280 @@ import 'admin_repository_impl_test.mocks.dart';
 
 @GenerateMocks([AdminRemoteDataSource, NetworkInfo])
 void main() {
-  group('AdminRepositoryImpl', () {
-    late AdminRepositoryImpl repository;
-    late MockAdminRemoteDataSource mockRemoteDataSource;
-    late MockNetworkInfo mockNetworkInfo;
+  late AdminRepositoryImpl repository;
+  late MockAdminRemoteDataSource mockRemoteDataSource;
+  late MockNetworkInfo mockNetworkInfo;
 
-    setUp(() {
-      mockRemoteDataSource = MockAdminRemoteDataSource();
-      mockNetworkInfo = MockNetworkInfo();
-      repository = AdminRepositoryImpl(
-        remoteDataSource: mockRemoteDataSource,
-        networkInfo: mockNetworkInfo,
-      );
+  setUp(() {
+    mockRemoteDataSource = MockAdminRemoteDataSource();
+    mockNetworkInfo = MockNetworkInfo();
+    repository = AdminRepositoryImpl(
+      remoteDataSource: mockRemoteDataSource,
+      networkInfo: mockNetworkInfo,
+    );
+  });
+
+  const tEmail = 'admin@example.com';
+  const tUserId = 'user-123';
+  const tDisplayName = 'Admin User';
+  final tAdminEntity = AdminEntity(
+    userId: tUserId,
+    email: tEmail,
+    displayName: tDisplayName,
+    createdAt: DateTime(2024, 1, 1),
+  );
+
+  group('checkAdminStatus', () {
+    test('should check if device is online', () async {
+      // arrange
+      when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
+      when(mockRemoteDataSource.checkAdminStatus(any))
+          .thenAnswer((_) async => true);
+
+      // act
+      await repository.checkAdminStatus(tEmail);
+
+      // assert
+      verify(mockNetworkInfo.isConnected);
     });
 
-    group('addAdmin', () {
-      const String testUserId = 'test_user_id';
-      const String testEmail = 'test@example.com';
-      const String testDisplayName = 'Test Admin';
-
-      test(
-          'should return Right(null) when addAdmin succeeds with network connection',
-          () async {
-        // Arrange
+    group('device is online', () {
+      setUp(() {
         when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
-        when(mockRemoteDataSource.addAdmin(
-                testUserId, testEmail, testDisplayName))
-            .thenAnswer((_) async => Future.value());
-
-        // Act
-        final result =
-            await repository.addAdmin(testUserId, testEmail, testDisplayName);
-
-        // Assert
-        expect(result, equals(const Right<Failure, void>(null)));
-        verify(mockNetworkInfo.isConnected).called(1);
-        verify(mockRemoteDataSource.addAdmin(
-                testUserId, testEmail, testDisplayName))
-            .called(1);
       });
 
-      test(
-          'should return Left(ServerFailure) when addAdmin throws ServerException',
-          () async {
-        // Arrange
-        const errorMessage = 'Failed to add admin';
-        when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
-        when(mockRemoteDataSource.addAdmin(
-                testUserId, testEmail, testDisplayName))
-            .thenThrow(ServerException(errorMessage));
-
-        // Act
-        final result =
-            await repository.addAdmin(testUserId, testEmail, testDisplayName);
-
-        // Assert
-        expect(result,
-            equals(const Left<Failure, void>(ServerFailure(errorMessage))));
-        verify(mockNetworkInfo.isConnected).called(1);
-        verify(mockRemoteDataSource.addAdmin(
-                testUserId, testEmail, testDisplayName))
-            .called(1);
-      });
-
-      test(
-          'should return Left(ServerFailure) when addAdmin throws generic exception',
-          () async {
-        // Arrange
-        const errorMessage = 'Generic error';
-        when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
-        when(mockRemoteDataSource.addAdmin(
-                testUserId, testEmail, testDisplayName))
-            .thenThrow(Exception(errorMessage));
-
-        // Act
-        final result =
-            await repository.addAdmin(testUserId, testEmail, testDisplayName);
-
-        // Assert
-        expect(
-            result,
-            equals(const Left<Failure, void>(
-                ServerFailure('Exception: $errorMessage'))));
-        verify(mockNetworkInfo.isConnected).called(1);
-        verify(mockRemoteDataSource.addAdmin(
-                testUserId, testEmail, testDisplayName))
-            .called(1);
-      });
-
-      test('should return Left(NetworkFailure) when no network connection',
-          () async {
-        // Arrange
-        when(mockNetworkInfo.isConnected).thenAnswer((_) async => false);
-
-        // Act
-        final result =
-            await repository.addAdmin(testUserId, testEmail, testDisplayName);
-
-        // Assert
-        expect(result, equals(const Left<Failure, void>(NetworkFailure())));
-        verify(mockNetworkInfo.isConnected).called(1);
-        verifyNever(mockRemoteDataSource.addAdmin(any, any, any));
-      });
-    });
-
-    group('removeAdmin', () {
-      const String testEmail = 'test@example.com';
-
-      test(
-          'should return Right(null) when removeAdmin succeeds with network connection',
-          () async {
-        // Arrange
-        when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
-        when(mockRemoteDataSource.removeAdmin(testEmail))
-            .thenAnswer((_) async => Future.value());
-
-        // Act
-        final result = await repository.removeAdmin(testEmail);
-
-        // Assert
-        expect(result, equals(const Right<Failure, void>(null)));
-        verify(mockNetworkInfo.isConnected).called(1);
-        verify(mockRemoteDataSource.removeAdmin(testEmail)).called(1);
-      });
-
-      test(
-          'should return Left(ServerFailure) when removeAdmin throws ServerException',
-          () async {
-        // Arrange
-        const errorMessage = 'Failed to remove admin';
-        when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
-        when(mockRemoteDataSource.removeAdmin(testEmail))
-            .thenThrow(ServerException(errorMessage));
-
-        // Act
-        final result = await repository.removeAdmin(testEmail);
-
-        // Assert
-        expect(result,
-            equals(const Left<Failure, void>(ServerFailure(errorMessage))));
-        verify(mockNetworkInfo.isConnected).called(1);
-        verify(mockRemoteDataSource.removeAdmin(testEmail)).called(1);
-      });
-
-      test('should return Left(NetworkFailure) when no network connection',
-          () async {
-        // Arrange
-        when(mockNetworkInfo.isConnected).thenAnswer((_) async => false);
-
-        // Act
-        final result = await repository.removeAdmin(testEmail);
-
-        // Assert
-        expect(result, equals(const Left<Failure, void>(NetworkFailure())));
-        verify(mockNetworkInfo.isConnected).called(1);
-        verifyNever(mockRemoteDataSource.removeAdmin(any));
-      });
-    });
-
-    group('checkAdminStatus', () {
-      const String testEmail = 'test@example.com';
-
-      test('should return Right(true) when admin exists and is active',
-          () async {
-        // Arrange
-        when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
-        when(mockRemoteDataSource.checkAdminStatus(testEmail))
+      test('should return true when user is admin', () async {
+        // arrange
+        when(mockRemoteDataSource.checkAdminStatus(any))
             .thenAnswer((_) async => true);
 
-        // Act
-        final result = await repository.checkAdminStatus(testEmail);
+        // act
+        final result = await repository.checkAdminStatus(tEmail);
 
-        // Assert
-        expect(result, equals(const Right<Failure, bool>(true)));
-        verify(mockNetworkInfo.isConnected).called(1);
-        verify(mockRemoteDataSource.checkAdminStatus(testEmail)).called(1);
+        // assert
+        verify(mockRemoteDataSource.checkAdminStatus(tEmail));
+        expect(result, const Right(true));
       });
 
-      test('should return Right(false) when admin does not exist', () async {
-        // Arrange
-        when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
-        when(mockRemoteDataSource.checkAdminStatus(testEmail))
+      test('should return false when user is not admin', () async {
+        // arrange
+        when(mockRemoteDataSource.checkAdminStatus(any))
             .thenAnswer((_) async => false);
 
-        // Act
-        final result = await repository.checkAdminStatus(testEmail);
+        // act
+        final result = await repository.checkAdminStatus(tEmail);
 
-        // Assert
-        expect(result, equals(const Right<Failure, bool>(false)));
-        verify(mockNetworkInfo.isConnected).called(1);
-        verify(mockRemoteDataSource.checkAdminStatus(testEmail)).called(1);
+        // assert
+        verify(mockRemoteDataSource.checkAdminStatus(tEmail));
+        expect(result, const Right(false));
       });
 
-      test('should return Left(NetworkFailure) when no network connection',
+      test('should return ServerFailure when ServerException is thrown',
           () async {
-        // Arrange
+        // arrange
+        when(mockRemoteDataSource.checkAdminStatus(any))
+            .thenThrow(ServerException('Server error'));
+
+        // act
+        final result = await repository.checkAdminStatus(tEmail);
+
+        // assert
+        verify(mockRemoteDataSource.checkAdminStatus(tEmail));
+        expect(result, const Left(ServerFailure('Server error')));
+      });
+
+      test('should return ServerFailure when unexpected error occurs',
+          () async {
+        // arrange
+        when(mockRemoteDataSource.checkAdminStatus(any))
+            .thenThrow(Exception('Unexpected'));
+
+        // act
+        final result = await repository.checkAdminStatus(tEmail);
+
+        // assert
+        verify(mockRemoteDataSource.checkAdminStatus(tEmail));
+        expect(result, isA<Left>());
+      });
+    });
+
+    group('device is offline', () {
+      setUp(() {
         when(mockNetworkInfo.isConnected).thenAnswer((_) async => false);
+      });
 
-        // Act
-        final result = await repository.checkAdminStatus(testEmail);
+      test('should return NetworkFailure when device has no connection',
+          () async {
+        // act
+        final result = await repository.checkAdminStatus(tEmail);
 
-        // Assert
-        expect(result, equals(const Left<Failure, bool>(NetworkFailure())));
-        verify(mockNetworkInfo.isConnected).called(1);
-        verifyNever(mockRemoteDataSource.checkAdminStatus(any));
+        // assert
+        verifyZeroInteractions(mockRemoteDataSource);
+        expect(result, const Left(NetworkFailure()));
+      });
+    });
+  });
+
+  group('addAdmin', () {
+    group('device is online', () {
+      setUp(() {
+        when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
+      });
+
+      test('should add admin successfully', () async {
+        // arrange
+        when(mockRemoteDataSource.addAdmin(any, any, any))
+            .thenAnswer((_) async => {});
+
+        // act
+        final result = await repository.addAdmin(tUserId, tEmail, tDisplayName);
+
+        // assert
+        verify(mockRemoteDataSource.addAdmin(tUserId, tEmail, tDisplayName));
+        expect(result, const Right(null));
+      });
+
+      test('should return ServerFailure when ServerException is thrown',
+          () async {
+        // arrange
+        when(mockRemoteDataSource.addAdmin(any, any, any))
+            .thenThrow(ServerException('Failed to add admin'));
+
+        // act
+        final result = await repository.addAdmin(tUserId, tEmail, tDisplayName);
+
+        // assert
+        verify(mockRemoteDataSource.addAdmin(tUserId, tEmail, tDisplayName));
+        expect(result, const Left(ServerFailure('Failed to add admin')));
+      });
+    });
+
+    group('device is offline', () {
+      setUp(() {
+        when(mockNetworkInfo.isConnected).thenAnswer((_) async => false);
+      });
+
+      test('should return NetworkFailure', () async {
+        // act
+        final result = await repository.addAdmin(tUserId, tEmail, tDisplayName);
+
+        // assert
+        verifyZeroInteractions(mockRemoteDataSource);
+        expect(result, const Left(NetworkFailure()));
+      });
+    });
+  });
+
+  group('removeAdmin', () {
+    group('device is online', () {
+      setUp(() {
+        when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
+      });
+
+      test('should remove admin successfully', () async {
+        // arrange
+        when(mockRemoteDataSource.removeAdmin(any))
+            .thenAnswer((_) async => {});
+
+        // act
+        final result = await repository.removeAdmin(tEmail);
+
+        // assert
+        verify(mockRemoteDataSource.removeAdmin(tEmail));
+        expect(result, const Right(null));
+      });
+
+      test('should return ServerFailure when ServerException is thrown',
+          () async {
+        // arrange
+        when(mockRemoteDataSource.removeAdmin(any))
+            .thenThrow(ServerException('Failed to remove admin'));
+
+        // act
+        final result = await repository.removeAdmin(tEmail);
+
+        // assert
+        verify(mockRemoteDataSource.removeAdmin(tEmail));
+        expect(result, const Left(ServerFailure('Failed to remove admin')));
+      });
+    });
+
+    group('device is offline', () {
+      setUp(() {
+        when(mockNetworkInfo.isConnected).thenAnswer((_) async => false);
+      });
+
+      test('should return NetworkFailure', () async {
+        // act
+        final result = await repository.removeAdmin(tEmail);
+
+        // assert
+        verifyZeroInteractions(mockRemoteDataSource);
+        expect(result, const Left(NetworkFailure()));
+      });
+    });
+  });
+
+  group('getAllAdmins', () {
+    final tAdminList = [tAdminEntity];
+
+    group('device is online', () {
+      setUp(() {
+        when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
+      });
+
+      test('should return list of admins successfully', () async {
+        // arrange
+        when(mockRemoteDataSource.getAllAdmins())
+            .thenAnswer((_) async => tAdminList);
+
+        // act
+        final result = await repository.getAllAdmins();
+
+        // assert
+        verify(mockRemoteDataSource.getAllAdmins());
+        expect(result, Right(tAdminList));
+      });
+
+      test('should return empty list when no admins exist', () async {
+        // arrange
+        when(mockRemoteDataSource.getAllAdmins()).thenAnswer((_) async => []);
+
+        // act
+        final result = await repository.getAllAdmins();
+
+        // assert
+        verify(mockRemoteDataSource.getAllAdmins());
+        expect(result, const Right([]));
+      });
+
+      test('should return ServerFailure when ServerException is thrown',
+          () async {
+        // arrange
+        when(mockRemoteDataSource.getAllAdmins())
+            .thenThrow(ServerException('Failed to fetch admins'));
+
+        // act
+        final result = await repository.getAllAdmins();
+
+        // assert
+        verify(mockRemoteDataSource.getAllAdmins());
+        expect(result, const Left(ServerFailure('Failed to fetch admins')));
+      });
+    });
+
+    group('device is offline', () {
+      setUp(() {
+        when(mockNetworkInfo.isConnected).thenAnswer((_) async => false);
+      });
+
+      test('should return NetworkFailure', () async {
+        // act
+        final result = await repository.getAllAdmins();
+
+        // assert
+        verifyZeroInteractions(mockRemoteDataSource);
+        expect(result, const Left(NetworkFailure()));
       });
     });
   });
