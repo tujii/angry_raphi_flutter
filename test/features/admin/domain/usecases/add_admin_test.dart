@@ -37,11 +37,14 @@ void main() {
 
       // Assert
       expect(result, equals(const Right<Failure, void>(null)));
-      verify(mockRepository.addAdmin(testUserId, testEmail, testDisplayName)).called(1);
+      verify(mockRepository.addAdmin(testUserId, testEmail, testDisplayName))
+          .called(1);
       verifyNoMoreInteractions(mockRepository);
     });
 
-    test('should return Left(ServerFailure) when repository call fails with ServerFailure', () async {
+    test(
+        'should return Left(ServerFailure) when repository call fails with ServerFailure',
+        () async {
       // Arrange
       const failure = ServerFailure('Failed to add admin');
       when(mockRepository.addAdmin(testUserId, testEmail, testDisplayName))
@@ -56,11 +59,14 @@ void main() {
 
       // Assert
       expect(result, equals(const Left<Failure, void>(failure)));
-      verify(mockRepository.addAdmin(testUserId, testEmail, testDisplayName)).called(1);
+      verify(mockRepository.addAdmin(testUserId, testEmail, testDisplayName))
+          .called(1);
       verifyNoMoreInteractions(mockRepository);
     });
 
-    test('should return Left(NetworkFailure) when repository call fails with NetworkFailure', () async {
+    test(
+        'should return Left(NetworkFailure) when repository call fails with NetworkFailure',
+        () async {
       // Arrange
       const failure = NetworkFailure();
       when(mockRepository.addAdmin(testUserId, testEmail, testDisplayName))
@@ -75,7 +81,8 @@ void main() {
 
       // Assert
       expect(result, equals(const Left<Failure, void>(failure)));
-      verify(mockRepository.addAdmin(testUserId, testEmail, testDisplayName)).called(1);
+      verify(mockRepository.addAdmin(testUserId, testEmail, testDisplayName))
+          .called(1);
       verifyNoMoreInteractions(mockRepository);
     });
 
@@ -92,7 +99,8 @@ void main() {
       );
 
       // Assert
-      verify(mockRepository.addAdmin(testUserId, testEmail, testDisplayName)).called(1);
+      verify(mockRepository.addAdmin(testUserId, testEmail, testDisplayName))
+          .called(1);
     });
   });
 }

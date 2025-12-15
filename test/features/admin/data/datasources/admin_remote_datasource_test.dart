@@ -24,7 +24,8 @@ void main() {
     late AdminRemoteDataSourceImpl dataSource;
     late MockFirebaseFirestore mockFirestore;
     late MockCollectionReference<Map<String, dynamic>> mockAdminsCollection;
-    late MockCollectionReference<Map<String, dynamic>> mockAdminEmailsCollection;
+    late MockCollectionReference<Map<String, dynamic>>
+        mockAdminEmailsCollection;
     late MockDocumentReference<Map<String, dynamic>> mockAdminDoc;
     late MockDocumentReference<Map<String, dynamic>> mockAdminEmailDoc;
     late MockWriteBatch mockBatch;
@@ -35,7 +36,8 @@ void main() {
     setUp(() {
       mockFirestore = MockFirebaseFirestore();
       mockAdminsCollection = MockCollectionReference<Map<String, dynamic>>();
-      mockAdminEmailsCollection = MockCollectionReference<Map<String, dynamic>>();
+      mockAdminEmailsCollection =
+          MockCollectionReference<Map<String, dynamic>>();
       mockAdminDoc = MockDocumentReference<Map<String, dynamic>>();
       mockAdminEmailDoc = MockDocumentReference<Map<String, dynamic>>();
       mockBatch = MockWriteBatch();
@@ -47,7 +49,8 @@ void main() {
 
       // Setup default firestore behavior
       when(mockFirestore.collection('admins')).thenReturn(mockAdminsCollection);
-      when(mockFirestore.collection('adminEmails')).thenReturn(mockAdminEmailsCollection);
+      when(mockFirestore.collection('adminEmails'))
+          .thenReturn(mockAdminEmailsCollection);
       when(mockFirestore.batch()).thenReturn(mockBatch);
     });
 
@@ -56,10 +59,13 @@ void main() {
       const String testEmail = 'test@example.com';
       const String testDisplayName = 'Test Admin';
 
-      test('should successfully add admin to both admins and adminEmails collections', () async {
+      test(
+          'should successfully add admin to both admins and adminEmails collections',
+          () async {
         // Arrange
         when(mockAdminsCollection.doc(testUserId)).thenReturn(mockAdminDoc);
-        when(mockAdminEmailsCollection.doc(testEmail)).thenReturn(mockAdminEmailDoc);
+        when(mockAdminEmailsCollection.doc(testEmail))
+            .thenReturn(mockAdminEmailDoc);
         when(mockBatch.set(any, any)).thenReturn(mockBatch);
         when(mockBatch.commit()).thenAnswer((_) async => []);
 
@@ -71,20 +77,25 @@ void main() {
         verify(mockAdminsCollection.doc(testUserId)).called(1);
         verify(mockAdminEmailsCollection.doc(testEmail)).called(1);
         verify(mockBatch.set(mockAdminDoc, any)).called(1);
-        verify(mockBatch.set(mockAdminEmailDoc, {'exists': true, 'createdAt': FieldValue.serverTimestamp()})).called(1);
+        verify(mockBatch.set(mockAdminEmailDoc, {
+          'exists': true,
+          'createdAt': FieldValue.serverTimestamp()
+        })).called(1);
         verify(mockBatch.commit()).called(1);
       });
 
       test('should throw ServerException when batch commit fails', () async {
         // Arrange
         when(mockAdminsCollection.doc(testUserId)).thenReturn(mockAdminDoc);
-        when(mockAdminEmailsCollection.doc(testEmail)).thenReturn(mockAdminEmailDoc);
+        when(mockAdminEmailsCollection.doc(testEmail))
+            .thenReturn(mockAdminEmailDoc);
         when(mockBatch.set(any, any)).thenReturn(mockBatch);
         when(mockBatch.commit()).thenThrow(Exception('Firestore error'));
 
         // Act & Assert
         expect(
-          () async => await dataSource.addAdmin(testUserId, testEmail, testDisplayName),
+          () async =>
+              await dataSource.addAdmin(testUserId, testEmail, testDisplayName),
           throwsA(isA<ServerException>()),
         );
       });
@@ -94,15 +105,19 @@ void main() {
       const String testEmail = 'test@example.com';
       const String testUserId = 'test_user_id';
 
-      test('should successfully remove admin from both collections when admin exists', () async {
+      test(
+          'should successfully remove admin from both collections when admin exists',
+          () async {
         // Arrange
-        when(mockAdminsCollection.where('email', isEqualTo: testEmail)).thenReturn(mockQuery);
+        when(mockAdminsCollection.where('email', isEqualTo: testEmail))
+            .thenReturn(mockQuery);
         when(mockQuery.limit(1)).thenReturn(mockQuery);
         when(mockQuery.get()).thenAnswer((_) async => mockQuerySnapshot);
         when(mockQuerySnapshot.docs).thenReturn([mockQueryDocSnapshot]);
         when(mockQueryDocSnapshot.id).thenReturn(testUserId);
         when(mockAdminsCollection.doc(testUserId)).thenReturn(mockAdminDoc);
-        when(mockAdminEmailsCollection.doc(testEmail)).thenReturn(mockAdminEmailDoc);
+        when(mockAdminEmailsCollection.doc(testEmail))
+            .thenReturn(mockAdminEmailDoc);
         when(mockBatch.update(any, any)).thenReturn(mockBatch);
         when(mockBatch.delete(any)).thenReturn(mockBatch);
         when(mockBatch.commit()).thenAnswer((_) async => []);
@@ -112,7 +127,8 @@ void main() {
 
         // Assert
         verify(mockFirestore.batch()).called(1);
-        verify(mockAdminsCollection.where('email', isEqualTo: testEmail)).called(1);
+        verify(mockAdminsCollection.where('email', isEqualTo: testEmail))
+            .called(1);
         verify(mockQuery.limit(1)).called(1);
         verify(mockQuery.get()).called(1);
         verify(mockBatch.update(mockAdminDoc, {'isActive': false})).called(1);
@@ -122,7 +138,8 @@ void main() {
 
       test('should throw ServerException when admin not found', () async {
         // Arrange
-        when(mockAdminsCollection.where('email', isEqualTo: testEmail)).thenReturn(mockQuery);
+        when(mockAdminsCollection.where('email', isEqualTo: testEmail))
+            .thenReturn(mockQuery);
         when(mockQuery.limit(1)).thenReturn(mockQuery);
         when(mockQuery.get()).thenAnswer((_) async => mockQuerySnapshot);
         when(mockQuerySnapshot.docs).thenReturn([]);
@@ -136,13 +153,15 @@ void main() {
 
       test('should throw ServerException when batch commit fails', () async {
         // Arrange
-        when(mockAdminsCollection.where('email', isEqualTo: testEmail)).thenReturn(mockQuery);
+        when(mockAdminsCollection.where('email', isEqualTo: testEmail))
+            .thenReturn(mockQuery);
         when(mockQuery.limit(1)).thenReturn(mockQuery);
         when(mockQuery.get()).thenAnswer((_) async => mockQuerySnapshot);
         when(mockQuerySnapshot.docs).thenReturn([mockQueryDocSnapshot]);
         when(mockQueryDocSnapshot.id).thenReturn(testUserId);
         when(mockAdminsCollection.doc(testUserId)).thenReturn(mockAdminDoc);
-        when(mockAdminEmailsCollection.doc(testEmail)).thenReturn(mockAdminEmailDoc);
+        when(mockAdminEmailsCollection.doc(testEmail))
+            .thenReturn(mockAdminEmailDoc);
         when(mockBatch.update(any, any)).thenReturn(mockBatch);
         when(mockBatch.delete(any)).thenReturn(mockBatch);
         when(mockBatch.commit()).thenThrow(Exception('Firestore error'));
@@ -160,8 +179,10 @@ void main() {
 
       test('should return true when admin exists and is active', () async {
         // Arrange
-        when(mockAdminsCollection.where('email', isEqualTo: testEmail)).thenReturn(mockQuery);
-        when(mockQuery.where('isActive', isEqualTo: true)).thenReturn(mockQuery);
+        when(mockAdminsCollection.where('email', isEqualTo: testEmail))
+            .thenReturn(mockQuery);
+        when(mockQuery.where('isActive', isEqualTo: true))
+            .thenReturn(mockQuery);
         when(mockQuery.limit(1)).thenReturn(mockQuery);
         when(mockQuery.get()).thenAnswer((_) async => mockQuerySnapshot);
         when(mockQuerySnapshot.docs).thenReturn([mockQueryDocSnapshot]);
@@ -175,8 +196,10 @@ void main() {
 
       test('should return false when admin does not exist', () async {
         // Arrange
-        when(mockAdminsCollection.where('email', isEqualTo: testEmail)).thenReturn(mockQuery);
-        when(mockQuery.where('isActive', isEqualTo: true)).thenReturn(mockQuery);
+        when(mockAdminsCollection.where('email', isEqualTo: testEmail))
+            .thenReturn(mockQuery);
+        when(mockQuery.where('isActive', isEqualTo: true))
+            .thenReturn(mockQuery);
         when(mockQuery.limit(1)).thenReturn(mockQuery);
         when(mockQuery.get()).thenAnswer((_) async => mockQuerySnapshot);
         when(mockQuerySnapshot.docs).thenReturn([]);
@@ -190,8 +213,10 @@ void main() {
 
       test('should throw ServerException when query fails', () async {
         // Arrange
-        when(mockAdminsCollection.where('email', isEqualTo: testEmail)).thenReturn(mockQuery);
-        when(mockQuery.where('isActive', isEqualTo: true)).thenReturn(mockQuery);
+        when(mockAdminsCollection.where('email', isEqualTo: testEmail))
+            .thenReturn(mockQuery);
+        when(mockQuery.where('isActive', isEqualTo: true))
+            .thenReturn(mockQuery);
         when(mockQuery.limit(1)).thenReturn(mockQuery);
         when(mockQuery.get()).thenThrow(Exception('Firestore error'));
 
@@ -212,8 +237,9 @@ void main() {
           'createdAt': Timestamp.now(),
           'isActive': true,
         };
-        
-        when(mockAdminsCollection.where('isActive', isEqualTo: true)).thenReturn(mockQuery);
+
+        when(mockAdminsCollection.where('isActive', isEqualTo: true))
+            .thenReturn(mockQuery);
         when(mockQuery.get()).thenAnswer((_) async => mockQuerySnapshot);
         when(mockQuerySnapshot.docs).thenReturn([mockQueryDocSnapshot]);
         when(mockQueryDocSnapshot.data()).thenReturn(mockData);
@@ -232,7 +258,8 @@ void main() {
 
       test('should return empty list when no active admins exist', () async {
         // Arrange
-        when(mockAdminsCollection.where('isActive', isEqualTo: true)).thenReturn(mockQuery);
+        when(mockAdminsCollection.where('isActive', isEqualTo: true))
+            .thenReturn(mockQuery);
         when(mockQuery.get()).thenAnswer((_) async => mockQuerySnapshot);
         when(mockQuerySnapshot.docs).thenReturn([]);
 
@@ -246,7 +273,8 @@ void main() {
 
       test('should throw ServerException when query fails', () async {
         // Arrange
-        when(mockAdminsCollection.where('isActive', isEqualTo: true)).thenReturn(mockQuery);
+        when(mockAdminsCollection.where('isActive', isEqualTo: true))
+            .thenReturn(mockQuery);
         when(mockQuery.get()).thenThrow(Exception('Firestore error'));
 
         // Act & Assert
