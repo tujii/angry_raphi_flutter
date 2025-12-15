@@ -14,7 +14,7 @@ void main() {
     final testDate = DateTime(2024, 1, 1);
 
     test('creates admin model with all fields', () {
-      const model = AdminModel(
+      final model = AdminModel(
         id: 'admin123',
         email: 'admin@example.com',
         displayName: 'Admin User',
@@ -59,7 +59,7 @@ void main() {
     });
 
     test('toMap converts model to map', () {
-      const model = AdminModel(
+      final model = AdminModel(
         id: 'admin123',
         email: 'admin@example.com',
         displayName: 'Admin User',
@@ -76,7 +76,7 @@ void main() {
     });
 
     test('toMap excludes id field', () {
-      const model = AdminModel(
+      final model = AdminModel(
         id: 'admin123',
         email: 'admin@example.com',
         displayName: 'Admin User',
@@ -90,7 +90,7 @@ void main() {
     });
 
     test('fromEntity creates model from entity', () {
-      const entity = AdminEntity(
+      final entity = AdminEntity(
         id: 'admin123',
         email: 'admin@example.com',
         displayName: 'Admin User',
@@ -108,7 +108,7 @@ void main() {
     });
 
     test('model extends entity', () {
-      const model = AdminModel(
+      final model = AdminModel(
         id: 'admin123',
         email: 'admin@example.com',
         displayName: 'Admin User',

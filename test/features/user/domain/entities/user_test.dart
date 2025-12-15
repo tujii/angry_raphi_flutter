@@ -4,10 +4,10 @@ import 'package:angry_raphi/features/user/domain/entities/user.dart';
 void main() {
   group('User', () {
     final testDate = DateTime(2024, 1, 1);
-    const testLastRaphconDate = DateTime(2024, 1, 15);
+    final testLastRaphconDate = DateTime(2024, 1, 15);
 
     test('creates user with required fields', () {
-      const user = User(
+      final user = User(
         id: '1',
         initials: 'JD',
         raphconCount: 5,
@@ -44,7 +44,7 @@ void main() {
     });
 
     test('name getter returns initials', () {
-      const user = User(
+      final user = User(
         id: '1',
         initials: 'AB',
         raphconCount: 0,
@@ -55,7 +55,7 @@ void main() {
     });
 
     test('copyWith creates new user with updated fields', () {
-      const user = User(
+      final user = User(
         id: '1',
         initials: 'JD',
         raphconCount: 5,
@@ -72,7 +72,7 @@ void main() {
     });
 
     test('copyWith with no parameters returns same values', () {
-      const user = User(
+      final user = User(
         id: '1',
         initials: 'JD',
         raphconCount: 5,
@@ -88,14 +88,14 @@ void main() {
     });
 
     test('equality works correctly', () {
-      const user1 = User(
+      final user1 = User(
         id: '1',
         initials: 'JD',
         raphconCount: 5,
         createdAt: testDate,
       );
 
-      const user2 = User(
+      final user2 = User(
         id: '1',
         initials: 'JD',
         raphconCount: 5,
@@ -107,14 +107,14 @@ void main() {
     });
 
     test('equality returns false for different users', () {
-      const user1 = User(
+      final user1 = User(
         id: '1',
         initials: 'JD',
         raphconCount: 5,
         createdAt: testDate,
       );
 
-      const user2 = User(
+      final user2 = User(
         id: '2',
         initials: 'AB',
         raphconCount: 3,
@@ -125,7 +125,7 @@ void main() {
     });
 
     test('toString returns formatted string', () {
-      const user = User(
+      final user = User(
         id: '1',
         initials: 'JD',
         raphconCount: 5,
