@@ -2,6 +2,8 @@
 
 This directory contains unit tests for the AngryRaphi Flutter application.
 
+**Current Coverage:** 29 test files with 150+ test cases covering ~80% of critical components. See [TEST_COVERAGE_REPORT.md](../TEST_COVERAGE_REPORT.md) for detailed breakdown.
+
 ## Prerequisites
 
 Before running tests, you need to generate mock files for the tests. The tests use Mockito for mocking dependencies.
