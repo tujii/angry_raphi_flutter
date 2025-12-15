@@ -833,10 +833,11 @@ class PublicUserCard extends StatelessWidget {
   Widget build(BuildContext context) {
     // Define colors for top 3 positions
     Color? rankColor;
-    const rankIcon = Icons.emoji_events;
+    const IconData rankIcon = Icons.emoji_events;
+    final int? currentRank = rank;
     
-    if (rank != null && rank! > 0 && rank! <= 3) {
-      switch (rank) {
+    if (currentRank != null && currentRank > 0 && currentRank <= 3) {
+      switch (currentRank) {
         case 1:
           rankColor = const Color(0xFFFFD700); // Gold
           break;
@@ -860,7 +861,7 @@ class PublicUserCard extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             // Show rank badge for top 3
-            if (rank != null && rank! > 0 && rank! <= 3)
+            if (currentRank != null && currentRank > 0 && currentRank <= 3)
               Container(
                 margin: const EdgeInsets.only(right: 8),
                 child: Stack(
@@ -874,7 +875,7 @@ class PublicUserCard extends StatelessWidget {
                     Positioned(
                       bottom: 4,
                       child: Text(
-                        '$rank.',
+                        '$currentRank.',
                         style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
