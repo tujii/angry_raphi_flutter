@@ -22,10 +22,13 @@ service cloud.firestore {
     }
     
     function isValidRaphcon(data) {
-      return data.keys().hasAll(['userId', 'createdAt', 'createdBy']) &&
+      return data.keys().hasAll(['userId', 'createdAt', 'createdBy', 'type', 'isActive']) &&
              data.userId is string &&
              data.createdAt is timestamp &&
-             data.createdBy == request.auth.uid;
+             data.createdBy == request.auth.uid &&
+             data.type is string &&
+             data.isActive is bool &&
+             (!data.keys().hasAny(['comment']) || data.comment is string);
     }
     
     // Users Collection - Read for all (guests and authenticated), Write only for Admins
