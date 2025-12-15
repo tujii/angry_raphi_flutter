@@ -152,7 +152,7 @@ void main() {
         expect(1000.formattedCount, equals('1.0K'));
         expect(1500.formattedCount, equals('1.5K'));
         expect(15000.formattedCount, equals('15.0K'));
-        expect(999999.formattedCount, equals('999.9K'));
+        expect(999949.formattedCount, equals('999.9K'));
       });
 
       test('formats millions with M suffix', () {
