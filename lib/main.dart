@@ -51,18 +51,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Configure Firebase Emulators for local development
-  const bool useEmulator =
-      bool.fromEnvironment('USE_FIREBASE_EMULATOR', defaultValue: false);
-  if (useEmulator && kIsWeb) {
-    try {
-      FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
-      await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
-    } catch (e) {
-      // Emulator already configured, continue
-    }
-  }
-
   // Initialize admin service
   await _initializeAdmin();
 
