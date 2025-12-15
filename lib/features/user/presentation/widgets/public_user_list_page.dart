@@ -264,8 +264,8 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                         value: 'settings',
                         child: Row(
                           children: [
-                            Icon(Icons.settings),
-                            SizedBox(width: 8),
+                            const Icon(Icons.settings),
+                            const SizedBox(width: 8),
                             Text(AppLocalizations.of(context)?.settings ??
                                 'Einstellungen'),
                           ],
@@ -276,8 +276,8 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                       value: 'logout',
                       child: Row(
                         children: [
-                          Icon(Icons.logout),
-                          SizedBox(width: 8),
+                          const Icon(Icons.logout),
+                          const SizedBox(width: 8),
                           Text(AppLocalizations.of(context)?.signOut ??
                               'Abmelden'),
                         ],
@@ -600,9 +600,9 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                     ),
                     const SizedBox(height: 20),
                     // App name
-                    Text(
+                    const Text(
                       AppConstants.appName,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: AppConstants.primaryColor,
@@ -884,7 +884,6 @@ class PublicUserCard extends StatelessWidget {
                             Shadow(
                               offset: Offset(0.5, 0.5),
                               blurRadius: 1.0,
-                              color: Colors.black,
                             ),
                           ],
                         ),

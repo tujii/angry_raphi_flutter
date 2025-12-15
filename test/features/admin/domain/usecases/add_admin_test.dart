@@ -1,10 +1,10 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
-import 'package:mockito/annotations.dart';
-import 'package:dartz/dartz.dart';
-import 'package:angry_raphi/features/admin/domain/usecases/add_admin.dart';
-import 'package:angry_raphi/features/admin/domain/repositories/admin_repository.dart';
 import 'package:angry_raphi/core/errors/failures.dart';
+import 'package:angry_raphi/features/admin/domain/repositories/admin_repository.dart';
+import 'package:angry_raphi/features/admin/domain/usecases/add_admin.dart';
+import 'package:dartz/dartz.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 
 import 'add_admin_test.mocks.dart';
 

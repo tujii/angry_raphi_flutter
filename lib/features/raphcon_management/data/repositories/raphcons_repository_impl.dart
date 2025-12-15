@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/enums/raphcon_type.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/network/network_info.dart';
-import '../../../../core/enums/raphcon_type.dart';
 import '../../domain/entities/raphcon_entity.dart';
 import '../../domain/repositories/raphcons_repository.dart';
 import '../datasources/raphcons_remote_datasource.dart';

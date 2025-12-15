@@ -15,6 +15,6 @@ class AddAdmin {
     required String email,
     required String displayName,
   }) async {
-    return await repository.addAdmin(userId, email, displayName);
+    return repository.addAdmin(userId, email, displayName);
   }
 }

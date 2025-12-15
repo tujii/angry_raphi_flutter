@@ -165,8 +165,8 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CircularProgressIndicator(),
-                      SizedBox(height: 16),
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 16),
                       Text(AppLocalizations.of(context)?.checkingAdminStatus ??
                           'Prüfe Admin-Status...'),
                     ],
@@ -177,12 +177,12 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.security,
                             size: 80,
                             color: Colors.red,
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
                           Text(
                             AppLocalizations.of(context)?.notAdmin ??
                                 'Keine Admin-Berechtigung',
@@ -194,13 +194,13 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                                   color: Colors.red,
                                 ),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Text(
                             AppLocalizations.of(context)?.notAdminMessage ??
                                 'Du hast keine Berechtigung, diese Aktion durchzuführen.',
                             style: TextStyle(color: Colors.grey[600]),
                           ),
-                          SizedBox(height: 24),
+                          const SizedBox(height: 24),
                           ElevatedButton(
                             onPressed: () => context.go(AppRouter.home),
                             child: const Text('Zur Startseite'),
@@ -294,7 +294,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
             const SizedBox(height: 8),
             Text(
               AppLocalizations.of(context)!.firebaseAdminsDescription,
-              style: TextStyle(color: Colors.grey),
+              style: const TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 16),
             if (_firebaseAdmins.isEmpty)
@@ -336,7 +336,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
             const SizedBox(height: 8),
             Text(
               AppLocalizations.of(context)!.registeredUsersDescription,
-              style: TextStyle(color: Colors.grey),
+              style: const TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 16),
             if (_registeredUsers.isEmpty)
@@ -423,7 +423,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
                     ),
                     child: Text(
                       AppLocalizations.of(context)!.alreadyAdmin,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
@@ -484,7 +484,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
             const SizedBox(height: 8),
             Text(
               AppLocalizations.of(context)!.addAdminManually,
-              style: TextStyle(color: Colors.grey),
+              style: const TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 16),
             ElevatedButton.icon(
@@ -627,7 +627,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('$email wurde als Admin entfernt')),
         );
-        _loadAdminData();
+        await _loadAdminData();
       }
     } catch (e) {
       if (mounted) {
@@ -683,15 +683,15 @@ class _PromoteUserDialogState extends State<PromoteUserDialog> {
           children: [
             Text(
               AppLocalizations.of(context)!.promoteUserDescription,
-              style: TextStyle(color: Colors.grey),
+              style: const TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _emailController,
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context)!.emailAddressLabel,
-                prefixIcon: Icon(Icons.email),
-                border: OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.email),
+                border: const OutlineInputBorder(),
                 hintText: AppLocalizations.of(context)!.emailAddressHint,
               ),
               keyboardType: TextInputType.emailAddress,
@@ -701,8 +701,8 @@ class _PromoteUserDialogState extends State<PromoteUserDialog> {
             TextField(
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context)!.displayNameLabel,
-                prefixIcon: Icon(Icons.person),
-                border: OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.person),
+                border: const OutlineInputBorder(),
                 hintText: AppLocalizations.of(context)!.displayNameHint,
               ),
               onChanged: (value) => setState(() => _displayName = value.trim()),
@@ -753,7 +753,7 @@ class _PromoteUserDialogState extends State<PromoteUserDialog> {
                   ),
                 )
               : Text(AppLocalizations.of(context)!.promoteToAdminButton,
-                  style: TextStyle(color: Colors.white)),
+                  style: const TextStyle(color: Colors.white)),
         ),
       ],
     );

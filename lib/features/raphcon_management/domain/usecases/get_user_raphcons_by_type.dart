@@ -14,6 +14,6 @@ class GetUserRaphconsByType {
 
   Future<Either<Failure, List<RaphconEntity>>> call(
       String userId, RaphconType type) async {
-    return await repository.getUserRaphconsByType(userId, type);
+    return repository.getUserRaphconsByType(userId, type);
   }
 }

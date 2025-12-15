@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/errors/failures.dart';
 import '../../../../core/enums/raphcon_type.dart';
+import '../../../../core/errors/failures.dart';
 import '../entities/raphcon_entity.dart';
 
 class AddRaphconParams {

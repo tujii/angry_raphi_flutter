@@ -288,7 +288,7 @@ class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
       (result) {
         result.fold(
           (failure) =>
-              add(RaphconsStreamUpdatedEvent([])), // Emit empty list on failure
+              add(RaphconsStreamUpdatedEvent(const [])), // Emit empty list on failure
           (raphcons) => add(RaphconsStreamUpdatedEvent(raphcons)),
         );
       },
@@ -314,7 +314,7 @@ class RaphconBloc extends Bloc<RaphconEvent, RaphconState> {
       (result) {
         result.fold(
           (failure) =>
-              add(RaphconsStreamUpdatedEvent([])), // Emit empty list on failure
+              add(RaphconsStreamUpdatedEvent(const [])), // Emit empty list on failure
           (raphcons) => add(RaphconsStreamUpdatedEvent(raphcons)),
         );
       },

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../domain/entities/raphcon_entity.dart';
 import '../../../../core/enums/raphcon_type.dart';
+import '../../domain/entities/raphcon_entity.dart';
 
 class RaphconModel extends RaphconEntity {
   const RaphconModel({

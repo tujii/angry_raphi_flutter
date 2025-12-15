@@ -45,7 +45,6 @@ class RaphconDetailBottomSheet extends StatefulWidget {
     final raphconBloc = context.read<RaphconBloc>();
     return showDialog<void>(
       context: context,
-      barrierDismissible: true,
       builder: (context) => Dialog(
         insetPadding: const EdgeInsets.all(16),
         child: Container(
@@ -263,7 +262,7 @@ class _RaphconDetailBottomSheetState extends State<RaphconDetailBottomSheet> {
                         const SizedBox(height: 4),
                         Text(
                           localizations.problemStatisticsFor(widget.userName),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14,
                             color: AppConstants.subtitleColor,
                           ),

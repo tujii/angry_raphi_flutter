@@ -36,7 +36,7 @@ class AppRouter {
           pageBuilder: (context, state) {
             return MaterialPage(
               key: state.pageKey,
-              child: const LoginPage(isDialog: false),
+              child: const LoginPage(),
             );
           },
         ),

@@ -11,7 +11,7 @@ class MockTimestamp {
 
 void main() {
   group('AdminModel', () {
-    final testDate = DateTime(2024, 1, 1);
+    final testDate = DateTime(2024, 1);
 
     test('creates admin model with all fields', () {
       final model = AdminModel(

@@ -112,7 +112,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.security,
                         color: AppConstants.primaryColor,
                         size: 20,

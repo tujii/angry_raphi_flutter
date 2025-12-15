@@ -1,13 +1,11 @@
-import 'package:get_it/get_it.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-// Domain
-import '../../features/user/domain/repositories/user_repository.dart';
-import '../../features/user/domain/usecases/user_usecases.dart';
+import 'package:get_it/get_it.dart';
 
 // Data
 import '../../features/user/data/repositories/firestore_user_repository.dart';
-
+// Domain
+import '../../features/user/domain/repositories/user_repository.dart';
+import '../../features/user/domain/usecases/user_usecases.dart';
 // Presentation
 import '../../features/user/presentation/bloc/user_bloc.dart';
 

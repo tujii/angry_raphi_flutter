@@ -74,8 +74,7 @@ class StoryOfTheDayService {
 
         if (topUser.value >= 3) {
           final story = await _generateTopUserStory(
-              user.initials, topUser.value,
-              variation: 0);
+              user.initials, topUser.value);
           if (story != null) {
             storiesSet.add(story);
           }
@@ -120,7 +119,7 @@ class StoryOfTheDayService {
 
       // Convert Set to List and limit to max 5 stories
       final stories = storiesSet.toList();
-      final maxStories = 5;
+      const maxStories = 5;
       final finalStories = stories.length > maxStories
           ? stories.sublist(0, maxStories)
           : stories;

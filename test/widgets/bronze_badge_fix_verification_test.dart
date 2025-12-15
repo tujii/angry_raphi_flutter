@@ -77,7 +77,7 @@ void main() {
     }
 
     test('FIXED: I.G. should now get correct badge position and styling', () {
-      final igIndex = 3; // I.G. is at index 3
+      const igIndex = 3; // I.G. is at index 3
       final igBadgePosition = getBadgePosition(testUsers, igIndex);
       final igBadgeText = getBadgeText(igBadgePosition);
       final igBadgeColor = getBadgeColor(igBadgePosition);

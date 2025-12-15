@@ -206,7 +206,7 @@ void main() {
             data: const MediaQueryData(size: Size(500, 800)),
             child: Builder(
               builder: (context) {
-                expect(ResponsiveHelper.getFontSize(context, baseSize: 14), equals(14.0));
+                expect(ResponsiveHelper.getFontSize(context), equals(14.0));
                 return Container();
               },
             ),
@@ -220,7 +220,7 @@ void main() {
             data: const MediaQueryData(size: Size(1200, 800)),
             child: Builder(
               builder: (context) {
-                expect(ResponsiveHelper.getFontSize(context, baseSize: 14), equals(14.0 * 1.2));
+                expect(ResponsiveHelper.getFontSize(context), equals(14.0 * 1.2));
                 return Container();
               },
             ),
@@ -236,7 +236,7 @@ void main() {
             data: const MediaQueryData(size: Size(500, 800)),
             child: Builder(
               builder: (context) {
-                expect(ResponsiveHelper.getIconSize(context, baseSize: 24), equals(24.0));
+                expect(ResponsiveHelper.getIconSize(context), equals(24.0));
                 return Container();
               },
             ),
@@ -250,7 +250,7 @@ void main() {
             data: const MediaQueryData(size: Size(1200, 800)),
             child: Builder(
               builder: (context) {
-                expect(ResponsiveHelper.getIconSize(context, baseSize: 24), equals(24.0 * 1.2));
+                expect(ResponsiveHelper.getIconSize(context), equals(24.0 * 1.2));
                 return Container();
               },
             ),

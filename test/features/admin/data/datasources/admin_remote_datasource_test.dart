@@ -66,7 +66,7 @@ void main() {
         when(mockAdminsCollection.doc(testUserId)).thenReturn(mockAdminDoc);
         when(mockAdminEmailsCollection.doc(testEmail))
             .thenReturn(mockAdminEmailDoc);
-        when(mockBatch.set(any, any)).thenReturn(mockBatch);
+        when(mockBatch.set(any, any)).thenReturn(());
         when(mockBatch.commit()).thenAnswer((_) async => []);
 
         // Act
@@ -89,13 +89,13 @@ void main() {
         when(mockAdminsCollection.doc(testUserId)).thenReturn(mockAdminDoc);
         when(mockAdminEmailsCollection.doc(testEmail))
             .thenReturn(mockAdminEmailDoc);
-        when(mockBatch.set(any, any)).thenReturn(mockBatch);
+        when(mockBatch.set(any, any)).thenReturn(());
         when(mockBatch.commit()).thenThrow(Exception('Firestore error'));
 
         // Act & Assert
         expect(
           () async =>
-              await dataSource.addAdmin(testUserId, testEmail, testDisplayName),
+              dataSource.addAdmin(testUserId, testEmail, testDisplayName),
           throwsA(isA<ServerException>()),
         );
       });
@@ -118,8 +118,8 @@ void main() {
         when(mockAdminsCollection.doc(testUserId)).thenReturn(mockAdminDoc);
         when(mockAdminEmailsCollection.doc(testEmail))
             .thenReturn(mockAdminEmailDoc);
-        when(mockBatch.update(any, any)).thenReturn(mockBatch);
-        when(mockBatch.delete(any)).thenReturn(mockBatch);
+        when(mockBatch.update(any, any)).thenReturn(());
+        when(mockBatch.delete(any)).thenReturn(());
         when(mockBatch.commit()).thenAnswer((_) async => []);
 
         // Act
@@ -146,7 +146,7 @@ void main() {
 
         // Act & Assert
         expect(
-          () async => await dataSource.removeAdmin(testEmail),
+          () async => dataSource.removeAdmin(testEmail),
           throwsA(isA<ServerException>()),
         );
       });
@@ -162,13 +162,13 @@ void main() {
         when(mockAdminsCollection.doc(testUserId)).thenReturn(mockAdminDoc);
         when(mockAdminEmailsCollection.doc(testEmail))
             .thenReturn(mockAdminEmailDoc);
-        when(mockBatch.update(any, any)).thenReturn(mockBatch);
-        when(mockBatch.delete(any)).thenReturn(mockBatch);
+        when(mockBatch.update(any, any)).thenReturn(());
+        when(mockBatch.delete(any)).thenReturn(());
         when(mockBatch.commit()).thenThrow(Exception('Firestore error'));
 
         // Act & Assert
         expect(
-          () async => await dataSource.removeAdmin(testEmail),
+          () async => dataSource.removeAdmin(testEmail),
           throwsA(isA<ServerException>()),
         );
       });
@@ -222,7 +222,7 @@ void main() {
 
         // Act & Assert
         expect(
-          () async => await dataSource.checkAdminStatus(testEmail),
+          () async => dataSource.checkAdminStatus(testEmail),
           throwsA(isA<ServerException>()),
         );
       });
@@ -279,7 +279,7 @@ void main() {
 
         // Act & Assert
         expect(
-          () async => await dataSource.getAllAdmins(),
+          () async => dataSource.getAllAdmins(),
           throwsA(isA<ServerException>()),
         );
       });

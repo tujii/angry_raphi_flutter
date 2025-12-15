@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
+
+import 'package:flutter/material.dart';
 
 /// A widget that displays text with a typewriter effect
 class TypewriterText extends StatefulWidget {

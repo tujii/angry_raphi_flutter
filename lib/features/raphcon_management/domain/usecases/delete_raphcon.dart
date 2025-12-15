@@ -11,6 +11,6 @@ class DeleteRaphcon {
   DeleteRaphcon(this.repository);
 
   Future<Either<Failure, void>> call(String raphconId) async {
-    return await repository.deleteRaphcon(raphconId);
+    return repository.deleteRaphcon(raphconId);
   }
 }
