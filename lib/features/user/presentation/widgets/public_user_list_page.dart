@@ -30,6 +30,7 @@ import '../../../../shared/widgets/user_ranking_search_delegate.dart';
 import '../../../../shared/widgets/markdown_content_widget.dart';
 import '../../../../shared/widgets/story_of_the_day_banner.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import '../../../../core/utils/ranking_utils.dart';
 
 class PublicUserListPage extends StatefulWidget {
   const PublicUserListPage({super.key});
@@ -451,10 +452,12 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                     padding: ResponsiveHelper.getResponsivePadding(context),
                     itemCount: users.length,
                     itemBuilder: (context, index) {
+                      final rank = RankingUtils.calculateRank(users, index);
                       return PublicUserCard(
                         user: users[index],
                         isAdmin: _isAdmin,
                         isLoggedIn: _isLoggedIn,
+                        rank: rank,
                         onNameTapped: _isAdmin
                             ? () => _createRaphcon(users[index])
                             : null,
@@ -474,10 +477,12 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                     ),
                     itemCount: users.length,
                     itemBuilder: (context, index) {
+                      final rank = RankingUtils.calculateRank(users, index);
                       return PublicUserCard(
                         user: users[index],
                         isAdmin: _isAdmin,
                         isLoggedIn: _isLoggedIn,
+                        rank: rank,
                         onNameTapped: _isAdmin
                             ? () => _createRaphcon(users[index])
                             : null,
@@ -811,6 +816,7 @@ class PublicUserCard extends StatelessWidget {
   final VoidCallback? onNameTapped;
   final VoidCallback? onLoginRequired;
   final VoidCallback? onShowStatistics;
+  final int? rank;
 
   const PublicUserCard({
     super.key,
@@ -820,10 +826,30 @@ class PublicUserCard extends StatelessWidget {
     this.onNameTapped,
     this.onLoginRequired,
     this.onShowStatistics,
+    this.rank,
   });
 
   @override
   Widget build(BuildContext context) {
+    // Define colors for top 3 positions
+    Color? rankColor;
+    const IconData rankIcon = Icons.emoji_events;
+    final int? currentRank = rank;
+    
+    if (currentRank != null && currentRank > 0 && currentRank <= 3) {
+      switch (currentRank) {
+        case 1:
+          rankColor = const Color(0xFFFFD700); // Gold
+          break;
+        case 2:
+          rankColor = const Color(0xFFC0C0C0); // Silver
+          break;
+        case 3:
+          rankColor = const Color(0xFFCD7F32); // Bronze
+          break;
+      }
+    }
+
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       elevation: 4,
@@ -834,6 +860,39 @@ class PublicUserCard extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            // Show rank badge for top 3
+            if (currentRank != null && currentRank > 0 && currentRank <= 3)
+              Container(
+                margin: const EdgeInsets.only(right: 8),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Icon(
+                      rankIcon,
+                      color: rankColor,
+                      size: 40,
+                    ),
+                    Positioned(
+                      bottom: 4,
+                      child: Text(
+                        '$currentRank.',
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(
+                              offset: Offset(0.5, 0.5),
+                              blurRadius: 1.0,
+                              color: Colors.black,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             CircleAvatar(
               backgroundColor: AppConstants.primaryColor,
               radius: 24,
