@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:angry_raphi/features/raphcon_management/data/models/raphcon_model.dart';
 import 'package:angry_raphi/features/raphcon_management/domain/entities/raphcon_entity.dart';
 import 'package:angry_raphi/core/enums/raphcon_type.dart';
@@ -73,7 +74,8 @@ void main() {
 
       expect(map['userId'], equals('user123'));
       expect(map['createdBy'], equals('admin456'));
-      expect(map['createdAt'], equals(testDate));
+      expect(map['createdAt'], isA<Timestamp>());
+      expect((map['createdAt'] as Timestamp).toDate(), equals(testDate));
       expect(map['comment'], equals('Test comment'));
       expect(map['type'], equals('mouse'));
       expect(map['isActive'], isTrue);
