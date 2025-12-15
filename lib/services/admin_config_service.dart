@@ -19,7 +19,17 @@ class AdminInfo {
 class AdminConfigService {
   static const String _csvPath = 'assets/data/admins.csv';
 
-  /// Admin data structure
+  /// Predefined admin emails
+  /// 
+  /// SECURITY NOTE: These are fallback admin emails and are safe to commit.
+  /// These are NOT passwords or authentication credentials.
+  /// Email addresses are:
+  /// 1. Public information that can be discovered through normal use
+  /// 2. Protected by Firebase Authentication (users must authenticate)
+  /// 3. Verified against Firestore Security Rules (see firestore.rules)
+  /// 
+  /// The primary admin list should be maintained in assets/data/admins.csv
+  /// This fallback list ensures admin functionality if the CSV fails to load.
   static const List<String> _predefinedAdmins = [
     '17tujii@gmail.com',
     'uhlmannraphael@gmail.com',

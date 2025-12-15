@@ -1,4 +1,17 @@
 rules_version = '2';
+
+// ⚠️ CRITICAL SECURITY FILE
+// These Firestore Security Rules are the primary defense for your data.
+// They enforce authentication and authorization for all database operations.
+// 
+// Firebase client API keys (in firebase_options.dart) are public by design.
+// THIS FILE is what actually protects your data from unauthorized access.
+//
+// Test changes before deploying: firebase emulators:start --only firestore
+// Deploy with: firebase deploy --only firestore:rules
+//
+// See SECURITY.md for more information.
+
 service cloud.firestore {
   match /databases/{database}/documents {
     

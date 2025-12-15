@@ -6,6 +6,16 @@ import 'package:flutter/foundation.dart'
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
+/// ⚠️ SECURITY NOTE:
+/// These Firebase API keys are safe to commit to version control.
+/// They are client identifiers, not authentication credentials.
+/// Security is enforced by:
+/// - Firestore Security Rules (see firestore.rules)
+/// - Firebase Authentication
+/// - API restrictions in Firebase Console
+///
+/// For more information, see SECURITY.md
+///
 /// Example:
 /// ```dart
 /// import 'firebase_options.dart';
