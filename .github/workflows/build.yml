@@ -34,6 +34,10 @@ jobs:
           flutter pub get
           flutter build web --base-href / --web-renderer canvaskit
       
+      # Run tests with coverage generation
+      - name: Run tests with coverage
+        run: flutter test --coverage
+      
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
