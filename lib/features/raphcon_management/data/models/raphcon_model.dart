@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../domain/entities/raphcon_entity.dart';
 import '../../../../core/enums/raphcon_type.dart';
 
@@ -43,7 +45,7 @@ class RaphconModel extends RaphconEntity {
     return {
       'userId': userId,
       'createdBy': createdBy,
-      'createdAt': createdAt,
+      'createdAt': Timestamp.fromDate(createdAt),
       'comment': comment,
       'type': type.value,
       'isActive': isActive,
