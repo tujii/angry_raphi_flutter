@@ -92,12 +92,61 @@ Alle Tests folgen Best Practices:
 
 ## Nächste Schritte für weiteren Aufstieg auf 80%+
 
-### Kurzfristig (für 80% Ziel):
-1. **Zusätzliche Tests** für:
+### WICHTIG: Tatsächliche Coverage-Situation
+
+**Aktueller Stand: ~7.1% Code Coverage**
+
+Die vorherige Schätzung von 60-70% war zu optimistisch. Die tatsächliche Coverage ist nur bei ~7.1%, weil:
+
+- **88 Produktionsdateien** (~11,693 Zeilen) wurden hinzugefügt
+- Nur **28 Testdateien** (~3,266 Zeilen) existieren
+- Die meisten Tests decken nur:
+  - Entities und Models (8 Tests)
+  - Core Utilities (9 Tests)
+  - Badge/Widget-Tests ohne Produktionscode-Abdeckung (9 Tests)
+  - 2 Platzhalter-Tests
+
+### Fehlende Test-Coverage (58+ kritische Dateien):
+
+**Bereits hinzugefügt in diesem Fix:**
+- ✅ Authentication Use Cases (3 Tests: sign_in, sign_out, get_current_user)
+- ✅ Admin Use Cases (2 Tests: add_admin, check_admin_status)
+- ✅ Raphcon Use Cases (2 Tests: add_raphcon, delete_raphcon)
+- ✅ User Use Cases (5 Tests: get_users, add_user, update, delete, stream)
+- ✅ Auth Repository Implementation (vollständig mit Mocks)
+- ✅ Auth Bloc (vollständig mit bloc_test)
+
+**Noch zu testen:**
+1. **Services** (5 Dateien, 0 Tests):
+   - [ ] admin_service.dart
+   - [ ] admin_config_service.dart
+   - [ ] registered_users_service.dart
+   - [ ] story_of_the_day_service.dart
+   - [ ] gemini_ai_service.dart
+
+2. **Data Repositories** (3 weitere Dateien):
+   - [ ] admin_repository_impl.dart
+   - [ ] raphcons_repository_impl.dart
+   - [ ] firestore_user_repository.dart
+
+3. **Datasources** (3 Dateien, 0 Tests):
+   - [ ] admin_remote_datasource.dart
+   - [ ] auth_remote_datasource.dart
+   - [ ] raphcons_remote_datasource.dart
+
+4. **Verbleibende Use Cases** (~8 Dateien)
+5. **Domain Repositories** (4 Dateien, 0 Tests)
+6. **Presentation Blocs** (3 weitere Blocs ohne Tests)
+7. **Presentation Pages** (6 Dateien, 0 Tests)
+8. **Presentation Widgets** (7 Dateien, 0 Tests)
+9. **Shared Widgets** (12 Dateien, 0 Tests)
+
+### Kurzfristig (für 70%+ Ziel):
+1. **Zusätzliche Tests** für verbleibende:
    - Repositories (mit Mocks)
    - Use Cases
    - Bloc-Logik (mit bloc_test)
-   - Services (Gemini AI, Admin Config, etc.)
+   - Services (mit Mocks für Firebase/AI)
 
 2. **Integration Tests**:
    - Widget Tests für kritische UI-Komponenten
