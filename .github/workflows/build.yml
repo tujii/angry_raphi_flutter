@@ -1,0 +1,44 @@
+name: Build
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  sonarqube:
+    name: SonarQube
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      
+      # Setup Flutter environment
+      - name: Read Flutter version
+        id: flutter-version
+        run: echo "version=$(cat .dart_tool/version)" >> $GITHUB_OUTPUT
+      
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '${{ steps.flutter-version.outputs.version }}'
+          channel: 'stable'
+          cache: true
+      
+      # The analysis requires to retrieve dependencies and build successfully
+      - name: Build
+        run: |
+          flutter pub get
+          flutter build web --base-href / --web-renderer canvaskit
+      
+      # Run tests with coverage generation
+      - name: Run tests with coverage
+        run: flutter test --coverage
+      
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
