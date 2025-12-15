@@ -36,9 +36,9 @@ if errorlevel 1 (
 
 echo [SUCCESS] Flutter build completed successfully
 
-REM Step 5: Deploy to Firebase
-echo [INFO] Deploying to Firebase Hosting...
-call firebase deploy --only hosting
+REM Step 5: Deploy to Firebase (Hosting + Firestore Rules and Indexes)
+echo [INFO] Deploying to Firebase (Hosting + Firestore)...
+call firebase deploy --only hosting,firestore
 
 if errorlevel 1 (
     echo [ERROR] Firebase deployment failed

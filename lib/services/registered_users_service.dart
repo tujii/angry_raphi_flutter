@@ -48,7 +48,10 @@ class RegisteredUsersService {
       }
     } catch (e) {
       // Don't throw - we don't want auth to fail if user saving fails
-      debugPrint('Failed to save registered user: $e');
+      debugPrint('Failed to save registered user for ${firebaseUser.uid}: $e');
+      if (kDebugMode) {
+        print('Firestore error details: $e');
+      }
     }
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/utils/ranking_utils.dart';
 import '../../domain/entities/user.dart';
 import '../bloc/user_bloc.dart';
 import 'user_card.dart';
@@ -183,9 +184,10 @@ class UserListPage extends StatelessWidget {
           child: ListView.builder(
             itemCount: users.length,
             itemBuilder: (context, index) {
+              final rank = RankingUtils.calculateRank(users, index);
               return UserCard(
                 user: users[index],
-                rank: index + 1,
+                rank: rank,
               );
             },
           ),

@@ -9,7 +9,8 @@ service cloud.firestore {
     
     function isAdmin() {
       return isAuthenticated() && 
-             exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+             request.auth.token.email != null &&
+             exists(/databases/$(database)/documents/adminEmails/$(request.auth.token.email));
     }
     
     function isValidUser(data) {
@@ -47,10 +48,20 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     
+    // AdminEmails Collection - For efficient admin checking
+    match /adminEmails/{email} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+    
     // RegisteredUsers Collection - Read only for Admins, Write for authenticated users (for their own data)
     match /registeredUsers/{userId} {
       allow read: if isAdmin();
-      allow write: if isAuthenticated() && request.auth.uid == userId;
+      // Allow users to create/update their own registered user document
+      // Simplified: just check authentication and user match, skip complex validation for now
+      allow create, update: if isAuthenticated() && request.auth.uid == userId;
+      // Allow admins to delete registered user documents
+      allow delete: if isAdmin();
     }
     
     // Statistics - Read only for Admins

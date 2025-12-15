@@ -5,9 +5,9 @@ import '../../../../core/errors/exceptions.dart';
 import '../models/admin_model.dart';
 
 abstract class AdminRemoteDataSource {
-  Future<bool> checkAdminStatus(String userId);
+  Future<bool> checkAdminStatus(String email);
   Future<void> addAdmin(String userId, String email, String displayName);
-  Future<void> removeAdmin(String userId);
+  Future<void> removeAdmin(String email);
   Future<List<AdminModel>> getAllAdmins();
 }
 
@@ -18,10 +18,15 @@ class AdminRemoteDataSourceImpl implements AdminRemoteDataSource {
   AdminRemoteDataSourceImpl(this.firestore);
 
   @override
-  Future<bool> checkAdminStatus(String userId) async {
+  Future<bool> checkAdminStatus(String email) async {
     try {
-      final doc = await firestore.collection('admins').doc(userId).get();
-      return doc.exists && (doc.data()?['isActive'] as bool? ?? false);
+      final querySnapshot = await firestore
+          .collection('admins')
+          .where('email', isEqualTo: email)
+          .where('isActive', isEqualTo: true)
+          .limit(1)
+          .get();
+      return querySnapshot.docs.isNotEmpty;
     } catch (e) {
       throw ServerException('Failed to check admin status: ${e.toString()}');
     }
@@ -45,12 +50,22 @@ class AdminRemoteDataSourceImpl implements AdminRemoteDataSource {
   }
 
   @override
-  Future<void> removeAdmin(String userId) async {
+  Future<void> removeAdmin(String email) async {
     try {
-      await firestore
+      final querySnapshot = await firestore
           .collection('admins')
-          .doc(userId)
-          .update({'isActive': false});
+          .where('email', isEqualTo: email)
+          .limit(1)
+          .get();
+      
+      if (querySnapshot.docs.isNotEmpty) {
+        await firestore
+            .collection('admins')
+            .doc(querySnapshot.docs.first.id)
+            .update({'isActive': false});
+      } else {
+        throw ServerException('Admin with email $email not found');
+      }
     } catch (e) {
       throw ServerException('Failed to remove admin: ${e.toString()}');
     }

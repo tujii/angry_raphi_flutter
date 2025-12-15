@@ -6,8 +6,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import 'core/constants/app_constants.dart';
+import 'core/routing/app_router.dart';
 import 'firebase_options.dart';
 import 'features/user/data/repositories/firestore_user_repository.dart';
 import 'features/user/domain/usecases/user_usecases.dart';
@@ -35,12 +37,14 @@ import 'features/authentication/domain/usecases/sign_out.dart';
 import 'features/authentication/domain/usecases/get_current_user.dart';
 import 'features/authentication/presentation/bloc/auth_bloc.dart';
 import 'features/authentication/presentation/bloc/auth_event.dart';
-import 'shared/widgets/app_wrapper.dart';
 import 'core/network/network_info.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Configure URL strategy for web to show clean URLs without #
+  setUrlStrategy(PathUrlStrategy());
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -83,121 +87,123 @@ class AngryRaphiApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: AppConstants.appName,
-      theme: _buildTheme(),
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+    final router = AppRouter.createRouter();
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) {
+            final repository =
+                FirestoreUserRepository(FirebaseFirestore.instance);
+            final getUsersUseCase = GetUsersUseCase(repository);
+            final getUsersStreamUseCase = GetUsersStreamUseCase(repository);
+            final addUserUseCase = AddUserUseCase(repository);
+            final deleteUserUseCase = DeleteUserUseCase(repository);
+            return UserBloc(
+              getUsersUseCase: getUsersUseCase,
+              getUsersStreamUseCase: getUsersStreamUseCase,
+              addUserUseCase: addUserUseCase,
+              deleteUserUseCase: deleteUserUseCase,
+            );
+          },
+        ),
+        BlocProvider(
+          create: (_) {
+            final firestore = FirebaseFirestore.instance;
+            final connectivity = Connectivity();
+            final networkInfo = NetworkInfoImpl(connectivity);
+            final adminDataSource = AdminRemoteDataSourceImpl(firestore);
+            final adminRepository = AdminRepositoryImpl(
+              remoteDataSource: adminDataSource,
+              networkInfo: networkInfo,
+            );
+            final checkAdminStatus = CheckAdminStatus(adminRepository);
+            final addAdmin = AddAdmin(adminRepository);
+
+            return AdminBloc(checkAdminStatus, addAdmin);
+          },
+        ),
+        BlocProvider(
+          create: (_) {
+            final firestore = FirebaseFirestore.instance;
+            final connectivity = Connectivity();
+            final networkInfo = NetworkInfoImpl(connectivity);
+            final raphconDataSource = RaphconsRemoteDataSourceImpl(firestore);
+            final raphconRepository = RaphconsRepositoryImpl(
+              remoteDataSource: raphconDataSource,
+              networkInfo: networkInfo,
+            );
+            final addRaphcon = AddRaphcon(raphconRepository);
+            final getUserRaphconStatistics =
+                GetUserRaphconStatistics(raphconRepository);
+            final getUserRaphconsByType =
+                GetUserRaphconsByType(raphconRepository);
+            final deleteRaphcon = DeleteRaphcon(raphconRepository);
+            final getUserRaphconsStream =
+                GetUserRaphconsStream(raphconRepository);
+            final getUserRaphconsByTypeStream =
+                GetUserRaphconsByTypeStream(raphconRepository);
+
+            return RaphconBloc(
+              addRaphcon,
+              getUserRaphconStatistics,
+              getUserRaphconsByType,
+              deleteRaphcon,
+              getUserRaphconsStream,
+              getUserRaphconsByTypeStream,
+            );
+          },
+        ),
+        BlocProvider(
+          create: (_) {
+            final firebaseAuth = FirebaseAuth.instance;
+            final googleSignIn = GoogleSignIn(
+              scopes: ['email'],
+            );
+            final firestore = FirebaseFirestore.instance;
+            final connectivity = Connectivity();
+            final networkInfo = NetworkInfoImpl(connectivity);
+
+            // Create RegisteredUsersService
+            final registeredUsersService = RegisteredUsersService(firestore);
+
+            final authDataSource = AuthRemoteDataSourceImpl(
+              firebaseAuth,
+              googleSignIn,
+              firestore,
+              registeredUsersService,
+            );
+
+            final authRepository = AuthRepositoryImpl(
+              remoteDataSource: authDataSource,
+              networkInfo: networkInfo,
+            );
+
+            final signInWithGoogle = SignInWithGoogle(authRepository);
+            final signOut = SignOut(authRepository);
+            final getCurrentUser = GetCurrentUser(authRepository);
+
+            return AuthBloc(
+                signInWithGoogle, signOut, getCurrentUser, authRepository)
+              ..add(AuthStarted());
+          },
+        ),
       ],
-      supportedLocales: const [
-        Locale('en'),
-        Locale('de'),
-      ],
-      home: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (_) {
-              final repository =
-                  FirestoreUserRepository(FirebaseFirestore.instance);
-              final getUsersUseCase = GetUsersUseCase(repository);
-              final getUsersStreamUseCase = GetUsersStreamUseCase(repository);
-              final addUserUseCase = AddUserUseCase(repository);
-              final deleteUserUseCase = DeleteUserUseCase(repository);
-              return UserBloc(
-                getUsersUseCase: getUsersUseCase,
-                getUsersStreamUseCase: getUsersStreamUseCase,
-                addUserUseCase: addUserUseCase,
-                deleteUserUseCase: deleteUserUseCase,
-              );
-            },
-          ),
-          BlocProvider(
-            create: (_) {
-              final firestore = FirebaseFirestore.instance;
-              final connectivity = Connectivity();
-              final networkInfo = NetworkInfoImpl(connectivity);
-              final adminDataSource = AdminRemoteDataSourceImpl(firestore);
-              final adminRepository = AdminRepositoryImpl(
-                remoteDataSource: adminDataSource,
-                networkInfo: networkInfo,
-              );
-              final checkAdminStatus = CheckAdminStatus(adminRepository);
-              final addAdmin = AddAdmin(adminRepository);
-
-              return AdminBloc(checkAdminStatus, addAdmin);
-            },
-          ),
-          BlocProvider(
-            create: (_) {
-              final firestore = FirebaseFirestore.instance;
-              final connectivity = Connectivity();
-              final networkInfo = NetworkInfoImpl(connectivity);
-              final raphconDataSource = RaphconsRemoteDataSourceImpl(firestore);
-              final raphconRepository = RaphconsRepositoryImpl(
-                remoteDataSource: raphconDataSource,
-                networkInfo: networkInfo,
-              );
-              final addRaphcon = AddRaphcon(raphconRepository);
-              final getUserRaphconStatistics =
-                  GetUserRaphconStatistics(raphconRepository);
-              final getUserRaphconsByType =
-                  GetUserRaphconsByType(raphconRepository);
-              final deleteRaphcon = DeleteRaphcon(raphconRepository);
-              final getUserRaphconsStream =
-                  GetUserRaphconsStream(raphconRepository);
-              final getUserRaphconsByTypeStream =
-                  GetUserRaphconsByTypeStream(raphconRepository);
-
-              return RaphconBloc(
-                addRaphcon,
-                getUserRaphconStatistics,
-                getUserRaphconsByType,
-                deleteRaphcon,
-                getUserRaphconsStream,
-                getUserRaphconsByTypeStream,
-              );
-            },
-          ),
-          BlocProvider(
-            create: (_) {
-              final firebaseAuth = FirebaseAuth.instance;
-              final googleSignIn = GoogleSignIn(
-                scopes: ['email'],
-              );
-              final firestore = FirebaseFirestore.instance;
-              final connectivity = Connectivity();
-              final networkInfo = NetworkInfoImpl(connectivity);
-
-              // Create RegisteredUsersService
-              final registeredUsersService = RegisteredUsersService(firestore);
-
-              final authDataSource = AuthRemoteDataSourceImpl(
-                firebaseAuth,
-                googleSignIn,
-                firestore,
-                registeredUsersService,
-              );
-
-              final authRepository = AuthRepositoryImpl(
-                remoteDataSource: authDataSource,
-                networkInfo: networkInfo,
-              );
-
-              final signInWithGoogle = SignInWithGoogle(authRepository);
-              final signOut = SignOut(authRepository);
-              final getCurrentUser = GetCurrentUser(authRepository);
-
-              return AuthBloc(
-                  signInWithGoogle, signOut, getCurrentUser, authRepository)
-                ..add(AuthStarted());
-            },
-          ),
+      child: MaterialApp.router(
+        title: AppConstants.appName,
+        theme: _buildTheme(),
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
         ],
-        child: const AppWrapper(),
+        supportedLocales: const [
+          Locale('en'),
+          Locale('de'),
+        ],
+        routerConfig: router,
       ),
     );
   }

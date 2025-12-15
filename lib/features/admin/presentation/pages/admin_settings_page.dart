@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../services/admin_config_service.dart';
 import '../../../../services/registered_users_service.dart';
+import '../../../../core/routing/app_router.dart';
+import '../bloc/admin_bloc.dart';
 
 /// Admin Settings Page - Manage admins and promote users
 class AdminSettingsPage extends StatefulWidget {
@@ -19,6 +24,7 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
   List<Map<String, dynamic>> _firebaseAdmins = [];
   List<Map<String, dynamic>> _registeredUsers = [];
   bool _loading = true;
+  bool _isAdmin = false;
   late RegisteredUsersService _registeredUsersService;
 
   @override
@@ -26,7 +32,40 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
     super.initState();
     _registeredUsersService =
         RegisteredUsersService(FirebaseFirestore.instance);
-    _loadAdminData();
+    _checkAdminStatusAndLoad();
+  }
+
+  Future<void> _checkAdminStatusAndLoad() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser == null || currentUser.email == null) {
+      // User not logged in, set error state and return
+      if (mounted) {
+        setState(() {
+          _loading = false;
+          _isAdmin = false;
+        });
+      }
+      return;
+    }
+
+    // Check if user is admin
+    context.read<AdminBloc>().add(CheckAdminStatusEvent(currentUser.email!));
+  }
+
+  Future<void> _ensureAdminEmailExists() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser?.email != null) {
+      try {
+        // Create adminEmails document for efficient rule checking
+        await FirebaseFirestore.instance
+            .collection('adminEmails')
+            .doc(currentUser!.email!)
+            .set({'isAdmin': true, 'createdAt': FieldValue.serverTimestamp()});
+      } catch (e) {
+        // Ignore errors - document might already exist
+      }
+    }
   }
 
   Future<void> _loadAdminData() async {
@@ -83,36 +122,113 @@ class _AdminSettingsPageState extends State<AdminSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppConstants.backgroundColor,
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)?.adminSettings ??
-            'Admin Einstellungen'),
-        backgroundColor: AppConstants.primaryColor,
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
-              onRefresh: _loadAdminData,
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildCSVAdminsSection(),
-                    const SizedBox(height: 24),
-                    _buildFirebaseAdminsSection(),
-                    const SizedBox(height: 24),
-                    _buildRegisteredUsersSection(),
-                    const SizedBox(height: 24),
-                    _buildPromoteUserSection(),
-                  ],
-                ),
-              ),
+    return BlocConsumer<AdminBloc, AdminState>(
+      listener: (context, state) {
+        if (state is AdminStatusChecked) {
+          if (state.isAdmin) {
+            if (!_isAdmin) {
+              setState(() => _isAdmin = true);
+              _ensureAdminEmailExists();
+              _loadAdminData();
+            }
+          } else {
+            // User is not admin
+            setState(() {
+              _loading = false;
+              _isAdmin = false;
+            });
+          }
+        } else if (state is AdminError) {
+          // Error checking admin status
+          setState(() {
+            _loading = false;
+            _isAdmin = false;
+          });
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: AppConstants.backgroundColor,
+          appBar: AppBar(
+            title: Text(AppLocalizations.of(context)?.adminSettings ??
+                'Admin Einstellungen'),
+            backgroundColor: AppConstants.primaryColor,
+            foregroundColor: Colors.white,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => context.go(AppRouter.home),
             ),
+          ),
+          body: _loading
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 16),
+                      Text(AppLocalizations.of(context)?.checkingAdminStatus ??
+                          'Prüfe Admin-Status...'),
+                    ],
+                  ),
+                )
+              : !_isAdmin
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.security,
+                            size: 80,
+                            color: Colors.red,
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            AppLocalizations.of(context)?.notAdmin ??
+                                'Keine Admin-Berechtigung',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red,
+                                ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            AppLocalizations.of(context)?.notAdminMessage ??
+                                'Du hast keine Berechtigung, diese Aktion durchzuführen.',
+                            style: TextStyle(color: Colors.grey[600]),
+                          ),
+                          SizedBox(height: 24),
+                          ElevatedButton(
+                            onPressed: () => context.go(AppRouter.home),
+                            child: const Text('Zur Startseite'),
+                          ),
+                        ],
+                      ),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: _loadAdminData,
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildCSVAdminsSection(),
+                            const SizedBox(height: 24),
+                            _buildFirebaseAdminsSection(),
+                            const SizedBox(height: 24),
+                            _buildRegisteredUsersSection(),
+                            const SizedBox(height: 24),
+                            _buildPromoteUserSection(),
+                          ],
+                        ),
+                      ),
+                    ),
+        );
+      },
     );
   }
 
