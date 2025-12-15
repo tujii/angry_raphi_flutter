@@ -124,12 +124,35 @@ return '🎧 $userName hat den Krieg ${count}x gegen sein Headset verloren!';
 - ❌ Rate Limit erreicht → Templates werden verwendet
 - ❌ Ungültige API-Antwort → Templates werden verwendet
 
+## Sicherheit
+
+⚠️ **Wichtige Sicherheitshinweise:**
+
+1. **NIEMALS API-Keys ins Repository committen!**
+   - Die `gemini_api_key` Datei ist bereits in `.gitignore`
+   - Verwende niemals die Hardcoded-Option für Production
+   - Prüfe vor jedem Commit: `git status` und `git diff`
+
+2. **API-Key Rotation:**
+   - Wenn ein Key versehentlich committed wurde:
+     - Sofort Key in Google AI Studio widerrufen
+     - Neuen Key generieren
+     - Keys aus Git-History entfernen (komplexer Prozess)
+   - Vermeide dieses Problem durch korrekte Konfiguration
+
+3. **Zugriffsbeschränkungen:**
+   - Setze API-Beschränkungen in Google Cloud Console
+   - Limitiere Anfragen pro Minute/Tag
+   - Überwache Nutzung regelmäßig
+
 ## Datenschutz
 
 - **API-Key**: Wird nur lokal in der App gespeichert
 - **User-Daten**: Nur initiale (z.B. "M.J.") und Problem-Typen werden an Gemini gesendet
 - **Keine Speicherung**: Gemini speichert keine Anfragen (laut Google's Datenschutzrichtlinien)
 - **Opt-Out**: Einfach API-Key auf `null` setzen
+
+Siehe auch: [SECURITY.md](../SECURITY.md) für allgemeine Sicherheitsrichtlinien.
 
 ## Beispiel Stories
 

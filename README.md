@@ -42,15 +42,39 @@ AngryRaphi is a Flutter web app for reporting and rating tech problems. Users ca
 - **Java**: 21+ (for Android builds)
 - **Firebase CLI**: Latest version
 
+## 🔒 Security
+
+This project follows security best practices. See [SECURITY.md](SECURITY.md) for:
+- Security policy and audit findings
+- Secret management best practices
+- How to report vulnerabilities
+- Firebase security configuration
+
+**Key Security Points:**
+- ✅ Firebase client credentials are safe to commit (by design)
+- ✅ Private API keys are never committed (protected by `.gitignore`)
+- ✅ Security enforced through Firestore Security Rules
+- ✅ All secrets managed via environment variables or local files
+
 ## Setup
 
-### API Keys
+### API Keys (Optional - for AI Features)
 
-To use the Gemini AI features, you'll need to obtain a Gemini API key from Google AI Studio:
-- Get your API key at: https://aistudio.google.com/app/api-keys
-- User 17tujii
-- Create a file named `gemini_api_key` in the project root directory
-- Add your API key to this file (the file is already included in `.gitignore` for security)
+To use the Gemini AI features, obtain a free API key from Google AI Studio:
+
+1. **Get API Key**: Visit [Google AI Studio](https://aistudio.google.com/app/api-keys)
+2. **Configure Locally**: Create `gemini_api_key` file in project root
+   ```bash
+   echo "YOUR_API_KEY_HERE" > gemini_api_key
+   ```
+   ⚠️ This file is already in `.gitignore` and will NOT be committed
+
+**Alternative Methods:**
+- **Environment Variable**: `export GEMINI_API_KEY='your-key'`
+- **GitHub Codespaces**: Add as repository secret
+- **See**: `documentations/GEMINI_AI_SETUP.md` for detailed instructions
+
+**Note**: The app works without an API key using template-based stories.
 
 ## Development
 
@@ -106,111 +130,31 @@ lib/
 ## 🔧 Environment Setup
 
 ### Firebase Configuration
-1. Copy your Firebase config to `lib/firebase_options.dart`
-2. Ensure Firebase project has:
-   - Authentication enabled
-   - Firestore database
-   - Hosting enabled
 
-### Required Files
-- `gemini_api_key` (in project root)
-- `lib/firebase_options.dart`
-- Service account JSON for GitHub Actions
+**Note**: Firebase client credentials in this repository are safe and meant to be public. See [SECURITY.md](SECURITY.md) for details.
 
-## 🤝 Contributing
+**Configuration Files (Already Present):**
+- ✅ `lib/firebase_options.dart` - Client configuration (safe to commit)
+- ✅ `android/app/google-services.json` - Android config (safe to commit)  
+- ✅ `ios/Runner/GoogleService-Info.plist` - iOS config (safe to commit)
 
-### Branch Strategy
-- `main`: Production branch (protected)
-- Feature branches: `feature/your-feature-name`
-- Create Pull Requests for all changes
+**Firebase Console Setup:**
+1. Ensure Authentication is enabled
+2. Deploy Firestore security rules (`firestore.rules`)
+3. Enable Hosting
+4. Configure API restrictions (HTTP referrers, package names)
 
-### Code Style
-- Follow Dart/Flutter conventions
-- Run `flutter analyze` before committing
-- Ensure tests pass: `flutter test`
-- Use meaningful commit messages
+**Security:** Enforced by Firestore Security Rules and Firebase Authentication
 
-### Development Workflow
-1. Create feature branch from `main`
-2. Make your changes
-3. Run tests and analysis
-4. Create Pull Request
-5. Preview URL will be generated automatically
-6. Merge after review
+### Required Files for Development
 
-## 🐛 Troubleshooting
+**Public Files (Safe to Commit):**
+- ✅ Firebase configuration files (already present)
+- ✅ `firestore.rules` - Security rules
 
-### Common Issues
-
-**Build Errors:**
-- Ensure Flutter version matches `.dart_tool/version`
-- Run `flutter clean && flutter pub get`
-
-**Firebase Errors:**
-- Check `firebase_options.dart` configuration
-- Verify Gemini API key in `gemini_api_key` file
-
-**Authentication Issues:**
-- Ensure Firebase Auth is enabled in console
-- Check domain is added to authorized domains
-
-### Getting Help
-- Check existing issues in GitHub
-- Review Firebase Console for errors
-- Verify all environment variables are set
-
-## 🔗 Links
-
-- **Firebase Console**: [console.firebase.google.com](https://console.firebase.google.com)
-- **GitHub Actions**: [Repository Actions](../../actions)
-- **Google AI Studio**: [aistudio.google.com](https://aistudio.google.com/app/api-keys)
-- **Flutter Docs**: [docs.flutter.dev](https://docs.flutter.dev)
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-### Testing
-```bash
-flutter test
-```
-
-## 🏗️ Architecture
-
-- **Frontend**: Flutter Web with responsive design
-- **State Management**: BLoC (Business Logic Component) pattern
-- **Backend**: Firebase (Firestore, Authentication, Hosting)
-- **AI Integration**: Google Gemini API for content generation
-- **CI/CD**: GitHub Actions with automated testing and deployment
-- **Deployment**: Firebase Hosting with preview channels
-
-## 📁 Project Structure
-
-```
-lib/
-├── core/           # Core utilities and constants
-├── features/       # Feature-based modules
-│   └── user/       # User management features
-├── models/         # Data models
-├── services/       # API and business logic services
-├── shared/         # Shared widgets and utilities
-├── utils/          # Helper functions
-└── widgets/        # Reusable UI components
-```
-
-## 🔧 Environment Setup
-
-### Firebase Configuration
-1. Copy your Firebase config to `lib/firebase_options.dart`
-2. Ensure Firebase project has:
-   - Authentication enabled
-   - Firestore database
-   - Hosting enabled
-
-### Required Files
-- `gemini_api_key` (in project root)
-- `lib/firebase_options.dart`
-- Service account JSON for GitHub Actions
+**Private Files (Must NOT Commit):**
+- ❌ `gemini_api_key` - Optional, for AI features (in `.gitignore`)
+- ❌ Service account JSON - For CI/CD (stored as GitHub secret)
 
 ## 🤝 Contributing
 

@@ -47,4 +47,19 @@ app.*.map.json
 
 # API Keys and sensitive files
 gemini_api_key
+*.env
+.env*
+!.env.example
+secrets.yaml
+secrets.json
+**/service-account*.json
+**/service_account*.json
+**/*-key.json
+**/*_key.json
+private_key*.pem
+*.p12
+*.pfx
+**/*secret*.txt
+**/*password*.txt
+**/credentials*.json
 
