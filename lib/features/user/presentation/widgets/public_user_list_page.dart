@@ -833,20 +833,18 @@ class PublicUserCard extends StatelessWidget {
   Widget build(BuildContext context) {
     // Define colors for top 3 positions
     Color? rankColor;
-    IconData? rankIcon;
-    if (rank != null && rank! <= 3) {
+    const rankIcon = Icons.emoji_events;
+    
+    if (rank != null && rank! > 0 && rank! <= 3) {
       switch (rank) {
         case 1:
           rankColor = const Color(0xFFFFD700); // Gold
-          rankIcon = Icons.emoji_events;
           break;
         case 2:
           rankColor = const Color(0xFFC0C0C0); // Silver
-          rankIcon = Icons.emoji_events;
           break;
         case 3:
           rankColor = const Color(0xFFCD7F32); // Bronze
-          rankIcon = Icons.emoji_events;
           break;
       }
     }
@@ -862,7 +860,7 @@ class PublicUserCard extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             // Show rank badge for top 3
-            if (rank != null && rank! <= 3)
+            if (rank != null && rank! > 0 && rank! <= 3)
               Container(
                 margin: const EdgeInsets.only(right: 8),
                 child: Stack(

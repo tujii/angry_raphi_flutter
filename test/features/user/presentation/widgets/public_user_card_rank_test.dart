@@ -76,6 +76,23 @@ void main() {
       expect(find.byIcon(Icons.emoji_events), findsNothing);
     });
 
+    testWidgets('does not display rank badge for rank 0 (edge case)', (WidgetTester tester) async {
+      await tester.pumpWidget(createTestWidget(0));
+
+      // Should NOT show trophy icon for rank 0
+      expect(find.byIcon(Icons.emoji_events), findsNothing);
+      
+      // Should NOT display "0." text
+      expect(find.text('0.'), findsNothing);
+    });
+
+    testWidgets('does not display rank badge for negative rank (edge case)', (WidgetTester tester) async {
+      await tester.pumpWidget(createTestWidget(-1));
+
+      // Should NOT show trophy icon for negative rank
+      expect(find.byIcon(Icons.emoji_events), findsNothing);
+    });
+
     testWidgets('displays user name regardless of rank', (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(1));
 
