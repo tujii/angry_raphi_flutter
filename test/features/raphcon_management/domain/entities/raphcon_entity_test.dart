@@ -4,7 +4,7 @@ import 'package:angry_raphi/core/enums/raphcon_type.dart';
 
 void main() {
   group('RaphconEntity', () {
-    final testDate = DateTime(2024, 1, 1);
+    const testDate = DateTime(2024, 1, 1);
 
     test('creates raphcon with required fields', () {
       final raphcon = RaphconEntity(

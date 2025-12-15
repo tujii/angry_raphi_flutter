@@ -3,7 +3,7 @@ import 'package:angry_raphi/features/authentication/domain/entities/user_entity.
 
 void main() {
   group('UserEntity', () {
-    final testDate = DateTime(2024, 1, 1);
+    const testDate = DateTime(2024, 1, 1);
 
     test('creates user entity with required fields', () {
       final user = UserEntity(

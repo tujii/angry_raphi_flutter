@@ -3,7 +3,7 @@ import 'package:angry_raphi/features/admin/domain/entities/admin_entity.dart';
 
 void main() {
   group('AdminEntity', () {
-    final testDate = DateTime(2024, 1, 1);
+    const testDate = DateTime(2024, 1, 1);
 
     test('creates admin entity with all fields', () {
       final admin = AdminEntity(

@@ -4,7 +4,7 @@ import 'package:angry_raphi/features/authentication/domain/entities/user_entity.
 
 void main() {
   group('AuthEvent', () {
-    final testDate = DateTime(2024, 1, 1);
+    const testDate = DateTime(2024, 1, 1);
     final testUser = UserEntity(
       id: 'user123',
       email: 'test@example.com',

@@ -3,8 +3,8 @@ import 'package:angry_raphi/features/user/domain/entities/user.dart';
 
 void main() {
   group('User', () {
-    final testDate = DateTime(2024, 1, 1);
-    final testLastRaphconDate = DateTime(2024, 1, 15);
+    const testDate = DateTime(2024, 1, 1);
+    const testLastRaphconDate = DateTime(2024, 1, 15);
 
     test('creates user with required fields', () {
       const user = User(

@@ -5,7 +5,7 @@ import 'package:angry_raphi/core/enums/raphcon_type.dart';
 
 void main() {
   group('RaphconModel', () {
-    final testDate = DateTime(2024, 1, 1);
+    const testDate = DateTime(2024, 1, 1);
 
     test('fromMap creates model from map', () {
       final map = {
