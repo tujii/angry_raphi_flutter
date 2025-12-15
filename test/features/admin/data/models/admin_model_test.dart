@@ -11,7 +11,7 @@ class MockTimestamp {
 
 void main() {
   group('AdminModel', () {
-    const testDate = DateTime(2024, 1, 1);
+    final testDate = DateTime(2024, 1, 1);
 
     test('creates admin model with all fields', () {
       const model = AdminModel(

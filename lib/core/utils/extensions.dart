@@ -41,7 +41,9 @@ extension StringExtensions on String {
   /// print(isValid); // true
   /// ```
   bool get isValidEmail {
-    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9.!#$%&\'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$'
+    );
     return emailRegex.hasMatch(this);
   }
 }
@@ -117,7 +119,8 @@ extension IntExtensions on int {
   String get formattedCount {
     if (this >= 1000000) {
       return '${(this / 1000000).toStringAsFixed(1)}M';
-    } else if (this >= 1000) {
+    }
+    if (this >= 1000) {
       return '${(this / 1000).toStringAsFixed(1)}K';
     }
     return toString();
