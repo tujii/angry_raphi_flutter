@@ -37,9 +37,13 @@
   <!-- Resource Hints for Performance -->
   <link rel="dns-prefetch" href="https://firestore.googleapis.com">
   <link rel="dns-prefetch" href="https://firebase.googleapis.com">
+  <link rel="dns-prefetch" href="https://www.googleapis.com">
+  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://firebase.googleapis.com" crossorigin>
   
   <!-- Preload critical resources -->
   <link rel="preload" href="flutter_bootstrap.js" as="script">
+  <link rel="preload" href="manifest.json" as="fetch" crossorigin>
   
   <!-- iOS Icons -->
   <link rel="apple-touch-icon" href="icons/icon-removebg.png">
@@ -150,6 +154,7 @@
   
   <script>
     let loadingHidden = false;
+    const TRANSITION_DURATION = 200; // milliseconds
     
     function hideLoadingScreen() {
       if (loadingHidden) return;
@@ -157,18 +162,18 @@
       
       const loading = document.getElementById('loading');
       if (loading) {
-        loading.style.transition = 'opacity 0.3s';
+        loading.style.transition = `opacity ${TRANSITION_DURATION / 1000}s`;
         loading.style.opacity = '0';
-        setTimeout(() => loading.remove(), 300);
+        setTimeout(() => loading.remove(), TRANSITION_DURATION);
       }
     }
     
-    // Method 1: Flutter first frame event with delay
+    // Method 1: Flutter first frame event - hide quickly
     window.addEventListener('flutter-first-frame', () => {
-      setTimeout(hideLoadingScreen, 800); // Wait 800ms after first frame
+      setTimeout(hideLoadingScreen, 300); // Reduced from 800ms to 300ms
     });
     
-    // Method 2: Check for Flutter elements every 800ms (slower checks)
+    // Method 2: Check for Flutter elements every 500ms (faster checks)
     let attempts = 0;
     const checkForFlutter = setInterval(() => {
       attempts++;
@@ -180,19 +185,19 @@
       
       if (hasVisibleContent) {
         clearInterval(checkForFlutter);
-        setTimeout(hideLoadingScreen, 1000); // Wait 1 second after detection
+        setTimeout(hideLoadingScreen, 400); // Reduced from 1000ms to 400ms
         return;
       }
       
-      // Maximum 8 attempts = 6.4 seconds
-      if (attempts >= 8) {
+      // Maximum 10 attempts = 5 seconds
+      if (attempts >= 10) {
         clearInterval(checkForFlutter);
         hideLoadingScreen();
       }
-    }, 800);
+    }, 500); // Check every 500ms instead of 800ms
     
-    // Emergency fallback - 7 seconds max
-    setTimeout(hideLoadingScreen, 7000);
+    // Emergency fallback - 5 seconds max (reduced from 7)
+    setTimeout(hideLoadingScreen, 5000);
   </script>
   
   <script src="flutter_bootstrap.js" async></script>

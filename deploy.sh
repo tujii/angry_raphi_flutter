@@ -54,8 +54,14 @@ else
 fi
 
 # Step 4: Build web app optimized for performance
-print_status "Building Flutter web app..."
-flutter build web --base-href / --web-renderer canvaskit --release
+print_status "Building Flutter web app with optimizations..."
+flutter build web \
+  --base-href / \
+  --web-renderer canvaskit \
+  --release \
+  --dart-define=Dart2jsOptimization=O4 \
+  --source-maps \
+  --pwa-strategy=offline-first
 
 if [ $? -eq 0 ]; then
     print_success "Flutter build completed successfully"
