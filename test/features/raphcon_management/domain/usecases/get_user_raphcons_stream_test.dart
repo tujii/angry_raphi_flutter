@@ -26,7 +26,7 @@ void main() {
     userId: tUserId,
     createdBy: 'creator-1',
     type: RaphconType.mouse,
-    createdAt: DateTime(2024, 1, 1),
+    createdAt: DateTime(2024),
   );
   final tRaphconList = [tRaphcon];
 

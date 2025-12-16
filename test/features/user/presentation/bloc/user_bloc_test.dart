@@ -35,7 +35,7 @@ void main() {
     id: '1',
     initials: 'J.D.',
     raphconCount: 10,
-    createdAt: DateTime(2024, 1, 1),
+    createdAt: DateTime(2024),
   );
 
   final tUser2 = User(

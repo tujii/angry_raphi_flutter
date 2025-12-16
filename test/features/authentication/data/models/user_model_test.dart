@@ -24,7 +24,7 @@ class MockFirebaseUser {
 
 @GenerateMocks([Timestamp])
 void main() {
-  final tDateTime = DateTime(2024, 1, 1);
+  final tDateTime = DateTime(2024);
   final tUserModel = UserModel(
     id: 'test-uid',
     email: 'test@example.com',
@@ -197,7 +197,6 @@ void main() {
           id: 'test-uid',
           email: 'test@example.com',
           displayName: 'Test User',
-          photoURL: null,
           isAdmin: false,
           createdAt: tDateTime,
         );
@@ -256,7 +255,7 @@ void main() {
 
       test('should return new instance with updated createdAt', () {
         // arrange
-        final newDateTime = DateTime(2024, 2, 1);
+        final newDateTime = DateTime(2024, 2);
 
         // act
         final result = tUserModel.copyWith(createdAt: newDateTime);

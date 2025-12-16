@@ -43,7 +43,7 @@ void main() {
     email: 'test@example.com',
     displayName: 'Test User',
     isAdmin: false,
-    createdAt: DateTime(2024, 1, 1),
+    createdAt: DateTime(2024),
   );
 
   group('AuthBloc', () {
@@ -87,7 +87,7 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'emits [AuthLoading, AuthUnauthenticated] when AuthStarted is added and no user is signed in',
       build: () {
-        when(mockGetCurrentUser()).thenAnswer((_) async => Right(null));
+        when(mockGetCurrentUser()).thenAnswer((_) async => const Right(null));
         return AuthBloc(
           mockSignInWithGoogle,
           mockSignOut,
@@ -174,7 +174,7 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'emits [AuthLoading, AuthUnauthenticated] when AuthSignOutRequested is successful',
       build: () {
-        when(mockSignOut()).thenAnswer((_) async => Right(null));
+        when(mockSignOut()).thenAnswer((_) async => const Right(null));
         return AuthBloc(
           mockSignInWithGoogle,
           mockSignOut,

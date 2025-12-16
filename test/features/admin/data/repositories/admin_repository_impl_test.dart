@@ -34,7 +34,7 @@ void main() {
     id: tUserId,
     email: tEmail,
     displayName: tDisplayName,
-    createdAt: DateTime(2024, 1, 1),
+    createdAt: DateTime(2024),
     isActive: true,
   );
 

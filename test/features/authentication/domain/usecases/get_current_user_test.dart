@@ -24,7 +24,7 @@ void main() {
     email: 'test@example.com',
     displayName: 'Test User',
     isAdmin: false,
-    createdAt: DateTime(2024, 1, 1),
+    createdAt: DateTime(2024),
   );
 
   group('GetCurrentUser', () {
@@ -45,13 +45,13 @@ void main() {
     test('should return null when no user is signed in', () async {
       // arrange
       when(mockAuthRepository.getCurrentUser())
-          .thenAnswer((_) async => Right(null));
+          .thenAnswer((_) async => const Right(null));
 
       // act
       final result = await useCase();
 
       // assert
-      expect(result, Right(null));
+      expect(result, const Right(null));
       verify(mockAuthRepository.getCurrentUser());
       verifyNoMoreInteractions(mockAuthRepository);
     });

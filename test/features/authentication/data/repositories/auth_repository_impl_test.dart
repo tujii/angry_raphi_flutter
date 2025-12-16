@@ -31,7 +31,7 @@ void main() {
     email: 'test@example.com',
     displayName: 'Test User',
     isAdmin: false,
-    createdAt: DateTime(2024, 1, 1),
+    createdAt: DateTime(2024),
   );
 
   group('signInWithGoogle', () {
@@ -138,7 +138,7 @@ void main() {
 
       // assert
       verify(mockRemoteDataSource.signOut());
-      expect(result, Right(null));
+      expect(result, const Right(null));
     });
 
     test('should return AuthFailure when AuthException is thrown', () async {
@@ -190,7 +190,7 @@ void main() {
 
       // assert
       verify(mockRemoteDataSource.getCurrentUser());
-      expect(result, Right(null));
+      expect(result, const Right(null));
     });
 
     test('should return AuthFailure when AuthException is thrown', () async {

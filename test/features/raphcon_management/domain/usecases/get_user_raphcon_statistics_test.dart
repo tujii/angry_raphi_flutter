@@ -31,7 +31,7 @@ void main() {
           userId: tUserId,
           createdBy: 'creator',
           type: RaphconType.mouse,
-          createdAt: DateTime(2024, 1, 1),
+          createdAt: DateTime(2024),
         ),
         RaphconEntity(
           id: '2',
@@ -103,7 +103,7 @@ void main() {
           userId: tUserId,
           createdBy: 'creator',
           type: RaphconType.mouse,
-          createdAt: DateTime(2024, 1, 1),
+          createdAt: DateTime(2024),
         ),
         RaphconEntity(
           id: '2',
@@ -160,7 +160,7 @@ void main() {
           userId: tUserId,
           createdBy: 'creator',
           type: RaphconType.mouse,
-          createdAt: DateTime(2024, 1, 1),
+          createdAt: DateTime(2024),
         ),
         RaphconEntity(
           id: '2',
@@ -180,7 +180,6 @@ void main() {
           id: '4',
           userId: tUserId,
           createdBy: 'creator',
-          type: RaphconType.other,
           createdAt: DateTime(2024, 1, 4),
         ),
       ];

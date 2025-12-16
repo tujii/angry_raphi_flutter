@@ -24,7 +24,7 @@ void main() {
     email: 'test@example.com',
     displayName: 'Test User',
     isAdmin: false,
-    createdAt: DateTime(2024, 1, 1),
+    createdAt: DateTime(2024),
   );
 
   group('SignInWithGoogle', () {
