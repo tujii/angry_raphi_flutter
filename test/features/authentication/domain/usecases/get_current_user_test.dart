@@ -19,23 +19,25 @@ void main() {
     useCase = GetCurrentUser(mockAuthRepository);
   });
 
-  const tUserEntity = UserEntity(
-    uid: 'test-uid',
+  final tUserEntity = UserEntity(
+    id: 'test-uid',
     email: 'test@example.com',
     displayName: 'Test User',
+    isAdmin: false,
+    createdAt: DateTime(2024, 1, 1),
   );
 
   group('GetCurrentUser', () {
     test('should return UserEntity when user is signed in', () async {
       // arrange
       when(mockAuthRepository.getCurrentUser())
-          .thenAnswer((_) async => const Right(tUserEntity));
+          .thenAnswer((_) async => Right(tUserEntity));
 
       // act
       final result = await useCase();
 
       // assert
-      expect(result, const Right(tUserEntity));
+      expect(result, Right(tUserEntity));
       verify(mockAuthRepository.getCurrentUser());
       verifyNoMoreInteractions(mockAuthRepository);
     });
@@ -43,13 +45,13 @@ void main() {
     test('should return null when no user is signed in', () async {
       // arrange
       when(mockAuthRepository.getCurrentUser())
-          .thenAnswer((_) async => const Right(null));
+          .thenAnswer((_) async => Right(null));
 
       // act
       final result = await useCase();
 
       // assert
-      expect(result, const Right(null));
+      expect(result, Right(null));
       verify(mockAuthRepository.getCurrentUser());
       verifyNoMoreInteractions(mockAuthRepository);
     });
@@ -57,7 +59,7 @@ void main() {
     test('should return AuthFailure when getting current user fails',
         () async {
       // arrange
-      const tFailure = AuthFailure(message: 'Failed to get current user');
+      const tFailure = AuthFailure('Failed to get current user');
       when(mockAuthRepository.getCurrentUser())
           .thenAnswer((_) async => const Left(tFailure));
 

@@ -51,7 +51,7 @@ void main() {
 
     test('should return ServerFailure when check fails', () async {
       // arrange
-      const tFailure = ServerFailure(message: 'Failed to check admin status');
+      const tFailure = ServerFailure('Failed to check admin status');
       when(mockAdminRepository.checkAdminStatus(any))
           .thenAnswer((_) async => const Left(tFailure));
 

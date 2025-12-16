@@ -36,7 +36,7 @@ void main() {
 
     test('should return AuthFailure when sign out fails', () async {
       // arrange
-      const tFailure = AuthFailure(message: 'Sign out failed');
+      const tFailure = AuthFailure('Sign out failed');
       when(mockAuthRepository.signOut())
           .thenAnswer((_) async => const Left(tFailure));
 

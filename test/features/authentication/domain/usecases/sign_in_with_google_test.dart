@@ -19,30 +19,32 @@ void main() {
     useCase = SignInWithGoogle(mockAuthRepository);
   });
 
-  const tUserEntity = UserEntity(
-    uid: 'test-uid',
+  final tUserEntity = UserEntity(
+    id: 'test-uid',
     email: 'test@example.com',
     displayName: 'Test User',
+    isAdmin: false,
+    createdAt: DateTime(2024, 1, 1),
   );
 
   group('SignInWithGoogle', () {
     test('should return UserEntity when sign in is successful', () async {
       // arrange
       when(mockAuthRepository.signInWithGoogle())
-          .thenAnswer((_) async => const Right(tUserEntity));
+          .thenAnswer((_) async => Right(tUserEntity));
 
       // act
       final result = await useCase();
 
       // assert
-      expect(result, const Right(tUserEntity));
+      expect(result, Right(tUserEntity));
       verify(mockAuthRepository.signInWithGoogle());
       verifyNoMoreInteractions(mockAuthRepository);
     });
 
     test('should return AuthFailure when sign in fails', () async {
       // arrange
-      const tFailure = AuthFailure(message: 'Sign in failed');
+      const tFailure = AuthFailure('Sign in failed');
       when(mockAuthRepository.signInWithGoogle())
           .thenAnswer((_) async => const Left(tFailure));
 
@@ -58,7 +60,7 @@ void main() {
     test('should return NetworkFailure when there is no internet connection',
         () async {
       // arrange
-      const tFailure = NetworkFailure(message: 'No internet connection');
+      const tFailure = NetworkFailure();
       when(mockAuthRepository.signInWithGoogle())
           .thenAnswer((_) async => const Left(tFailure));
 

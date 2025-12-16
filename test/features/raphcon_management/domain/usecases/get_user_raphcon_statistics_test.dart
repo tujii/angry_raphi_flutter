@@ -30,28 +30,28 @@ void main() {
           id: '1',
           userId: tUserId,
           createdBy: 'creator',
-          type: RaphconType.gold,
+          type: RaphconType.mouse,
           createdAt: DateTime(2024, 1, 1),
         ),
         RaphconEntity(
           id: '2',
           userId: tUserId,
           createdBy: 'creator',
-          type: RaphconType.gold,
+          type: RaphconType.mouse,
           createdAt: DateTime(2024, 1, 2),
         ),
         RaphconEntity(
           id: '3',
           userId: tUserId,
           createdBy: 'creator',
-          type: RaphconType.silver,
+          type: RaphconType.keyboard,
           createdAt: DateTime(2024, 1, 3),
         ),
         RaphconEntity(
           id: '4',
           userId: tUserId,
           createdBy: 'creator',
-          type: RaphconType.bronze,
+          type: RaphconType.microphone,
           createdAt: DateTime(2024, 1, 4),
         ),
       ];
@@ -67,9 +67,9 @@ void main() {
       result.fold(
         (_) => fail('Should return Right'),
         (statistics) {
-          expect(statistics[RaphconType.gold], 2);
-          expect(statistics[RaphconType.silver], 1);
-          expect(statistics[RaphconType.bronze], 1);
+          expect(statistics[RaphconType.mouse], 2);
+          expect(statistics[RaphconType.keyboard], 1);
+          expect(statistics[RaphconType.microphone], 1);
           expect(statistics.containsKey(RaphconType.other), false); // 0 count removed
         },
       );
@@ -101,21 +101,21 @@ void main() {
           id: '1',
           userId: tUserId,
           createdBy: 'creator',
-          type: RaphconType.gold,
+          type: RaphconType.mouse,
           createdAt: DateTime(2024, 1, 1),
         ),
         RaphconEntity(
           id: '2',
           userId: tUserId,
           createdBy: 'creator',
-          type: RaphconType.gold,
+          type: RaphconType.mouse,
           createdAt: DateTime(2024, 1, 2),
         ),
         RaphconEntity(
           id: '3',
           userId: tUserId,
           createdBy: 'creator',
-          type: RaphconType.gold,
+          type: RaphconType.mouse,
           createdAt: DateTime(2024, 1, 3),
         ),
       ];
@@ -131,7 +131,7 @@ void main() {
       result.fold(
         (_) => fail('Should return Right'),
         (statistics) {
-          expect(statistics[RaphconType.gold], 3);
+          expect(statistics[RaphconType.mouse], 3);
           expect(statistics.length, 1); // Only gold should be present
         },
       );
@@ -139,7 +139,7 @@ void main() {
 
     test('should return failure when repository fails', () async {
       // arrange
-      const tFailure = ServerFailure(message: 'Failed to fetch raphcons');
+      const tFailure = ServerFailure('Failed to fetch raphcons');
       when(mockRepository.getUserRaphcons(any))
           .thenAnswer((_) async => const Left(tFailure));
 
@@ -158,21 +158,21 @@ void main() {
           id: '1',
           userId: tUserId,
           createdBy: 'creator',
-          type: RaphconType.gold,
+          type: RaphconType.mouse,
           createdAt: DateTime(2024, 1, 1),
         ),
         RaphconEntity(
           id: '2',
           userId: tUserId,
           createdBy: 'creator',
-          type: RaphconType.silver,
+          type: RaphconType.keyboard,
           createdAt: DateTime(2024, 1, 2),
         ),
         RaphconEntity(
           id: '3',
           userId: tUserId,
           createdBy: 'creator',
-          type: RaphconType.bronze,
+          type: RaphconType.microphone,
           createdAt: DateTime(2024, 1, 3),
         ),
         RaphconEntity(
@@ -195,9 +195,9 @@ void main() {
       result.fold(
         (_) => fail('Should return Right'),
         (statistics) {
-          expect(statistics[RaphconType.gold], 1);
-          expect(statistics[RaphconType.silver], 1);
-          expect(statistics[RaphconType.bronze], 1);
+          expect(statistics[RaphconType.mouse], 1);
+          expect(statistics[RaphconType.keyboard], 1);
+          expect(statistics[RaphconType.microphone], 1);
           expect(statistics[RaphconType.other], 1);
           expect(statistics.length, 4);
         },

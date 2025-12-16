@@ -38,10 +38,12 @@ void main() {
         .thenAnswer((_) => const Stream.empty());
   });
 
-  const tUserEntity = UserEntity(
-    uid: 'test-uid',
+  final tUserEntity = UserEntity(
+    id: 'test-uid',
     email: 'test@example.com',
     displayName: 'Test User',
+    isAdmin: false,
+    createdAt: DateTime(2024, 1, 1),
   );
 
   group('AuthBloc', () {
@@ -65,7 +67,7 @@ void main() {
       'emits [AuthLoading, AuthAuthenticated] when AuthStarted is added and user is signed in',
       build: () {
         when(mockGetCurrentUser())
-            .thenAnswer((_) async => const Right(tUserEntity));
+            .thenAnswer((_) async => Right(tUserEntity));
         return AuthBloc(
           mockSignInWithGoogle,
           mockSignOut,
@@ -76,7 +78,7 @@ void main() {
       act: (bloc) => bloc.add(AuthStarted()),
       expect: () => [
         AuthLoading(),
-        const AuthAuthenticated(tUserEntity),
+        AuthAuthenticated(tUserEntity),
       ],
       verify: (_) {
         verify(mockGetCurrentUser()).called(1);
@@ -86,7 +88,7 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'emits [AuthLoading, AuthUnauthenticated] when AuthStarted is added and no user is signed in',
       build: () {
-        when(mockGetCurrentUser()).thenAnswer((_) async => const Right(null));
+        when(mockGetCurrentUser()).thenAnswer((_) async => Right(null));
         return AuthBloc(
           mockSignInWithGoogle,
           mockSignOut,
@@ -108,7 +110,7 @@ void main() {
       'emits [AuthLoading, AuthUnauthenticated] when AuthStarted is added and getCurrentUser fails',
       build: () {
         when(mockGetCurrentUser()).thenAnswer(
-            (_) async => const Left(AuthFailure(message: 'Failed to get user')));
+            (_) async => const Left(AuthFailure('Failed to get user')));
         return AuthBloc(
           mockSignInWithGoogle,
           mockSignOut,
@@ -130,7 +132,7 @@ void main() {
       'emits [AuthLoading, AuthAuthenticated] when AuthSignInRequested is successful',
       build: () {
         when(mockSignInWithGoogle())
-            .thenAnswer((_) async => const Right(tUserEntity));
+            .thenAnswer((_) async => Right(tUserEntity));
         return AuthBloc(
           mockSignInWithGoogle,
           mockSignOut,
@@ -141,7 +143,7 @@ void main() {
       act: (bloc) => bloc.add(AuthSignInRequested()),
       expect: () => [
         AuthLoading(),
-        const AuthAuthenticated(tUserEntity),
+        AuthAuthenticated(tUserEntity),
       ],
       verify: (_) {
         verify(mockSignInWithGoogle()).called(1);
@@ -152,7 +154,7 @@ void main() {
       'emits [AuthLoading, AuthError] when AuthSignInRequested fails',
       build: () {
         when(mockSignInWithGoogle()).thenAnswer(
-            (_) async => const Left(AuthFailure(message: 'Sign in failed')));
+            (_) async => const Left(AuthFailure('Sign in failed')));
         return AuthBloc(
           mockSignInWithGoogle,
           mockSignOut,
@@ -163,7 +165,7 @@ void main() {
       act: (bloc) => bloc.add(AuthSignInRequested()),
       expect: () => [
         AuthLoading(),
-        const AuthError('Sign in failed'),
+        AuthError('Sign in failed'),
       ],
       verify: (_) {
         verify(mockSignInWithGoogle()).called(1);
@@ -173,7 +175,7 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'emits [AuthLoading, AuthUnauthenticated] when AuthSignOutRequested is successful',
       build: () {
-        when(mockSignOut()).thenAnswer((_) async => const Right(null));
+        when(mockSignOut()).thenAnswer((_) async => Right(null));
         return AuthBloc(
           mockSignInWithGoogle,
           mockSignOut,
@@ -195,7 +197,7 @@ void main() {
       'emits [AuthLoading, AuthError] when AuthSignOutRequested fails',
       build: () {
         when(mockSignOut()).thenAnswer(
-            (_) async => const Left(AuthFailure(message: 'Sign out failed')));
+            (_) async => const Left(AuthFailure('Sign out failed')));
         return AuthBloc(
           mockSignInWithGoogle,
           mockSignOut,
@@ -206,7 +208,7 @@ void main() {
       act: (bloc) => bloc.add(AuthSignOutRequested()),
       expect: () => [
         AuthLoading(),
-        const AuthError('Sign out failed'),
+        AuthError('Sign out failed'),
       ],
       verify: (_) {
         verify(mockSignOut()).called(1);
@@ -221,9 +223,9 @@ void main() {
         mockGetCurrentUser,
         mockAuthRepository,
       ),
-      act: (bloc) => bloc.add(const AuthUserChanged(tUserEntity)),
+      act: (bloc) => bloc.add(AuthUserChanged(tUserEntity)),
       expect: () => [
-        const AuthAuthenticated(tUserEntity),
+        AuthAuthenticated(tUserEntity),
       ],
     );
 
@@ -235,7 +237,7 @@ void main() {
         mockGetCurrentUser,
         mockAuthRepository,
       ),
-      act: (bloc) => bloc.add(const AuthUserChanged(null)),
+      act: (bloc) => bloc.add(AuthUserChanged(null)),
       expect: () => [
         AuthUnauthenticated(),
       ],

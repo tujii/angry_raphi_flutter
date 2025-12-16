@@ -2,6 +2,7 @@ import 'package:angry_raphi/core/errors/exceptions.dart';
 import 'package:angry_raphi/core/errors/failures.dart';
 import 'package:angry_raphi/core/network/network_info.dart';
 import 'package:angry_raphi/features/admin/data/datasources/admin_remote_datasource.dart';
+import 'package:angry_raphi/features/admin/data/models/admin_model.dart';
 import 'package:angry_raphi/features/admin/data/repositories/admin_repository_impl.dart';
 import 'package:angry_raphi/features/admin/domain/entities/admin_entity.dart';
 import 'package:dartz/dartz.dart';
@@ -29,11 +30,12 @@ void main() {
   const tEmail = 'admin@example.com';
   const tUserId = 'user-123';
   const tDisplayName = 'Admin User';
-  final tAdminEntity = AdminEntity(
-    userId: tUserId,
+  final tAdminEntity = AdminModel(
+    id: tUserId,
     email: tEmail,
     displayName: tDisplayName,
     createdAt: DateTime(2024, 1, 1),
+    isActive: true,
   );
 
   group('checkAdminStatus', () {
@@ -257,7 +259,8 @@ void main() {
 
         // assert
         verify(mockRemoteDataSource.getAllAdmins());
-        expect(result, const Right([]));
+        expect(result.isRight(), true);
+        expect(result.fold((l) => null, (r) => r), <AdminEntity>[]);
       });
 
       test('should return ServerFailure when ServerException is thrown',

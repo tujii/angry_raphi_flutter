@@ -44,7 +44,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Configure URL strategy for web to show clean URLs without #
-  setUrlStrategy(PathUrlStrategy());
+  setUrlStrategy(const PathUrlStrategy());
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

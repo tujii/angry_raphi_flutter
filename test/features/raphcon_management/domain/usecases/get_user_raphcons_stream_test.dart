@@ -25,7 +25,7 @@ void main() {
     id: 'raphcon-1',
     userId: tUserId,
     createdBy: 'creator-1',
-    type: RaphconType.gold,
+    type: RaphconType.mouse,
     createdAt: DateTime(2024, 1, 1),
   );
   final tRaphconList = [tRaphcon];
@@ -59,7 +59,7 @@ void main() {
 
     test('should return stream with failure when repository fails', () {
       // arrange
-      const tFailure = ServerFailure(message: 'Failed to fetch raphcons');
+      const tFailure = ServerFailure('Failed to fetch raphcons');
       when(mockRepository.getUserRaphconsStream(any))
           .thenAnswer((_) => Stream.value(const Left(tFailure)));
 

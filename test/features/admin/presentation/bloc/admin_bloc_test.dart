@@ -74,7 +74,7 @@ void main() {
       'emits [AdminLoading, AdminError] when check admin status fails',
       build: () {
         when(mockCheckAdminStatus(any)).thenAnswer(
-            (_) async => const Left(ServerFailure(message: 'Server error')));
+            (_) async => const Left(ServerFailure('Server error')));
         return AdminBloc(mockCheckAdminStatus, mockAddAdmin);
       },
       act: (bloc) => bloc.add(CheckAdminStatusEvent(tEmail)),
@@ -148,7 +148,7 @@ void main() {
       'emits [AdminLoading, AdminError] when check fails in ensure admin',
       build: () {
         when(mockCheckAdminStatus(any)).thenAnswer(
-            (_) async => const Left(ServerFailure(message: 'Check failed')));
+            (_) async => const Left(ServerFailure('Check failed')));
         return AdminBloc(mockCheckAdminStatus, mockAddAdmin);
       },
       act: (bloc) => bloc.add(EnsureCurrentUserIsAdminEvent(
@@ -180,7 +180,7 @@ void main() {
           email: anyNamed('email'),
           displayName: anyNamed('displayName'),
         )).thenAnswer(
-            (_) async => const Left(ServerFailure(message: 'Add failed')));
+            (_) async => const Left(ServerFailure('Add failed')));
         return AdminBloc(mockCheckAdminStatus, mockAddAdmin);
       },
       act: (bloc) => bloc.add(EnsureCurrentUserIsAdminEvent(

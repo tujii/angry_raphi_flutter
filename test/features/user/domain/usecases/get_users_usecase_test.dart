@@ -18,15 +18,15 @@ void main() {
   final tUser1 = User(
     id: '1',
     initials: 'J.D.',
-    totalRaphcons: 10,
-    lastUpdated: DateTime(2024, 1, 1),
+    raphconCount: 10,
+    createdAt: DateTime(2024, 1, 1),
   );
 
   final tUser2 = User(
     id: '2',
     initials: 'A.B.',
-    totalRaphcons: 5,
-    lastUpdated: DateTime(2024, 1, 2),
+    raphconCount: 5,
+    createdAt: DateTime(2024, 1, 2),
   );
 
   final tUserList = [tUser1, tUser2];
@@ -81,8 +81,8 @@ void main() {
     final tUser = User(
       id: 'new-id',
       initials: 'T.U.',
-      totalRaphcons: 0,
-      lastUpdated: DateTime.now(),
+      raphconCount: 0,
+      createdAt: DateTime.now(),
     );
 
     test('should add user when validation passes', () async {
@@ -104,8 +104,8 @@ void main() {
       final invalidUser = User(
         id: 'new-id',
         initials: '',
-        totalRaphcons: 0,
-        lastUpdated: DateTime.now(),
+        raphconCount: 0,
+        createdAt: DateTime.now(),
       );
       final useCase = AddUserUseCase(mockRepository);
 
@@ -123,8 +123,8 @@ void main() {
       final invalidUser = User(
         id: 'new-id',
         initials: 'ABC',
-        totalRaphcons: 0,
-        lastUpdated: DateTime.now(),
+        raphconCount: 0,
+        createdAt: DateTime.now(),
       );
       final useCase = AddUserUseCase(mockRepository);
 
@@ -141,8 +141,8 @@ void main() {
       final invalidUser = User(
         id: 'new-id',
         initials: 'a.b.',
-        totalRaphcons: 0,
-        lastUpdated: DateTime.now(),
+        raphconCount: 0,
+        createdAt: DateTime.now(),
       );
       final useCase = AddUserUseCase(mockRepository);
 

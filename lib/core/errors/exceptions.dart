@@ -16,11 +16,11 @@ class FetchDataException extends AppExceptions {
 }
 
 class BadRequestException extends AppExceptions {
-  BadRequestException([message]) : super(message, 'Invalid Request: ');
+  BadRequestException([String? message]) : super(message ?? '', 'Invalid Request: ');
 }
 
 class UnauthorisedException extends AppExceptions {
-  UnauthorisedException([message]) : super(message, 'Unauthorised: ');
+  UnauthorisedException([String? message]) : super(message ?? '', 'Unauthorised: ');
 }
 
 class InvalidInputException extends AppExceptions {
@@ -29,26 +29,26 @@ class InvalidInputException extends AppExceptions {
 }
 
 class NoInternetConnectionException extends AppExceptions {
-  NoInternetConnectionException([message])
-      : super(message, 'No Internet Connection: ');
+  NoInternetConnectionException([String? message])
+      : super(message ?? '', 'No Internet Connection: ');
 }
 
 class TimeoutException extends AppExceptions {
-  TimeoutException([message]) : super(message, 'Request Timeout: ');
+  TimeoutException([String? message]) : super(message ?? '', 'Request Timeout: ');
 }
 
 class ServerException extends AppExceptions {
-  ServerException([message]) : super(message, 'Server Error: ');
+  ServerException([String? message]) : super(message ?? '', 'Server Error: ');
 }
 
 class CacheException extends AppExceptions {
-  CacheException([message]) : super(message, 'Cache Error: ');
+  CacheException([String? message]) : super(message ?? '', 'Cache Error: ');
 }
 
 class AuthException extends AppExceptions {
-  AuthException([message]) : super(message, 'Authentication Error: ');
+  AuthException([String? message]) : super(message ?? '', 'Authentication Error: ');
 }
 
 class FirebaseException extends AppExceptions {
-  FirebaseException([message]) : super(message, 'Firebase Error: ');
+  FirebaseException([String? message]) : super(message ?? '', 'Firebase Error: ');
 }

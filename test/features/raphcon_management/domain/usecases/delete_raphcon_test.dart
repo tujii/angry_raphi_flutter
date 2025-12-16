@@ -37,7 +37,7 @@ void main() {
 
     test('should return ServerFailure when deletion fails', () async {
       // arrange
-      const tFailure = ServerFailure(message: 'Failed to delete raphcon');
+      const tFailure = ServerFailure('Failed to delete raphcon');
       when(mockRepository.deleteRaphcon(any))
           .thenAnswer((_) async => const Left(tFailure));
 

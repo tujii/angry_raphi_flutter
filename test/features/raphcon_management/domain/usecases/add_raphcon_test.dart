@@ -23,7 +23,7 @@ void main() {
     userId: 'user-123',
     createdBy: 'creator-456',
     comment: 'Test comment',
-    type: RaphconType.gold,
+    type: RaphconType.mouse,
   );
 
   group('AddRaphcon', () {
@@ -43,7 +43,7 @@ void main() {
 
     test('should return ServerFailure when adding raphcon fails', () async {
       // arrange
-      const tFailure = ServerFailure(message: 'Failed to add raphcon');
+      const tFailure = ServerFailure('Failed to add raphcon');
       when(mockRepository.addRaphcon(any))
           .thenAnswer((_) async => const Left(tFailure));
 
@@ -79,7 +79,7 @@ void main() {
       final paramsWithoutComment = AddRaphconParams(
         userId: 'user-123',
         createdBy: 'creator-456',
-        type: RaphconType.silver,
+        type: RaphconType.keyboard,
       );
       when(mockRepository.addRaphcon(any))
           .thenAnswer((_) async => const Right(null));

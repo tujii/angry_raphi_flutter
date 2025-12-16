@@ -34,15 +34,15 @@ void main() {
   final tUser1 = User(
     id: '1',
     initials: 'J.D.',
-    totalRaphcons: 10,
-    lastUpdated: DateTime(2024, 1, 1),
+    raphconCount: 10,
+    createdAt: DateTime(2024, 1, 1),
   );
 
   final tUser2 = User(
     id: '2',
     initials: 'A.B.',
-    totalRaphcons: 5,
-    lastUpdated: DateTime(2024, 1, 2),
+    raphconCount: 5,
+    createdAt: DateTime(2024, 1, 2),
   );
 
   final tUserList = [tUser1, tUser2];
@@ -107,6 +107,8 @@ void main() {
       'emits [UserLoading, UserError] when LoadUsersEvent fails',
       build: () {
         when(mockGetUsersUseCase.execute()).thenThrow(Exception('Test error'));
+        when(mockGetUsersStreamUseCase.execute())
+            .thenAnswer((_) => const Stream.empty());
         return UserBloc(
           getUsersUseCase: mockGetUsersUseCase,
           getUsersStreamUseCase: mockGetUsersStreamUseCase,
@@ -118,6 +120,7 @@ void main() {
       expect: () => [
         UserLoading(),
         isA<UserError>(),
+        UserLoading(), // Additional loading from StartUsersStreamEvent
       ],
     );
 
@@ -141,10 +144,12 @@ void main() {
     );
 
     blocTest<UserBloc, UserState>(
-      'emits [UserLoading] when AddUserEvent is added and succeeds',
+      'emits [UserLoading, UserLoading, UserLoaded] when AddUserEvent is added and succeeds',
       build: () {
         when(mockAddUserUseCase.execute(any)).thenAnswer((_) async => true);
         when(mockGetUsersUseCase.execute()).thenAnswer((_) async => tUserList);
+        when(mockGetUsersStreamUseCase.execute())
+            .thenAnswer((_) => const Stream.empty());
         return UserBloc(
           getUsersUseCase: mockGetUsersUseCase,
           getUsersStreamUseCase: mockGetUsersStreamUseCase,
@@ -155,7 +160,6 @@ void main() {
       act: (bloc) => bloc.add(const AddUserEvent(initials: 'T.U.')),
       expect: () => [
         UserLoading(),
-        UserLoading(), // From LoadUsersEvent triggered after add
         UserLoaded(tUserList),
       ],
       verify: (_) {

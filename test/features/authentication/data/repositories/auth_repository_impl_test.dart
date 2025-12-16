@@ -2,8 +2,8 @@ import 'package:angry_raphi/core/errors/exceptions.dart';
 import 'package:angry_raphi/core/errors/failures.dart';
 import 'package:angry_raphi/core/network/network_info.dart';
 import 'package:angry_raphi/features/authentication/data/datasources/auth_remote_datasource.dart';
+import 'package:angry_raphi/features/authentication/data/models/user_model.dart';
 import 'package:angry_raphi/features/authentication/data/repositories/auth_repository_impl.dart';
-import 'package:angry_raphi/features/authentication/domain/entities/user_entity.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -26,10 +26,12 @@ void main() {
     );
   });
 
-  const tUserEntity = UserEntity(
-    uid: 'test-uid',
+  final tUserEntity = UserModel(
+    id: 'test-uid',
     email: 'test@example.com',
     displayName: 'Test User',
+    isAdmin: false,
+    createdAt: DateTime(2024, 1, 1),
   );
 
   group('signInWithGoogle', () {
@@ -61,13 +63,13 @@ void main() {
 
         // assert
         verify(mockRemoteDataSource.signInWithGoogle());
-        expect(result, const Right(tUserEntity));
+        expect(result, Right(tUserEntity));
       });
 
       test('should return AuthFailure when AuthException is thrown', () async {
         // arrange
         when(mockRemoteDataSource.signInWithGoogle())
-            .thenThrow(const AuthException('Sign in cancelled'));
+            .thenThrow(AuthException('Sign in cancelled'));
 
         // act
         final result = await repository.signInWithGoogle();
@@ -81,7 +83,7 @@ void main() {
           () async {
         // arrange
         when(mockRemoteDataSource.signInWithGoogle())
-            .thenThrow(const ServerException('Server error'));
+            .thenThrow(ServerException('Server error'));
 
         // act
         final result = await repository.signInWithGoogle();
@@ -136,13 +138,13 @@ void main() {
 
       // assert
       verify(mockRemoteDataSource.signOut());
-      expect(result, const Right(null));
+      expect(result, Right(null));
     });
 
     test('should return AuthFailure when AuthException is thrown', () async {
       // arrange
       when(mockRemoteDataSource.signOut())
-          .thenThrow(const AuthException('Sign out failed'));
+          .thenThrow(AuthException('Sign out failed'));
 
       // act
       final result = await repository.signOut();
@@ -176,7 +178,7 @@ void main() {
 
       // assert
       verify(mockRemoteDataSource.getCurrentUser());
-      expect(result, const Right(tUserEntity));
+      expect(result, Right(tUserEntity));
     });
 
     test('should return null when no user is signed in', () async {
@@ -188,13 +190,13 @@ void main() {
 
       // assert
       verify(mockRemoteDataSource.getCurrentUser());
-      expect(result, const Right(null));
+      expect(result, Right(null));
     });
 
     test('should return AuthFailure when AuthException is thrown', () async {
       // arrange
       when(mockRemoteDataSource.getCurrentUser())
-          .thenThrow(const AuthException('Failed to get user'));
+          .thenThrow(AuthException('Failed to get user'));
 
       // act
       final result = await repository.getCurrentUser();
