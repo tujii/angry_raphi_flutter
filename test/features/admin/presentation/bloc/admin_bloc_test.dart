@@ -73,8 +73,8 @@ void main() {
     blocTest<AdminBloc, AdminState>(
       'emits [AdminLoading, AdminError] when check admin status fails',
       build: () {
-        when(mockCheckAdminStatus(any)).thenAnswer(
-            (_) async => const Left(ServerFailure('Server error')));
+        when(mockCheckAdminStatus(any))
+            .thenAnswer((_) async => const Left(ServerFailure('Server error')));
         return AdminBloc(mockCheckAdminStatus, mockAddAdmin);
       },
       act: (bloc) => bloc.add(CheckAdminStatusEvent(tEmail)),
@@ -147,8 +147,8 @@ void main() {
     blocTest<AdminBloc, AdminState>(
       'emits [AdminLoading, AdminError] when check fails in ensure admin',
       build: () {
-        when(mockCheckAdminStatus(any)).thenAnswer(
-            (_) async => const Left(ServerFailure('Check failed')));
+        when(mockCheckAdminStatus(any))
+            .thenAnswer((_) async => const Left(ServerFailure('Check failed')));
         return AdminBloc(mockCheckAdminStatus, mockAddAdmin);
       },
       act: (bloc) => bloc.add(EnsureCurrentUserIsAdminEvent(
@@ -179,8 +179,7 @@ void main() {
           userId: anyNamed('userId'),
           email: anyNamed('email'),
           displayName: anyNamed('displayName'),
-        )).thenAnswer(
-            (_) async => const Left(ServerFailure('Add failed')));
+        )).thenAnswer((_) async => const Left(ServerFailure('Add failed')));
         return AdminBloc(mockCheckAdminStatus, mockAddAdmin);
       },
       act: (bloc) => bloc.add(EnsureCurrentUserIsAdminEvent(

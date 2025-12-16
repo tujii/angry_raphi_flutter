@@ -187,8 +187,7 @@ void main() {
 
       test('should remove admin successfully', () async {
         // arrange
-        when(mockRemoteDataSource.removeAdmin(any))
-            .thenAnswer((_) async => {});
+        when(mockRemoteDataSource.removeAdmin(any)).thenAnswer((_) async => {});
 
         // act
         final result = await repository.removeAdmin(tEmail);

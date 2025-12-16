@@ -56,8 +56,7 @@ void main() {
       verifyNoMoreInteractions(mockAuthRepository);
     });
 
-    test('should return AuthFailure when getting current user fails',
-        () async {
+    test('should return AuthFailure when getting current user fails', () async {
       // arrange
       const tFailure = AuthFailure('Failed to get current user');
       when(mockAuthRepository.getCurrentUser())

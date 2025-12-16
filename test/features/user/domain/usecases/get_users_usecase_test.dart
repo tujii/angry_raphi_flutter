@@ -226,8 +226,7 @@ void main() {
       verifyNever(mockRepository.deleteUser(any));
     });
 
-    test('should throw ArgumentError when userId is only whitespace',
-        () async {
+    test('should throw ArgumentError when userId is only whitespace', () async {
       // arrange
       final useCase = DeleteUserUseCase(mockRepository);
 

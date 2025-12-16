@@ -70,7 +70,8 @@ void main() {
           expect(statistics[RaphconType.mouse], 2);
           expect(statistics[RaphconType.keyboard], 1);
           expect(statistics[RaphconType.microphone], 1);
-          expect(statistics.containsKey(RaphconType.other), false); // 0 count removed
+          expect(statistics.containsKey(RaphconType.other),
+              false); // 0 count removed
         },
       );
     });

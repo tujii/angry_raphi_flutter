@@ -66,8 +66,7 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'emits [AuthLoading, AuthAuthenticated] when AuthStarted is added and user is signed in',
       build: () {
-        when(mockGetCurrentUser())
-            .thenAnswer((_) async => Right(tUserEntity));
+        when(mockGetCurrentUser()).thenAnswer((_) async => Right(tUserEntity));
         return AuthBloc(
           mockSignInWithGoogle,
           mockSignOut,
@@ -153,8 +152,8 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'emits [AuthLoading, AuthError] when AuthSignInRequested fails',
       build: () {
-        when(mockSignInWithGoogle()).thenAnswer(
-            (_) async => const Left(AuthFailure('Sign in failed')));
+        when(mockSignInWithGoogle())
+            .thenAnswer((_) async => const Left(AuthFailure('Sign in failed')));
         return AuthBloc(
           mockSignInWithGoogle,
           mockSignOut,
@@ -243,7 +242,8 @@ void main() {
       ],
     );
 
-    test('listens to authStateChanges and adds AuthUserChanged events', () async {
+    test('listens to authStateChanges and adds AuthUserChanged events',
+        () async {
       // arrange
       final userStream = Stream.value(tUserEntity);
       when(mockAuthRepository.authStateChanges).thenAnswer((_) => userStream);
