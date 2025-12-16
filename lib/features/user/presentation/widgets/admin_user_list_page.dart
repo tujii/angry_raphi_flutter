@@ -1,15 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 
 import '../../../../core/constants/app_constants.dart';
-import '../../domain/entities/user.dart' as user_entity;
+import '../../../../shared/widgets/raphcon_type_selection_dialog.dart';
 import '../../../admin/presentation/bloc/admin_bloc.dart';
 import '../../../raphcon_management/presentation/bloc/raphcon_bloc.dart';
+import '../../domain/entities/user.dart' as user_entity;
 import '../bloc/user_bloc.dart';
 import 'initials_add_user_dialog.dart';
-import '../../../../shared/widgets/raphcon_type_selection_dialog.dart';
 
 class AdminUserListPage extends StatefulWidget {
   const AdminUserListPage({super.key});

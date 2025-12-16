@@ -21,13 +21,6 @@ service cloud.firestore {
              data.createdAt is timestamp;
     }
     
-    function isValidRaphcon(data) {
-      return data.keys().hasAll(['userId', 'createdAt', 'createdBy']) &&
-             data.userId is string &&
-             data.createdAt is timestamp &&
-             data.createdBy == request.auth.uid;
-    }
-    
     // Users Collection - Read for all (guests and authenticated), Write only for Admins
     match /users/{userId} {
       allow read: if true; // Everyone can read the user list
@@ -35,10 +28,10 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    // Raphcons Collection - Read for all, Create for authenticated users, Modify only for Admins
+    // Raphcons Collection - Read for all, Create/Modify only for Admins
     match /raphcons/{raphconId} {
       allow read: if true; // Everyone can read raphcons count
-      allow create: if isAuthenticated() && isValidRaphcon(request.resource.data);
+      allow create: if isAuthenticated();
       allow update, delete: if isAdmin();
     }
     

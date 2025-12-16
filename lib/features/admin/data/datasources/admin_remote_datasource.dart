@@ -43,7 +43,17 @@ class AdminRemoteDataSourceImpl implements AdminRemoteDataSource {
         isActive: true,
       );
 
-      await firestore.collection('admins').doc(userId).set(adminModel.toMap());
+      // Use batch to ensure both operations succeed or fail together
+      final batch = firestore.batch();
+
+      // Add to admins collection
+      batch.set(firestore.collection('admins').doc(userId), adminModel.toMap());
+
+      // Add to adminEmails collection for efficient admin checking
+      batch.set(firestore.collection('adminEmails').doc(email),
+          {'exists': true, 'createdAt': FieldValue.serverTimestamp()});
+
+      await batch.commit();
     } catch (e) {
       throw ServerException('Failed to add admin: ${e.toString()}');
     }
@@ -57,12 +67,20 @@ class AdminRemoteDataSourceImpl implements AdminRemoteDataSource {
           .where('email', isEqualTo: email)
           .limit(1)
           .get();
-      
+
       if (querySnapshot.docs.isNotEmpty) {
-        await firestore
-            .collection('admins')
-            .doc(querySnapshot.docs.first.id)
-            .update({'isActive': false});
+        // Use batch to ensure both operations succeed or fail together
+        final batch = firestore.batch();
+
+        // Deactivate in admins collection
+        batch.update(
+            firestore.collection('admins').doc(querySnapshot.docs.first.id),
+            {'isActive': false});
+
+        // Remove from adminEmails collection
+        batch.delete(firestore.collection('adminEmails').doc(email));
+
+        await batch.commit();
       } else {
         throw ServerException('Admin with email $email not found');
       }

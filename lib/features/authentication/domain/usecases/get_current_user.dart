@@ -11,6 +11,6 @@ class GetCurrentUser {
   GetCurrentUser(this.repository);
 
   Future<Either<Failure, UserEntity?>> call() async {
-    return await repository.getCurrentUser();
+    return repository.getCurrentUser();
   }
 }

@@ -1,5 +1,5 @@
-import 'package:injectable/injectable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:injectable/injectable.dart';
 
 import '../features/admin/domain/repositories/admin_repository.dart';
 import 'admin_config_service.dart';

@@ -10,6 +10,6 @@ class SignOut {
   SignOut(this.repository);
 
   Future<Either<Failure, void>> call() async {
-    return await repository.signOut();
+    return repository.signOut();
   }
 }

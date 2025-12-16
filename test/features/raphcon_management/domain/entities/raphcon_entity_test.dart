@@ -1,10 +1,10 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:angry_raphi/features/raphcon_management/domain/entities/raphcon_entity.dart';
 import 'package:angry_raphi/core/enums/raphcon_type.dart';
+import 'package:angry_raphi/features/raphcon_management/domain/entities/raphcon_entity.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('RaphconEntity', () {
-    final testDate = DateTime(2024, 1, 1);
+    final testDate = DateTime(2024);
 
     test('creates raphcon with required fields', () {
       final raphcon = RaphconEntity(
@@ -91,7 +91,6 @@ void main() {
         createdAt: testDate,
         comment: 'Comment',
         type: RaphconType.software,
-        isActive: true,
       );
 
       expect(

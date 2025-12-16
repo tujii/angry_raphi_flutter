@@ -480,7 +480,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
                     Expanded(
                       child: Text(
                         localizations.fullRanking,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,

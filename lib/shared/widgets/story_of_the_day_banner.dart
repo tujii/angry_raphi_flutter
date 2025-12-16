@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
+
+import 'package:flutter/material.dart';
+
 import '../../core/constants/app_constants.dart';
 
 class StoryOfTheDayBanner extends StatefulWidget {

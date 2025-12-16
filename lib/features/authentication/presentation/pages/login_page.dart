@@ -166,7 +166,7 @@ class LoginPage extends StatelessWidget {
         ),
         label: Text(
           AppLocalizations.of(context)!.signInWithGoogle,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),

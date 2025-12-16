@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:angry_raphi/features/user/domain/entities/user.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Bronze Badge Fix Verification', () {
@@ -77,7 +77,7 @@ void main() {
     }
 
     test('FIXED: I.G. should now get correct badge position and styling', () {
-      final igIndex = 3; // I.G. is at index 3
+      const igIndex = 3; // I.G. is at index 3
       final igBadgePosition = getBadgePosition(testUsers, igIndex);
       final igBadgeText = getBadgeText(igBadgePosition);
       final igBadgeColor = getBadgeColor(igBadgePosition);

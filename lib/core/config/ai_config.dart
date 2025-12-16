@@ -20,7 +20,7 @@ class AIConfig {
   /// Free tier includes 60 requests per minute
   static String? get geminiApiKey {
     // Try to read from environment variable first (for Codespaces/CI)
-    const envKey = String.fromEnvironment('GEMINI_API_KEY', defaultValue: '');
+    const envKey = String.fromEnvironment('GEMINI_API_KEY');
     if (envKey.isNotEmpty) {
       return envKey;
     }

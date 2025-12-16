@@ -11,6 +11,6 @@ class SignInWithGoogle {
   SignInWithGoogle(this.repository);
 
   Future<Either<Failure, UserEntity>> call() async {
-    return await repository.signInWithGoogle();
+    return repository.signInWithGoogle();
   }
 }

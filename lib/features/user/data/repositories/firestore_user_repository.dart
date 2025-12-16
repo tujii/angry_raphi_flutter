@@ -68,7 +68,6 @@ class FirestoreUserRepository implements UserRepository {
           createdAt:
               (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
           lastRaphconAt: (data['lastRaphconAt'] as Timestamp?)?.toDate(),
-          isActive: true, // We already filtered for active users
         );
         users.add(user);
       }
@@ -105,7 +104,6 @@ class FirestoreUserRepository implements UserRepository {
             createdAt:
                 (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
             lastRaphconAt: (data['lastRaphconAt'] as Timestamp?)?.toDate(),
-            isActive: true,
           );
           users.add(user);
         }
@@ -170,7 +168,6 @@ class FirestoreUserRepository implements UserRepository {
           createdAt:
               (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
           lastRaphconAt: (data['lastRaphconAt'] as Timestamp?)?.toDate(),
-          isActive: true,
         );
         users.add(user);
       }

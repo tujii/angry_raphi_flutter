@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/errors/failures.dart';
 import '../../../../core/enums/raphcon_type.dart';
+import '../../../../core/errors/failures.dart';
 import '../entities/raphcon_entity.dart';
 import '../repositories/raphcons_repository.dart';
 
