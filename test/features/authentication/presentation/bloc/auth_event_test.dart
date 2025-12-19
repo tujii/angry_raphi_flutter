@@ -23,6 +23,64 @@ void main() {
       expect(event.props, isEmpty);
     });
 
+    test('AuthPhoneSignInRequested includes phoneNumber in props', () {
+      const phoneNumber = '+491234567890';
+      final event = AuthPhoneSignInRequested(phoneNumber);
+      expect(event.phoneNumber, equals(phoneNumber));
+      expect(event.props, equals([phoneNumber]));
+    });
+
+    test('two AuthPhoneSignInRequested with same phoneNumber are equal', () {
+      const phoneNumber = '+491234567890';
+      final event1 = AuthPhoneSignInRequested(phoneNumber);
+      final event2 = AuthPhoneSignInRequested(phoneNumber);
+      expect(event1, equals(event2));
+    });
+
+    test('AuthPhoneSignInRequested with different phoneNumbers are not equal', () {
+      final event1 = AuthPhoneSignInRequested('+491234567890');
+      final event2 = AuthPhoneSignInRequested('+491234567891');
+      expect(event1, isNot(equals(event2)));
+    });
+
+    test('AuthVerifyPhoneCode includes verificationId and smsCode in props', () {
+      const verificationId = 'verification123';
+      const smsCode = '123456';
+      final event = AuthVerifyPhoneCode(
+        verificationId: verificationId,
+        smsCode: smsCode,
+      );
+      expect(event.verificationId, equals(verificationId));
+      expect(event.smsCode, equals(smsCode));
+      expect(event.props, equals([verificationId, smsCode]));
+    });
+
+    test('two AuthVerifyPhoneCode with same values are equal', () {
+      const verificationId = 'verification123';
+      const smsCode = '123456';
+      final event1 = AuthVerifyPhoneCode(
+        verificationId: verificationId,
+        smsCode: smsCode,
+      );
+      final event2 = AuthVerifyPhoneCode(
+        verificationId: verificationId,
+        smsCode: smsCode,
+      );
+      expect(event1, equals(event2));
+    });
+
+    test('AuthVerifyPhoneCode with different values are not equal', () {
+      final event1 = AuthVerifyPhoneCode(
+        verificationId: 'verification123',
+        smsCode: '123456',
+      );
+      final event2 = AuthVerifyPhoneCode(
+        verificationId: 'verification456',
+        smsCode: '654321',
+      );
+      expect(event1, isNot(equals(event2)));
+    });
+
     test('AuthSignOutRequested has empty props', () {
       final event = AuthSignOutRequested();
       expect(event.props, isEmpty);
