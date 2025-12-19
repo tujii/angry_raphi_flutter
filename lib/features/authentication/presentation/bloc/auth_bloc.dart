@@ -81,13 +81,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
 
     final result = await _signInWithPhone(event.phoneNumber);
-    result.fold(
-      (failure) => emit(AuthError(failure.message)),
-      (verificationId) {
+    await result.fold(
+      (failure) async => emit(AuthError(failure.message)),
+      (verificationId) async {
         // Empty verificationId means auto-verification succeeded
         if (verificationId.isEmpty) {
           // User is already signed in, get current user
-          _getCurrentUser().then((userResult) {
+          try {
+            final userResult = await _getCurrentUser();
             userResult.fold(
               (failure) => emit(AuthError(failure.message)),
               (user) {
@@ -98,7 +99,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                 }
               },
             );
-          });
+          } catch (e) {
+            emit(AuthError('phoneVerificationFailed'));
+          }
         } else {
           emit(AuthPhoneCodeSent(
             verificationId: verificationId,

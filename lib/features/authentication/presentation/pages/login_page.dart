@@ -31,15 +31,20 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  // Phone number validation constants
+  static const int _minPhoneDigits = 9; // Minimum digits for international numbers (e.g., +1234567890)
+  static const int _verificationCodeLength = 6; // Standard SMS verification code length
+
   bool _validatePhoneNumber(String phoneNumber) {
-    // Phone number must start with + and contain only digits after that
-    // Minimum length is 10 characters (e.g., +1234567890)
+    // Phone number must start with + followed by country code and number
+    // Format: +[country code][phone number] (e.g., +491234567890)
     if (phoneNumber.isEmpty || !phoneNumber.startsWith('+')) {
       return false;
     }
     
+    // Remove spaces and get only digits after +
     final digitsOnly = phoneNumber.substring(1).replaceAll(RegExp(r'\s+'), '');
-    if (digitsOnly.length < 9 || !RegExp(r'^\d+$').hasMatch(digitsOnly)) {
+    if (digitsOnly.length < _minPhoneDigits || !RegExp(r'^\d+$').hasMatch(digitsOnly)) {
       return false;
     }
     
@@ -49,8 +54,8 @@ class _LoginPageState extends State<LoginPage> {
   bool _validateVerificationCode(String code) {
     // SMS verification codes are typically 6 digits
     return code.isNotEmpty && 
-           code.length == 6 && 
-           RegExp(r'^\d{6}$').hasMatch(code);
+           code.length == _verificationCodeLength && 
+           RegExp(r'^\d{$_verificationCodeLength}$').hasMatch(code);
   }
 
   @override

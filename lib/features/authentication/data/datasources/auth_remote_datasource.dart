@@ -25,6 +25,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final FirebaseFirestore _firestore;
   final RegisteredUsersService _registeredUsersService;
 
+  // Phone verification timeout (5 seconds more than Firebase's timeout to ensure completion)
+  static const Duration _phoneVerificationTimeout = Duration(seconds: 65);
+
   AuthRemoteDataSourceImpl(
     this._firebaseAuth,
     this._googleSignIn,
@@ -188,7 +191,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       
       // Add timeout to prevent hanging indefinitely
       return await completer.future.timeout(
-        const Duration(seconds: 65),
+        _phoneVerificationTimeout,
         onTimeout: () {
           throw AuthException('phoneVerificationFailed');
         },
