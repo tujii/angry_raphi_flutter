@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
     // SMS verification codes are typically 6 digits
     return code.isNotEmpty && 
            code.length == _verificationCodeLength && 
-           RegExp(r'^\d{$_verificationCodeLength}$').hasMatch(code);
+           RegExp(r'^\d{6}$').hasMatch(code);
   }
 
   @override

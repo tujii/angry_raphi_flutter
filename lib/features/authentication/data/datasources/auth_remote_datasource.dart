@@ -246,7 +246,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       String errorMessage = 'loginError';
       switch (e.code) {
         case 'invalid-verification-code':
-          errorMessage = 'invalidCredential';
+          errorMessage = 'invalidVerificationCode';
           break;
         case 'session-expired':
           errorMessage = 'phoneVerificationFailed';
