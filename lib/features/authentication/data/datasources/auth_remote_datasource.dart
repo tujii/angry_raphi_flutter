@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -136,46 +137,56 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<String> signInWithPhone(String phoneNumber) async {
+    final completer = Completer<String>();
+    
     try {
-      String verificationId = '';
-      
       await _firebaseAuth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         timeout: const Duration(seconds: 60),
         verificationCompleted: (PhoneAuthCredential credential) async {
-          // Auto-verification on some devices
-          await _firebaseAuth.signInWithCredential(credential);
+          // Auto-verification on some devices - sign in automatically
+          try {
+            await _firebaseAuth.signInWithCredential(credential);
+            // Complete with empty string to indicate auto-verification success
+            if (!completer.isCompleted) {
+              completer.complete('');
+            }
+          } catch (e) {
+            if (!completer.isCompleted) {
+              completer.completeError(AuthException('loginError'));
+            }
+          }
         },
         verificationFailed: (FirebaseAuthException e) {
-          String errorMessage = 'phoneVerificationFailed';
-          switch (e.code) {
-            case 'invalid-phone-number':
-              errorMessage = 'invalidPhoneNumber';
-              break;
-            case 'too-many-requests':
-              errorMessage = 'tooManyRequests';
-              break;
-            default:
-              errorMessage = e.message ?? 'phoneVerificationFailed';
+          if (!completer.isCompleted) {
+            String errorMessage = 'phoneVerificationFailed';
+            switch (e.code) {
+              case 'invalid-phone-number':
+                errorMessage = 'invalidPhoneNumber';
+                break;
+              case 'too-many-requests':
+                errorMessage = 'tooManyRequests';
+                break;
+              default:
+                errorMessage = e.message ?? 'phoneVerificationFailed';
+            }
+            completer.completeError(AuthException(errorMessage));
           }
-          throw AuthException(errorMessage);
         },
-        codeSent: (String verId, int? resendToken) {
-          verificationId = verId;
+        codeSent: (String verificationId, int? resendToken) {
+          if (!completer.isCompleted) {
+            completer.complete(verificationId);
+          }
         },
-        codeAutoRetrievalTimeout: (String verId) {
-          verificationId = verId;
+        codeAutoRetrievalTimeout: (String verificationId) {
+          // Fallback: complete with verificationId if not already completed
+          if (!completer.isCompleted) {
+            completer.complete(verificationId);
+          }
         },
       );
       
-      // Wait a bit to ensure verificationId is set
-      await Future.delayed(const Duration(milliseconds: 500));
-      
-      if (verificationId.isEmpty) {
-        throw AuthException('phoneVerificationFailed');
-      }
-      
-      return verificationId;
+      return await completer.future;
     } on FirebaseAuthException catch (e) {
       String errorMessage = 'phoneVerificationFailed';
       switch (e.code) {
@@ -190,6 +201,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
       throw AuthException(errorMessage);
     } catch (e) {
+      if (e is AuthException) rethrow;
       throw AuthException('phoneVerificationFailed: ${e.toString()}');
     }
   }

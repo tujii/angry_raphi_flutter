@@ -31,6 +31,28 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  bool _validatePhoneNumber(String phoneNumber) {
+    // Phone number must start with + and contain only digits after that
+    // Minimum length is 10 characters (e.g., +1234567890)
+    if (phoneNumber.isEmpty || !phoneNumber.startsWith('+')) {
+      return false;
+    }
+    
+    final digitsOnly = phoneNumber.substring(1).replaceAll(RegExp(r'\s+'), '');
+    if (digitsOnly.length < 9 || !RegExp(r'^\d+$').hasMatch(digitsOnly)) {
+      return false;
+    }
+    
+    return true;
+  }
+
+  bool _validateVerificationCode(String code) {
+    // SMS verification codes are typically 6 digits
+    return code.isNotEmpty && 
+           code.length == 6 && 
+           RegExp(r'^\d{6}$').hasMatch(code);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -232,7 +254,7 @@ class _LoginPageState extends State<LoginPage> {
           keyboardType: TextInputType.phone,
           decoration: InputDecoration(
             labelText: AppLocalizations.of(context)!.phoneNumber,
-            hintText: AppLocalizations.of(context)!.enterPhoneNumber,
+            hintText: '+49 123 4567890',
             prefixIcon: const Icon(Icons.phone),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -254,10 +276,17 @@ class _LoginPageState extends State<LoginPage> {
           child: ElevatedButton.icon(
             onPressed: () {
               final phoneNumber = _phoneController.text.trim();
-              if (phoneNumber.isNotEmpty) {
+              if (_validatePhoneNumber(phoneNumber)) {
                 context
                     .read<AuthBloc>()
                     .add(AuthPhoneSignInRequested(phoneNumber));
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.invalidPhoneNumber),
+                    backgroundColor: Colors.red,
+                  ),
+                );
               }
             },
             icon: const Icon(Icons.send, color: Colors.white),
@@ -320,11 +349,18 @@ class _LoginPageState extends State<LoginPage> {
           child: ElevatedButton.icon(
             onPressed: () {
               final code = _codeController.text.trim();
-              if (code.isNotEmpty && _verificationId != null) {
+              if (_validateVerificationCode(code) && _verificationId != null) {
                 context.read<AuthBloc>().add(AuthVerifyPhoneCode(
                       verificationId: _verificationId!,
                       smsCode: code,
                     ));
+              } else if (!_validateVerificationCode(code)) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.invalidCredential),
+                    backgroundColor: Colors.red,
+                  ),
+                );
               }
             },
             icon: const Icon(Icons.verified, color: Colors.white),
