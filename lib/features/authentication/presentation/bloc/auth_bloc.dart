@@ -4,6 +4,8 @@ import 'package:injectable/injectable.dart';
 
 import '../../domain/repositories/auth_repository.dart';
 import '../../domain/usecases/sign_in_with_google.dart';
+import '../../domain/usecases/sign_in_with_phone.dart';
+import '../../domain/usecases/verify_phone_code.dart';
 import '../../domain/usecases/sign_out.dart';
 import '../../domain/usecases/get_current_user.dart';
 import 'auth_event.dart';
@@ -12,6 +14,8 @@ import 'auth_state.dart';
 @injectable
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignInWithGoogle _signInWithGoogle;
+  final SignInWithPhone _signInWithPhone;
+  final VerifyPhoneCode _verifyPhoneCode;
   final SignOut _signOut;
   final GetCurrentUser _getCurrentUser;
   final AuthRepository _authRepository;
@@ -19,12 +23,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   AuthBloc(
     this._signInWithGoogle,
+    this._signInWithPhone,
+    this._verifyPhoneCode,
     this._signOut,
     this._getCurrentUser,
     this._authRepository,
   ) : super(AuthInitial()) {
     on<AuthStarted>(_onAuthStarted);
     on<AuthSignInRequested>(_onAuthSignInRequested);
+    on<AuthPhoneSignInRequested>(_onAuthPhoneSignInRequested);
+    on<AuthVerifyPhoneCode>(_onAuthVerifyPhoneCode);
     on<AuthSignOutRequested>(_onAuthSignOutRequested);
     on<AuthUserChanged>(_onAuthUserChanged);
 
@@ -60,6 +68,35 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
 
     final result = await _signInWithGoogle();
+    result.fold(
+      (failure) => emit(AuthError(failure.message)),
+      (user) => emit(AuthAuthenticated(user)),
+    );
+  }
+
+  Future<void> _onAuthPhoneSignInRequested(
+    AuthPhoneSignInRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+
+    final result = await _signInWithPhone(event.phoneNumber);
+    result.fold(
+      (failure) => emit(AuthError(failure.message)),
+      (verificationId) => emit(AuthPhoneCodeSent(
+        verificationId: verificationId,
+        phoneNumber: event.phoneNumber,
+      )),
+    );
+  }
+
+  Future<void> _onAuthVerifyPhoneCode(
+    AuthVerifyPhoneCode event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+
+    final result = await _verifyPhoneCode(event.verificationId, event.smsCode);
     result.fold(
       (failure) => emit(AuthError(failure.message)),
       (user) => emit(AuthAuthenticated(user)),

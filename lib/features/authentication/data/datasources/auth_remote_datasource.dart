@@ -10,6 +10,8 @@ import '../models/user_model.dart';
 
 abstract class AuthRemoteDataSource {
   Future<UserModel> signInWithGoogle();
+  Future<String> signInWithPhone(String phoneNumber);
+  Future<UserModel> verifyPhoneCode(String verificationId, String smsCode);
   Future<void> signOut();
   Future<UserModel?> getCurrentUser();
   Stream<UserModel?> get authStateChanges;
@@ -129,6 +131,111 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       throw AuthException('loginError: ${e.toString()}');
     } catch (e) {
       throw AuthException('unknownError');
+    }
+  }
+
+  @override
+  Future<String> signInWithPhone(String phoneNumber) async {
+    try {
+      String verificationId = '';
+      
+      await _firebaseAuth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        timeout: const Duration(seconds: 60),
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          // Auto-verification on some devices
+          await _firebaseAuth.signInWithCredential(credential);
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          String errorMessage = 'phoneVerificationFailed';
+          switch (e.code) {
+            case 'invalid-phone-number':
+              errorMessage = 'invalidPhoneNumber';
+              break;
+            case 'too-many-requests':
+              errorMessage = 'tooManyRequests';
+              break;
+            default:
+              errorMessage = e.message ?? 'phoneVerificationFailed';
+          }
+          throw AuthException(errorMessage);
+        },
+        codeSent: (String verId, int? resendToken) {
+          verificationId = verId;
+        },
+        codeAutoRetrievalTimeout: (String verId) {
+          verificationId = verId;
+        },
+      );
+      
+      // Wait a bit to ensure verificationId is set
+      await Future.delayed(const Duration(milliseconds: 500));
+      
+      if (verificationId.isEmpty) {
+        throw AuthException('phoneVerificationFailed');
+      }
+      
+      return verificationId;
+    } on FirebaseAuthException catch (e) {
+      String errorMessage = 'phoneVerificationFailed';
+      switch (e.code) {
+        case 'invalid-phone-number':
+          errorMessage = 'invalidPhoneNumber';
+          break;
+        case 'too-many-requests':
+          errorMessage = 'tooManyRequests';
+          break;
+        default:
+          errorMessage = e.message ?? 'phoneVerificationFailed';
+      }
+      throw AuthException(errorMessage);
+    } catch (e) {
+      throw AuthException('phoneVerificationFailed: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<UserModel> verifyPhoneCode(String verificationId, String smsCode) async {
+    try {
+      final credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: smsCode,
+      );
+
+      final UserCredential userCredential =
+          await _firebaseAuth.signInWithCredential(credential);
+
+      if (userCredential.user == null) {
+        throw AuthException('loginError');
+      }
+
+      // Check if user is admin
+      final isAdmin = await _checkIsAdmin(userCredential.user!.uid);
+
+      final userModel = UserModel.fromFirebaseUser(
+        userCredential.user!,
+        isAdmin,
+      );
+
+      // Save user to registeredUsers collection for tracking
+      await _registeredUsersService.saveRegisteredUser(userCredential.user!);
+
+      return userModel;
+    } on FirebaseAuthException catch (e) {
+      String errorMessage = 'loginError';
+      switch (e.code) {
+        case 'invalid-verification-code':
+          errorMessage = 'invalidCredential';
+          break;
+        case 'session-expired':
+          errorMessage = 'phoneVerificationFailed';
+          break;
+        default:
+          errorMessage = e.message ?? 'unknownError';
+      }
+      throw AuthException(errorMessage);
+    } catch (e) {
+      throw AuthException('loginError: ${e.toString()}');
     }
   }
 

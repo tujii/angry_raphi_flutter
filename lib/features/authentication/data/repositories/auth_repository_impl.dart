@@ -36,6 +36,43 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, String>> signInWithPhone(String phoneNumber) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final verificationId = await remoteDataSource.signInWithPhone(phoneNumber);
+        return Right(verificationId);
+      } on AuthException catch (e) {
+        return Left(AuthFailure(e.message));
+      } on ServerException catch (e) {
+        return Left(ServerFailure(e.message));
+      } catch (e) {
+        return Left(AuthFailure('Unexpected error: ${e.toString()}'));
+      }
+    } else {
+      return const Left(NetworkFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserEntity>> verifyPhoneCode(
+      String verificationId, String smsCode) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final user = await remoteDataSource.verifyPhoneCode(verificationId, smsCode);
+        return Right(user);
+      } on AuthException catch (e) {
+        return Left(AuthFailure(e.message));
+      } on ServerException catch (e) {
+        return Left(ServerFailure(e.message));
+      } catch (e) {
+        return Left(AuthFailure('Unexpected error: ${e.toString()}'));
+      }
+    } else {
+      return const Left(NetworkFailure());
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> signOut() async {
     try {
       await remoteDataSource.signOut();
