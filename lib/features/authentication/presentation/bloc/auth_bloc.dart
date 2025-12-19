@@ -94,7 +94,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                 if (user != null) {
                   emit(AuthAuthenticated(user));
                 } else {
-                  emit(AuthError('loginError'));
+                  emit(AuthError('phoneVerificationFailed'));
                 }
               },
             );

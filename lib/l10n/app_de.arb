@@ -14,6 +14,7 @@
   "verifyCode": "Code bestätigen",
   "resendCode": "Code erneut senden",
   "invalidPhoneNumber": "Ungültige Telefonnummer",
+  "invalidVerificationCode": "Ungültiger Bestätigungscode. Code muss 6 Ziffern haben.",
   "verificationCodeSent": "Bestätigungscode gesendet",
   "phoneVerificationFailed": "Telefon-Verifizierung fehlgeschlagen",
   "orSignInWith": "Oder anmelden mit",

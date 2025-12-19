@@ -137,7 +137,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<String> signInWithPhone(String phoneNumber) async {
-    final completer = Completer<String>();
+    final Completer<String> completer = Completer<String>();
     
     try {
       await _firebaseAuth.verifyPhoneNumber(
@@ -186,7 +186,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         },
       );
       
-      return await completer.future;
+      // Add timeout to prevent hanging indefinitely
+      return await completer.future.timeout(
+        const Duration(seconds: 65),
+        onTimeout: () {
+          throw AuthException('phoneVerificationFailed');
+        },
+      );
     } on FirebaseAuthException catch (e) {
       String errorMessage = 'phoneVerificationFailed';
       switch (e.code) {

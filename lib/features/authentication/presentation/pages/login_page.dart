@@ -357,7 +357,7 @@ class _LoginPageState extends State<LoginPage> {
               } else if (!_validateVerificationCode(code)) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(AppLocalizations.of(context)!.invalidCredential),
+                    content: Text(AppLocalizations.of(context)!.invalidVerificationCode),
                     backgroundColor: Colors.red,
                   ),
                 );

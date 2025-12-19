@@ -14,6 +14,7 @@
   "verifyCode": "Verify Code",
   "resendCode": "Resend Code",
   "invalidPhoneNumber": "Invalid phone number",
+  "invalidVerificationCode": "Invalid verification code. Code must be 6 digits.",
   "verificationCodeSent": "Verification code sent",
   "phoneVerificationFailed": "Phone verification failed",
   "orSignInWith": "Or sign in with",
