@@ -34,6 +34,44 @@ void main() {
       expect(state.props, isEmpty);
     });
 
+    test('AuthPhoneCodeSent includes verificationId and phoneNumber in props', () {
+      const verificationId = 'verification123';
+      const phoneNumber = '+491234567890';
+      final state = AuthPhoneCodeSent(
+        verificationId: verificationId,
+        phoneNumber: phoneNumber,
+      );
+      expect(state.verificationId, equals(verificationId));
+      expect(state.phoneNumber, equals(phoneNumber));
+      expect(state.props, equals([verificationId, phoneNumber]));
+    });
+
+    test('two AuthPhoneCodeSent with same values are equal', () {
+      const verificationId = 'verification123';
+      const phoneNumber = '+491234567890';
+      final state1 = AuthPhoneCodeSent(
+        verificationId: verificationId,
+        phoneNumber: phoneNumber,
+      );
+      final state2 = AuthPhoneCodeSent(
+        verificationId: verificationId,
+        phoneNumber: phoneNumber,
+      );
+      expect(state1, equals(state2));
+    });
+
+    test('AuthPhoneCodeSent with different values are not equal', () {
+      final state1 = AuthPhoneCodeSent(
+        verificationId: 'verification123',
+        phoneNumber: '+491234567890',
+      );
+      final state2 = AuthPhoneCodeSent(
+        verificationId: 'verification456',
+        phoneNumber: '+491234567891',
+      );
+      expect(state1, isNot(equals(state2)));
+    });
+
     test('AuthError includes message in props', () {
       const message = 'Authentication failed';
       final state = AuthError(message);

@@ -32,6 +32,8 @@ import 'features/raphcon_management/presentation/bloc/raphcon_bloc.dart';
 import 'features/authentication/data/repositories/auth_repository_impl.dart';
 import 'features/authentication/data/datasources/auth_remote_datasource.dart';
 import 'features/authentication/domain/usecases/sign_in_with_google.dart';
+import 'features/authentication/domain/usecases/sign_in_with_phone.dart';
+import 'features/authentication/domain/usecases/verify_phone_code.dart';
 import 'services/registered_users_service.dart';
 import 'features/authentication/domain/usecases/sign_out.dart';
 import 'features/authentication/domain/usecases/get_current_user.dart';
@@ -180,11 +182,18 @@ class AngryRaphiApp extends StatelessWidget {
             );
 
             final signInWithGoogle = SignInWithGoogle(authRepository);
+            final signInWithPhone = SignInWithPhone(authRepository);
+            final verifyPhoneCode = VerifyPhoneCode(authRepository);
             final signOut = SignOut(authRepository);
             final getCurrentUser = GetCurrentUser(authRepository);
 
             return AuthBloc(
-                signInWithGoogle, signOut, getCurrentUser, authRepository)
+                signInWithGoogle,
+                signInWithPhone,
+                verifyPhoneCode,
+                signOut,
+                getCurrentUser,
+                authRepository)
               ..add(AuthStarted());
           },
         ),

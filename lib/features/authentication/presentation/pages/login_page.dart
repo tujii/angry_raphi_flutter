@@ -9,16 +9,60 @@ import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   final bool isDialog;
 
   const LoginPage({super.key, this.isDialog = false});
 
   @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _codeController = TextEditingController();
+  String? _verificationId;
+  String? _phoneNumber;
+
+  @override
+  void dispose() {
+    _phoneController.dispose();
+    _codeController.dispose();
+    super.dispose();
+  }
+
+  // Phone number validation constants
+  static const int _minPhoneDigits = 9; // Minimum digits for international numbers (e.g., +1234567890)
+  static const int _verificationCodeLength = 6; // Standard SMS verification code length
+
+  bool _validatePhoneNumber(String phoneNumber) {
+    // Phone number must start with + followed by country code and number
+    // Format: +[country code][phone number] (e.g., +491234567890)
+    if (phoneNumber.isEmpty || !phoneNumber.startsWith('+')) {
+      return false;
+    }
+    
+    // Remove spaces and get only digits after +
+    final digitsOnly = phoneNumber.substring(1).replaceAll(RegExp(r'\s+'), '');
+    if (digitsOnly.length < _minPhoneDigits || !RegExp(r'^\d+$').hasMatch(digitsOnly)) {
+      return false;
+    }
+    
+    return true;
+  }
+
+  bool _validateVerificationCode(String code) {
+    // SMS verification codes are typically 6 digits
+    return code.isNotEmpty && 
+           code.length == _verificationCodeLength && 
+           RegExp(r'^\d{6}$').hasMatch(code);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppConstants.backgroundColor,
-      appBar: isDialog
+      appBar: widget.isDialog
           ? AppBar(
               title: Text(AppLocalizations.of(context)!.login),
               backgroundColor: AppConstants.backgroundColor,
@@ -66,6 +110,18 @@ class LoginPage extends StatelessWidget {
                 duration: const Duration(seconds: 2),
               ),
             );
+          } else if (state is AuthPhoneCodeSent) {
+            setState(() {
+              _verificationId = state.verificationId;
+              _phoneNumber = state.phoneNumber;
+            });
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(AppLocalizations.of(context)!.verificationCodeSent),
+                backgroundColor: Colors.green,
+                duration: const Duration(seconds: 3),
+              ),
+            );
           }
         },
         builder: (context, state) {
@@ -99,11 +155,23 @@ class LoginPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 48),
 
-                  // Google Sign In Button
+                  // Sign In Options
                   if (state is AuthLoading)
                     const CircularProgressIndicator()
-                  else
+                  else if (_verificationId != null)
+                    _buildVerificationCodeInput(context)
+                  else ...[
+                    _buildPhoneSignInForm(context),
+                    const SizedBox(height: 16),
+                    Text(
+                      AppLocalizations.of(context)!.orSignInWith,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Colors.grey[600],
+                          ),
+                    ),
+                    const SizedBox(height: 16),
                     _buildGoogleSignInButton(context),
+                  ],
 
                   const SizedBox(height: 24),
 
@@ -183,6 +251,159 @@ class LoginPage extends StatelessWidget {
     );
   }
 
+  Widget _buildPhoneSignInForm(BuildContext context) {
+    return Column(
+      children: [
+        TextField(
+          controller: _phoneController,
+          keyboardType: TextInputType.phone,
+          decoration: InputDecoration(
+            labelText: AppLocalizations.of(context)!.phoneNumber,
+            hintText: '+49 123 4567890',
+            prefixIcon: const Icon(Icons.phone),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey[300]!),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppConstants.primaryColor),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          width: double.infinity,
+          height: 56,
+          child: ElevatedButton.icon(
+            onPressed: () {
+              final phoneNumber = _phoneController.text.trim();
+              if (_validatePhoneNumber(phoneNumber)) {
+                context
+                    .read<AuthBloc>()
+                    .add(AuthPhoneSignInRequested(phoneNumber));
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.invalidPhoneNumber),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
+            icon: const Icon(Icons.send, color: Colors.white),
+            label: Text(
+              AppLocalizations.of(context)!.sendCode,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppConstants.primaryColor,
+              foregroundColor: Colors.white,
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildVerificationCodeInput(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          '${AppLocalizations.of(context)!.verificationCodeSent}\n$_phoneNumber',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Colors.grey[600],
+              ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 24),
+        TextField(
+          controller: _codeController,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            labelText: AppLocalizations.of(context)!.verificationCode,
+            hintText: AppLocalizations.of(context)!.enterVerificationCode,
+            prefixIcon: const Icon(Icons.lock),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey[300]!),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: AppConstants.primaryColor),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          width: double.infinity,
+          height: 56,
+          child: ElevatedButton.icon(
+            onPressed: () {
+              final code = _codeController.text.trim();
+              if (_validateVerificationCode(code) && _verificationId != null) {
+                context.read<AuthBloc>().add(AuthVerifyPhoneCode(
+                      verificationId: _verificationId!,
+                      smsCode: code,
+                    ));
+              } else if (!_validateVerificationCode(code)) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.invalidVerificationCode),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
+            icon: const Icon(Icons.verified, color: Colors.white),
+            label: Text(
+              AppLocalizations.of(context)!.verifyCode,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppConstants.primaryColor,
+              foregroundColor: Colors.white,
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        TextButton(
+          onPressed: () {
+            setState(() {
+              _verificationId = null;
+              _phoneNumber = null;
+              _codeController.clear();
+            });
+          },
+          child: Text(
+            AppLocalizations.of(context)!.cancel,
+            style: const TextStyle(color: AppConstants.primaryColor),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildTermsAndPrivacy(BuildContext context) {
     return Column(
       children: [
@@ -198,7 +419,7 @@ class LoginPage extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                if (isDialog) {
+                if (widget.isDialog) {
                   // Close dialog first, then navigate
                   Navigator.of(context).pop();
                   context.go(AppRouter.terms);
@@ -222,7 +443,7 @@ class LoginPage extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                if (isDialog) {
+                if (widget.isDialog) {
                   // Close dialog first, then navigate
                   Navigator.of(context).pop();
                   context.go(AppRouter.privacy);
@@ -250,3 +471,4 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
+
