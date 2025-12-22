@@ -207,22 +207,38 @@ class StoryOfTheDayService {
           '🎧 Headset-Drama bei $userName: ${count}x Totalausfall diese Woche!'
         ];
         return headsetTemplates[random.nextInt(headsetTemplates.length)];
-      case RaphconType.microphone:
-        final micTemplates = [
-          '🎤 $userName und das Mikrofon: Eine Geschichte von $count Missverständnissen diese Woche.',
-          '🎙️ $userName\'s Mikrofon ist ${count}x stumm geblieben diese Woche!',
-          '🔇 Mikrofon-Chaos bei $userName: ${count}x diese Woche!',
-          '🎤 $userName redet gegen eine Wand: ${count}x Mikrofon-Fail!'
+      case RaphconType.webcam:
+        final webcamTemplates = [
+          '📹 $userName und die Webcam: ${count}x Totalausfall diese Woche!',
+          '🎥 $userName\'s Webcam streikt: ${count}x schwarzes Bild!',
+          '📸 Kamera-Chaos bei $userName: ${count}x diese Woche!',
+          '🎬 $userName unsichtbar: ${count}x Webcam-Fail!'
         ];
-        return micTemplates[random.nextInt(micTemplates.length)];
-      case RaphconType.software:
-        final softwareTemplates = [
-          '💻 $userName hat seine Software nicht im Griff, diese Woche sogar ${count}x!',
-          '🐛 Software-Bugs jagen $userName: ${count}x diese Woche erwischt!',
-          '💾 $userName vs. Programme: $count:0 für die Software!',
-          '⚡ $userName\'s Software crasht ${count}x diese Woche. Neustart?'
+        return webcamTemplates[random.nextInt(webcamTemplates.length)];
+      case RaphconType.otherPeripherals:
+        final peripheralTemplates = [
+          '🖱️ $userName kämpft mit Peripheriegeräten: ${count}x diese Woche!',
+          '⌨️ Tech-Probleme bei $userName: ${count}x Geräte-Drama!',
+          '🔌 $userName vs. Hardware: $count:0 für die Geräte!',
+          '💻 Peripherie-Chaos bei $userName: ${count}x diese Woche!'
         ];
-        return softwareTemplates[random.nextInt(softwareTemplates.length)];
+        return peripheralTemplates[random.nextInt(peripheralTemplates.length)];
+      case RaphconType.mouseHighlighter:
+        final highlighterTemplates = [
+          '🖱️✨ $userName hat ${count}x den Mouse Highlighter vermisst!',
+          '🔦 Wo ist der Cursor? $userName sucht ${count}x diese Woche!',
+          '🎯 Mouse Highlighter AWOL bei $userName: ${count}x!',
+          '💫 $userName\'s unsichtbarer Cursor: ${count}x verloren!'
+        ];
+        return highlighterTemplates[random.nextInt(highlighterTemplates.length)];
+      case RaphconType.lateMeeting:
+        final lateTemplates = [
+          '⏰ $userName zu spät: ${count}x diese Woche verpasst!',
+          '🕐 Zeit ist relativ für $userName: ${count}x zu spät!',
+          '⌚ $userName und die Zeit: ${count}x Meeting verpasst!',
+          '🏃 $userName rennt hinterher: ${count}x zu spät!'
+        ];
+        return lateTemplates[random.nextInt(lateTemplates.length)];
       default:
         final genericTemplates = [
           '❓ $userName hatte ${count}x mysteriöse Tech-Probleme diese Woche...',
@@ -238,22 +254,14 @@ class StoryOfTheDayService {
     switch (type) {
       case RaphconType.headset:
         return 'Headset';
-      case RaphconType.microphone:
-        return 'Mikrofon';
-      case RaphconType.keyboard:
-        return 'Tastatur';
-      case RaphconType.mouse:
-        return 'Maus';
       case RaphconType.webcam:
         return 'Webcam';
-      case RaphconType.network:
-        return 'Netzwerk/Internet';
-      case RaphconType.software:
-        return 'Software';
-      case RaphconType.hardware:
-        return 'Hardware';
-      case RaphconType.speakers:
-        return 'Lautsprecher';
+      case RaphconType.otherPeripherals:
+        return 'Andere Peripheriegeräte';
+      case RaphconType.mouseHighlighter:
+        return 'Mouse Highlighter';
+      case RaphconType.lateMeeting:
+        return 'Zu spät zum Meeting';
       default:
         return 'Technik';
     }
