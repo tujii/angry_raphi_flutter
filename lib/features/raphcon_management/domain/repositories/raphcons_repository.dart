@@ -14,7 +14,7 @@ class AddRaphconParams {
     required this.userId,
     required this.createdBy,
     this.comment,
-    this.type = RaphconType.other,
+    this.type = RaphconType.otherPeripherals,
   });
 }
 

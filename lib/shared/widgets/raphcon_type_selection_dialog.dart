@@ -176,26 +176,16 @@ class _RaphconTypeSelectionDialogState
 
   IconData _getIconForType(RaphconType type) {
     switch (type) {
-      case RaphconType.mouse:
-        return Icons.mouse;
-      case RaphconType.keyboard:
-        return Icons.keyboard;
-      case RaphconType.microphone:
-        return Icons.mic;
       case RaphconType.headset:
         return Icons.headset;
       case RaphconType.webcam:
         return Icons.videocam;
-      case RaphconType.speakers:
-        return Icons.volume_up;
-      case RaphconType.network:
-        return Icons.wifi_off;
-      case RaphconType.software:
-        return Icons.computer;
-      case RaphconType.hardware:
-        return Icons.hardware;
-      case RaphconType.other:
-        return Icons.help_outline;
+      case RaphconType.otherPeripherals:
+        return Icons.devices;
+      case RaphconType.mouseHighlighter:
+        return Icons.highlight_alt;
+      case RaphconType.lateMeeting:
+        return Icons.schedule;
     }
   }
 

@@ -18,7 +18,7 @@ void main() {
       expect(raphcon.createdBy, equals('admin456'));
       expect(raphcon.createdAt, equals(testDate));
       expect(raphcon.comment, isNull);
-      expect(raphcon.type, equals(RaphconType.other));
+      expect(raphcon.type, equals(RaphconType.otherPeripherals));
       expect(raphcon.isActive, isTrue);
     });
 
@@ -29,7 +29,7 @@ void main() {
         createdBy: 'admin456',
         createdAt: testDate,
         comment: 'Test comment',
-        type: RaphconType.keyboard,
+        type: RaphconType.headset,
         isActive: false,
       );
 
@@ -38,7 +38,7 @@ void main() {
       expect(raphcon.createdBy, equals('admin456'));
       expect(raphcon.createdAt, equals(testDate));
       expect(raphcon.comment, equals('Test comment'));
-      expect(raphcon.type, equals(RaphconType.keyboard));
+      expect(raphcon.type, equals(RaphconType.headset));
       expect(raphcon.isActive, isFalse);
     });
 
@@ -52,7 +52,7 @@ void main() {
       final updated = raphcon.copyWith(
         id: 'new_id',
         comment: 'New comment',
-        type: RaphconType.mouse,
+        type: RaphconType.webcam,
         isActive: false,
       );
 
@@ -60,7 +60,7 @@ void main() {
       expect(updated.userId, equals('user123'));
       expect(updated.createdBy, equals('admin456'));
       expect(updated.comment, equals('New comment'));
-      expect(updated.type, equals(RaphconType.mouse));
+      expect(updated.type, equals(RaphconType.webcam));
       expect(updated.isActive, isFalse);
     });
 
@@ -71,7 +71,7 @@ void main() {
         createdBy: 'admin456',
         createdAt: testDate,
         comment: 'Comment',
-        type: RaphconType.network,
+        type: RaphconType.mouseHighlighter,
       );
 
       final copy = raphcon.copyWith();
@@ -90,7 +90,7 @@ void main() {
         createdBy: 'admin456',
         createdAt: testDate,
         comment: 'Comment',
-        type: RaphconType.software,
+        type: RaphconType.lateMeeting,
         isActive: true,
       );
 
@@ -102,7 +102,7 @@ void main() {
           'admin456',
           testDate,
           'Comment',
-          RaphconType.software,
+          RaphconType.lateMeeting,
           true,
         ]),
       );

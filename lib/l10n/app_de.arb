@@ -115,16 +115,11 @@
   "bySigningInYouAgree": "Durch die Anmeldung stimmst du unseren",
   "and": "und der",
   "agreeTo": "zu.",
-  "raphconTypeMouse": "Maus",
-  "raphconTypeKeyboard": "Tastatur",
-  "raphconTypeMicrophone": "Mikrofon",
   "raphconTypeHeadset": "Headset",
   "raphconTypeWebcam": "Webcam",
-  "raphconTypeSpeakers": "Lautsprecher",
-  "raphconTypeNetwork": "Netzwerk",
-  "raphconTypeSoftware": "Software",
-  "raphconTypeHardware": "Hardware",
-  "raphconTypeOther": "Sonstiges",
+  "raphconTypeOtherPeripherals": "Andere Peripheriegeräte",
+  "raphconTypeMouseHighlighter": "Mouse Highlighter",
+  "raphconTypeLateMeeting": "Zu spät zum Meeting",
   "selectProblemType": "Problem-Typ auswählen",
   "whatKindOfProblem": "Was für ein Problem?",
   "showDetails": "Details anzeigen",
@@ -632,35 +627,20 @@
   "@agreeTo": {
     "description": "agreeTo text"
   },
-  "@raphconTypeMouse": {
-    "description": "raphconTypeMouse text"
-  },
-  "@raphconTypeKeyboard": {
-    "description": "raphconTypeKeyboard text"
-  },
-  "@raphconTypeMicrophone": {
-    "description": "raphconTypeMicrophone text"
-  },
   "@raphconTypeHeadset": {
     "description": "raphconTypeHeadset text"
   },
   "@raphconTypeWebcam": {
     "description": "raphconTypeWebcam text"
   },
-  "@raphconTypeSpeakers": {
-    "description": "raphconTypeSpeakers text"
+  "@raphconTypeOtherPeripherals": {
+    "description": "raphconTypeOtherPeripherals text"
   },
-  "@raphconTypeNetwork": {
-    "description": "raphconTypeNetwork text"
+  "@raphconTypeMouseHighlighter": {
+    "description": "raphconTypeMouseHighlighter text"
   },
-  "@raphconTypeSoftware": {
-    "description": "raphconTypeSoftware text"
-  },
-  "@raphconTypeHardware": {
-    "description": "raphconTypeHardware text"
-  },
-  "@raphconTypeOther": {
-    "description": "raphconTypeOther text"
+  "@raphconTypeLateMeeting": {
+    "description": "raphconTypeLateMeeting text"
   },
   "@selectProblemType": {
     "description": "selectProblemType text"

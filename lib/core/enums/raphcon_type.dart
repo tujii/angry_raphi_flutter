@@ -1,17 +1,19 @@
 /// Enumeration for different types of hardware/technical problems
 /// Used to categorize what kind of issue a Raphcon represents
 /// Following Clean Architecture - Domain layer enum
+/// 
+/// Types have been reduced to core categories:
+/// - headset: Headset issues
+/// - webcam: Webcam issues  
+/// - otherPeripherals: Other peripheral devices (mouse, keyboard, speakers, etc.)
+/// - mouseHighlighter: Mouse highlighter issues
+/// - lateMeeting: Late to meeting
 enum RaphconType {
-  mouse('mouse'),
-  keyboard('keyboard'),
-  microphone('microphone'),
   headset('headset'),
   webcam('webcam'),
-  speakers('speakers'),
-  network('network'),
-  software('software'),
-  hardware('hardware'),
-  other('other');
+  otherPeripherals('otherPeripherals'),
+  mouseHighlighter('mouseHighlighter'),
+  lateMeeting('lateMeeting');
 
   const RaphconType(this.value);
 
@@ -21,62 +23,62 @@ enum RaphconType {
   String getDisplayName(dynamic localizations) {
     // Use AppLocalizations for proper i18n support
     switch (this) {
-      case RaphconType.mouse:
-        return localizations.raphconTypeMouse;
-      case RaphconType.keyboard:
-        return localizations.raphconTypeKeyboard;
-      case RaphconType.microphone:
-        return localizations.raphconTypeMicrophone;
       case RaphconType.headset:
         return localizations.raphconTypeHeadset;
       case RaphconType.webcam:
         return localizations.raphconTypeWebcam;
-      case RaphconType.speakers:
-        return localizations.raphconTypeSpeakers;
-      case RaphconType.network:
-        return localizations.raphconTypeNetwork;
-      case RaphconType.software:
-        return localizations.raphconTypeSoftware;
-      case RaphconType.hardware:
-        return localizations.raphconTypeHardware;
-      case RaphconType.other:
-        return localizations.raphconTypeOther;
+      case RaphconType.otherPeripherals:
+        return localizations.raphconTypeOtherPeripherals;
+      case RaphconType.mouseHighlighter:
+        return localizations.raphconTypeMouseHighlighter;
+      case RaphconType.lateMeeting:
+        return localizations.raphconTypeLateMeeting;
     }
   }
 
   /// Create RaphconType from string value
+  /// Provides backward compatibility by mapping old types to new types:
+  /// - mouse, keyboard, speakers -> otherPeripherals
+  /// - microphone -> headset
+  /// - network, software, hardware, other -> otherPeripherals
   static RaphconType fromString(String value) {
+    // Direct matches for new types
     for (RaphconType type in RaphconType.values) {
       if (type.value == value) {
         return type;
       }
     }
-    return RaphconType.other; // Default fallback
+    
+    // Backward compatibility mapping for old types
+    switch (value) {
+      case 'mouse':
+      case 'keyboard':
+      case 'speakers':
+      case 'network':
+      case 'software':
+      case 'hardware':
+      case 'other':
+        return RaphconType.otherPeripherals;
+      case 'microphone':
+        return RaphconType.headset;
+      default:
+        return RaphconType.otherPeripherals; // Default fallback
+    }
   }
 
   /// Get icon for each type
   String get iconName {
     switch (this) {
-      case RaphconType.mouse:
-        return 'mouse';
-      case RaphconType.keyboard:
-        return 'keyboard';
-      case RaphconType.microphone:
-        return 'mic';
       case RaphconType.headset:
         return 'headset';
       case RaphconType.webcam:
         return 'videocam';
-      case RaphconType.speakers:
-        return 'volume_up';
-      case RaphconType.network:
-        return 'wifi_off';
-      case RaphconType.software:
-        return 'computer';
-      case RaphconType.hardware:
-        return 'hardware';
-      case RaphconType.other:
-        return 'help_outline';
+      case RaphconType.otherPeripherals:
+        return 'devices';
+      case RaphconType.mouseHighlighter:
+        return 'highlight_mouse_cursor';
+      case RaphconType.lateMeeting:
+        return 'schedule';
     }
   }
 }

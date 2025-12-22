@@ -14,7 +14,7 @@ void main() {
         'createdBy': 'admin456',
         'createdAt': testDate,
         'comment': 'Test comment',
-        'type': 'keyboard',
+        'type': 'headset',
         'isActive': true,
       };
 
@@ -25,7 +25,7 @@ void main() {
       expect(model.createdBy, equals('admin456'));
       expect(model.createdAt, equals(testDate));
       expect(model.comment, equals('Test comment'));
-      expect(model.type, equals(RaphconType.keyboard));
+      expect(model.type, equals(RaphconType.headset));
       expect(model.isActive, isTrue);
     });
 
@@ -42,7 +42,7 @@ void main() {
       expect(model.userId, equals('user123'));
       expect(model.createdBy, equals('admin456'));
       expect(model.comment, isNull);
-      expect(model.type, equals(RaphconType.other));
+      expect(model.type, equals(RaphconType.otherPeripherals));
       expect(model.isActive, isTrue);
     });
 
@@ -56,7 +56,35 @@ void main() {
 
       final model = RaphconModel.fromMap(map, 'raphcon789');
 
-      expect(model.type, equals(RaphconType.other));
+      expect(model.type, equals(RaphconType.otherPeripherals));
+    });
+
+    test('fromMap maps old types to new types for backward compatibility', () {
+      // Test old peripheral types map to otherPeripherals
+      final mouseMap = {
+        'userId': 'user123',
+        'createdBy': 'admin456',
+        'createdAt': testDate,
+        'type': 'mouse',
+      };
+      expect(RaphconModel.fromMap(mouseMap, 'id1').type, equals(RaphconType.otherPeripherals));
+
+      final keyboardMap = {
+        'userId': 'user123',
+        'createdBy': 'admin456',
+        'createdAt': testDate,
+        'type': 'keyboard',
+      };
+      expect(RaphconModel.fromMap(keyboardMap, 'id2').type, equals(RaphconType.otherPeripherals));
+
+      // Test microphone maps to headset
+      final micMap = {
+        'userId': 'user123',
+        'createdBy': 'admin456',
+        'createdAt': testDate,
+        'type': 'microphone',
+      };
+      expect(RaphconModel.fromMap(micMap, 'id3').type, equals(RaphconType.headset));
     });
 
     test('toMap converts model to map', () {
@@ -66,7 +94,7 @@ void main() {
         createdBy: 'admin456',
         createdAt: testDate,
         comment: 'Test comment',
-        type: RaphconType.mouse,
+        type: RaphconType.webcam,
         isActive: true,
       );
 
@@ -77,7 +105,7 @@ void main() {
       expect(map['createdAt'], isA<Timestamp>());
       expect((map['createdAt'] as Timestamp).toDate(), equals(testDate));
       expect(map['comment'], equals('Test comment'));
-      expect(map['type'], equals('mouse'));
+      expect(map['type'], equals('webcam'));
       expect(map['isActive'], isTrue);
     });
 
@@ -101,7 +129,7 @@ void main() {
         createdBy: 'admin456',
         createdAt: testDate,
         comment: 'Test comment',
-        type: RaphconType.network,
+        type: RaphconType.mouseHighlighter,
         isActive: false,
       );
 
@@ -112,7 +140,7 @@ void main() {
       expect(model.createdBy, equals('admin456'));
       expect(model.createdAt, equals(testDate));
       expect(model.comment, equals('Test comment'));
-      expect(model.type, equals(RaphconType.network));
+      expect(model.type, equals(RaphconType.mouseHighlighter));
       expect(model.isActive, isFalse);
     });
 

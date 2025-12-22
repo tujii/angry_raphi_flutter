@@ -113,16 +113,11 @@
   "bySigningInYouAgree": "By signing in you agree to our",
   "and": "and",
   "agreeTo": ".",
-  "raphconTypeMouse": "Mouse",
-  "raphconTypeKeyboard": "Keyboard",
-  "raphconTypeMicrophone": "Microphone",
   "raphconTypeHeadset": "Headset",
   "raphconTypeWebcam": "Webcam",
-  "raphconTypeSpeakers": "Speakers",
-  "raphconTypeNetwork": "Network",
-  "raphconTypeSoftware": "Software",
-  "raphconTypeHardware": "Hardware",
-  "raphconTypeOther": "Other",
+  "raphconTypeOtherPeripherals": "Other Peripherals",
+  "raphconTypeMouseHighlighter": "Mouse Highlighter",
+  "raphconTypeLateMeeting": "Late to Meeting",
   "selectProblemType": "Select Problem Type",
   "whatKindOfProblem": "What kind of problem?",
   "showDetails": "Show Details",
@@ -630,35 +625,20 @@
   "@agreeTo": {
     "description": "Terms agreement ending text"
   },
-  "@raphconTypeMouse": {
-    "description": "Mouse problem type"
-  },
-  "@raphconTypeKeyboard": {
-    "description": "Keyboard problem type"
-  },
-  "@raphconTypeMicrophone": {
-    "description": "Microphone problem type"
-  },
   "@raphconTypeHeadset": {
     "description": "Headset problem type"
   },
   "@raphconTypeWebcam": {
     "description": "Webcam problem type"
   },
-  "@raphconTypeSpeakers": {
-    "description": "Speakers problem type"
+  "@raphconTypeOtherPeripherals": {
+    "description": "Other Peripherals problem type"
   },
-  "@raphconTypeNetwork": {
-    "description": "Network problem type"
+  "@raphconTypeMouseHighlighter": {
+    "description": "Mouse Highlighter problem type"
   },
-  "@raphconTypeSoftware": {
-    "description": "Software problem type"
-  },
-  "@raphconTypeHardware": {
-    "description": "Hardware problem type"
-  },
-  "@raphconTypeOther": {
-    "description": "Other problem type"
+  "@raphconTypeLateMeeting": {
+    "description": "Late to Meeting problem type"
   },
   "@selectProblemType": {
     "description": "Select problem type label"
