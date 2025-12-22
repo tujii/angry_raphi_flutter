@@ -10,7 +10,7 @@ class RaphconModel extends RaphconEntity {
     required super.createdBy,
     required super.createdAt,
     super.comment,
-    super.type = RaphconType.other,
+    super.type = RaphconType.otherPeripherals,
     super.isActive = true,
   });
 
@@ -33,7 +33,7 @@ class RaphconModel extends RaphconEntity {
         createdBy: map['createdBy'] as String,
         createdAt: createdAt,
         comment: map['comment'] as String?,
-        type: RaphconType.fromString(map['type'] as String? ?? 'other'),
+        type: RaphconType.fromString(map['type'] as String? ?? 'otherPeripherals'),
         isActive: map['isActive'] as bool? ?? true,
       );
     } catch (e) {

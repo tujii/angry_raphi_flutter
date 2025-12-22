@@ -17,7 +17,7 @@ class RaphconEntity extends Equatable {
     required this.createdBy,
     required this.createdAt,
     this.comment,
-    this.type = RaphconType.other, // Default to 'other' if not specified
+    this.type = RaphconType.otherPeripherals, // Default to 'otherPeripherals' if not specified
     this.isActive = true,
   });
 
