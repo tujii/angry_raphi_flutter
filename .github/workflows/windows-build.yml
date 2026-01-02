@@ -1,0 +1,66 @@
+name: Windows Build
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    name: Build and Test Windows App
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Read Flutter version
+        id: flutter-version
+        shell: bash
+        run: echo "version=$(cat .dart_tool/version)" >> $GITHUB_OUTPUT
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '${{ steps.flutter-version.outputs.version }}'
+          channel: 'stable'
+          cache: true
+
+      - name: Enable Windows desktop
+        run: flutter config --enable-windows-desktop
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Analyze code
+        run: flutter analyze --no-fatal-infos
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Build Windows app
+        run: flutter build windows --release
+
+      - name: Check build output
+        shell: bash
+        run: |
+          if [ -f "build/windows/x64/runner/Release/angry_raphi.exe" ]; then
+            echo "✅ Windows executable built successfully"
+            ls -lh build/windows/x64/runner/Release/
+          else
+            echo "❌ Windows executable not found"
+            exit 1
+          fi
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-release
+          path: build/windows/x64/runner/Release/
+          retention-days: 7
