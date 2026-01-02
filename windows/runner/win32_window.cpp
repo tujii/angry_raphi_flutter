@@ -100,8 +100,9 @@ const wchar_t* WindowClassRegistrar::GetWindowClass() {
     window_class.hbrBackground = 0;
     window_class.lpszMenuName = nullptr;
     window_class.lpfnWndProc = Win32Window::WndProc;
-    RegisterClass(&window_class);
-    class_registered_ = true;
+    if (RegisterClass(&window_class)) {
+      class_registered_ = true;
+    }
   }
   return kWindowClassName;
 }
@@ -276,8 +277,10 @@ void Win32Window::UpdateTheme(HWND const window) {
 
   if (result == ERROR_SUCCESS) {
     BOOL dark_mode = light_mode == 0;
-    DwmSetWindowAttribute(window, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark_mode,
+    HRESULT hr = DwmSetWindowAttribute(window, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark_mode,
                           sizeof(dark_mode));
+    // Ignore errors as dark mode is not critical for app functionality
+    (void)hr;
   }
 }
 

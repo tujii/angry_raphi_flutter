@@ -23,7 +23,12 @@ jobs:
       - name: Read Flutter version
         id: flutter-version
         shell: bash
-        run: echo "version=$(cat .dart_tool/version)" >> $GITHUB_OUTPUT
+        run: |
+          if [ -f ".dart_tool/version" ]; then
+            echo "version=$(cat .dart_tool/version)" >> $GITHUB_OUTPUT
+          else
+            echo "version=3.27.4" >> $GITHUB_OUTPUT
+          fi
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
