@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -6,7 +7,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import 'core/constants/app_constants.dart';
 import 'core/routing/app_router.dart';
@@ -40,11 +40,17 @@ import 'features/authentication/presentation/bloc/auth_event.dart';
 import 'core/network/network_info.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+// Conditional import for web-specific features
+import 'web_url_strategy_stub.dart'
+    if (dart.library.html) 'package:flutter_web_plugins/flutter_web_plugins.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Configure URL strategy for web to show clean URLs without #
-  setUrlStrategy(PathUrlStrategy());
+  if (kIsWeb) {
+    setUrlStrategy(PathUrlStrategy());
+  }
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
