@@ -51,3 +51,5 @@ app.*.map.json
 # API Keys and sensitive files
 gemini_api_key
 
+.fvm/
+.fvmrc
