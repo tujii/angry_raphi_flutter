@@ -45,7 +45,8 @@ class _RaphconTypeSelectionDialogState
           maxHeight: MediaQuery.of(context).size.height * 0.8,
         ),
         child: SingleChildScrollView(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
