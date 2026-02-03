@@ -44,7 +44,7 @@ class StoryOfTheDayService {
         debugPrint('Query future completed with error: $e');
         debugPrint(
             'Suppressed later error from raphcons query after timeout: $e\n$st');
-        return null;
+        return Future<QuerySnapshot<Map<String, dynamic>>>.error(e);
       }));
       debugPrint('Awaiting query future...');
       try {

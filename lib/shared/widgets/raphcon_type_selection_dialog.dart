@@ -38,15 +38,10 @@ class _RaphconTypeSelectionDialogState
 
     return AlertDialog(
       title: Text(localizations.selectProblemType),
-      content: ConstrainedBox(
-        constraints: BoxConstraints(
-          // Keep dialog usable on small screens by limiting height
-          maxWidth: 450,
-          maxHeight: MediaQuery.of(context).size.height * 0.8,
-        ),
+      content: SizedBox(
+        width: 450,
+        height: 550,
         child: SingleChildScrollView(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,18 +105,14 @@ class _RaphconTypeSelectionDialogState
   }
 
   Widget _buildProblemTypeGrid(AppLocalizations localizations) {
-    final width = MediaQuery.of(context).size.width;
-    final crossAxis = width < 380 ? 1 : 2;
-    final aspect = width < 380 ? 2.0 : 2.5;
-
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxis,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
-        childAspectRatio: aspect,
+        childAspectRatio: 2.5,
       ),
       itemCount: RaphconType.values.length,
       itemBuilder: (context, index) {

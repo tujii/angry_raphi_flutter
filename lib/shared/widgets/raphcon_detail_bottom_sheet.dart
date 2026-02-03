@@ -353,7 +353,6 @@ class _RaphconDetailBottomSheetState extends State<RaphconDetailBottomSheet> {
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
     return ListView.builder(
-      shrinkWrap: true,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       itemCount: sortedRaphcons.length,
       itemBuilder: (context, index) {
