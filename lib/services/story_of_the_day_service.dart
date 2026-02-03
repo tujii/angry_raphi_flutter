@@ -1,5 +1,9 @@
+import 'dart:async';
 import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+
 import '../core/enums/raphcon_type.dart';
 import '../features/user/domain/entities/user.dart';
 import 'gemini_ai_service.dart';
@@ -21,27 +25,56 @@ class StoryOfTheDayService {
       final daysFromMonday = now.weekday - 1; // Monday = 0, Sunday = 6
       final startOfWeek = DateTime(now.year, now.month, now.day)
           .subtract(Duration(days: daysFromMonday));
+      final timestampStartOfWeek = Timestamp.fromDate(startOfWeek);
 
       // Get all active Raphcons from this week
       QuerySnapshot raphconsSnapshot;
+      debugPrint('Fetching raphcons since $timestampStartOfWeek');
+      // Build the query future first so we can attach an error handler
+      final queryFuture = _firestore
+          .collection('raphcons')
+          .where('createdAt', isGreaterThanOrEqualTo: timestampStartOfWeek)
+          .where('isActive', isEqualTo: true)
+          .get();
+      debugPrint('Query built, awaiting results...');
+      // If the query times out, the underlying future may still complete
+      // later with an error. Attach a catchError to ensure those later
+      // errors are observed and won't bubble as unhandled exceptions.
+      unawaited(queryFuture.catchError((e, st) {
+        debugPrint('Query future completed with error: $e');
+        debugPrint(
+            'Suppressed later error from raphcons query after timeout: $e\n$st');
+        return null;
+      }));
+      debugPrint('Awaiting query future...');
       try {
-        raphconsSnapshot = await _firestore
-            .collection('raphcons')
-            .where('createdAt',
-                isGreaterThanOrEqualTo: Timestamp.fromDate(startOfWeek))
-            .where('isActive', isEqualTo: true)
-            .get();
+        // Use a short timeout to avoid hangs (especially on web). If a
+        // timeout happens we throw and handle it explicitly below.
+        debugPrint('Starting timeout wait for raphcons query...');
+        raphconsSnapshot = await queryFuture.timeout(const Duration(seconds: 5),
+            onTimeout: () {
+          throw TimeoutException(
+              'Timeout waiting for raphcons query (5s) — original future will be suppressed');
+        });
+        debugPrint('Fetched ${raphconsSnapshot.docs.length} raphcons');
+      } on FirebaseException catch (e, st) {
+        debugPrint(
+            'FirebaseException beim Fetch: ${e.code} / ${e.message}\n$st');
+        return _getDefaultStories();
+      } on TimeoutException catch (e, st) {
+        debugPrint('Timeout beim Firestore-get(): $e\n$st');
+        return _getDefaultStories();
       } catch (e, st) {
-        // Log the error and return default stories if the query fails
-        // ignore: avoid_print
-        print('Failed to fetch raphcons: $e\n$st');
+        debugPrint(
+            'Allg. Exception (${e.runtimeType}) beim Firestore-get(): $e\n$st');
         return _getDefaultStories();
       }
-
+      debugPrint(
+          'Fetched ${raphconsSnapshot.docs.length} raphcons since start of week');
       if (raphconsSnapshot.docs.isEmpty) {
         return _getDefaultStories();
       }
-
+      debugPrint('Processing raphcon statistics...');
       // Count Raphcons by user and type
       final Map<String, Map<RaphconType, int>> userStats = {};
       final Map<String, int> totalByUser = {};
@@ -78,8 +111,8 @@ class StoryOfTheDayService {
             orElse: () => users.first);
 
         if (topUser.value >= 3) {
-          final story = await _generateTopUserStory(
-              user.initials, topUser.value);
+          final story =
+              await _generateTopUserStory(user.initials, topUser.value);
           if (story != null) {
             storiesSet.add(story);
           }
@@ -117,6 +150,34 @@ class StoryOfTheDayService {
             storiesSet.add(story);
             typeStoriesAdded++;
             variationCounter++;
+          }
+        }
+      }
+
+      // If we couldn't derive any interesting stories but there are
+      // raphcons, produce at least simple top-user stories (even for
+      // single occurrences) so the UI doesn't fall back to generic
+      // default texts when there is actual data.
+      if (storiesSet.isEmpty && totalByUser.isNotEmpty) {
+        // Sort users by number of raphcons
+        final sortedTotals = totalByUser.entries.toList()
+          ..sort((a, b) => b.value.compareTo(a.value));
+
+        const maxStories = 5;
+        for (var i = 0;
+            i < sortedTotals.length && storiesSet.length < maxStories;
+            i++) {
+          final userId = sortedTotals[i].key;
+          final count = sortedTotals[i].value;
+          final user = users.firstWhere((u) => u.id == userId,
+              orElse: () => users.first);
+          // Debug: indicate fallback generation
+          debugPrint(
+              'Fallback generating minimal story for ${user.initials} count=$count');
+          final story =
+              await _generateTopUserStory(user.initials, count, variation: i);
+          if (story != null) {
+            storiesSet.add(story);
           }
         }
       }
@@ -256,14 +317,6 @@ class StoryOfTheDayService {
           '🏃 $userName rennt hinterher: ${count}x zu spät!'
         ];
         return lateTemplates[random.nextInt(lateTemplates.length)];
-      default:
-        final genericTemplates = [
-          '❓ $userName hatte ${count}x mysteriöse Tech-Probleme diese Woche...',
-          '🔧 Tech-Gremlins verfolgen $userName: ${count}x diese Woche!',
-          '⚙️ $userName kämpft gegen die Maschinen: ${count}x verloren!',
-          '🤖 Die Technik hasst $userName: ${count}x Beweis diese Woche!'
-        ];
-        return genericTemplates[random.nextInt(genericTemplates.length)];
     }
   }
 
@@ -279,8 +332,6 @@ class StoryOfTheDayService {
         return 'Mouse Highlighter';
       case RaphconType.lateMeeting:
         return 'Zu spät zum Meeting';
-      default:
-        return 'Technik';
     }
   }
 

@@ -21,13 +21,21 @@ class _StoryOfTheDayBannerState extends State<StoryOfTheDayBanner> {
   @override
   void initState() {
     super.initState();
+    // ignore: avoid_print
+    print('StoryOfTheDayBanner.initState: stories=${widget.stories.length}');
     _startRotation();
   }
 
   @override
   void didUpdateWidget(StoryOfTheDayBanner oldWidget) {
     super.didUpdateWidget(oldWidget);
+    // Debug: log when stories change
     if (oldWidget.stories != widget.stories) {
+      // ignore: avoid_print
+      print(
+          'StoryOfTheDayBanner.didUpdateWidget: old=${oldWidget.stories.length} new=${widget.stories.length}');
+      // Reset index to avoid range errors when the list size shrinks to 1
+      _currentIndex = 0;
       _startRotation();
     }
   }
@@ -114,9 +122,11 @@ class _StoryOfTheDayBannerState extends State<StoryOfTheDayBanner> {
             duration: const Duration(milliseconds: 500),
             child: Text(
               widget.stories.isNotEmpty
-                  ? widget.stories[_currentIndex]
+                  ? widget.stories[_currentIndex % widget.stories.length]
                   : 'Keine Stories verfügbar',
-              key: ValueKey(_currentIndex),
+              key: ValueKey(widget.stories.isNotEmpty
+                  ? _currentIndex % widget.stories.length
+                  : 0),
               style: TextStyle(
                 color: Colors.grey[800],
                 fontSize: 14,

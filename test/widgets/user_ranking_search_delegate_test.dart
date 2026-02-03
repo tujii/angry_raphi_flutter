@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:angry_raphi/features/user/domain/entities/user.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('UserRankingSearchDelegate Badge Logic Tests', () {

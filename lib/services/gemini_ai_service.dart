@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:google_generative_ai/google_generative_ai.dart';
 import '../core/config/ai_config.dart';
 
@@ -43,6 +45,11 @@ class GeminiAIService {
   }) async {
     if (_model == null) return null;
 
+    // Debug: log parameters passed into Gemini
+    // ignore: avoid_print
+    print(
+        'GeminiAIService.generateStory args: userName=$userName problemType=$problemType count=$count variation=$variation');
+
     try {
       final styles = [
         'witzig und sarkastisch',
@@ -83,6 +90,10 @@ Verschiedene Ansätze je nach Variation:
 Generiere NUR den Satz, ohne Anführungszeichen. SEI KREATIV und vermeide Wiederholungen!
 ''';
 
+      // Debug: log prompt length and a short preview
+      // ignore: avoid_print
+      print(
+          'GeminiAIService.generateStory prompt (len=${prompt.length}): ${prompt.substring(0, min(200, prompt.length)).replaceAll('\n', ' ')}');
       final response = await _model.generateContent([Content.text(prompt)]);
       final text = response.text?.trim();
 
@@ -104,6 +115,11 @@ Generiere NUR den Satz, ohne Anführungszeichen. SEI KREATIV und vermeide Wieder
     int variation = 0,
   }) async {
     if (_model == null) return null;
+
+    // Debug: log parameters passed into Gemini for top user
+    // ignore: avoid_print
+    print(
+        'GeminiAIService.generateTopUserStory args: userName=$userName count=$count variation=$variation');
 
     try {
       final styles = [
@@ -141,6 +157,10 @@ Verschiedene Ansätze:
 Generiere NUR den Satz, ohne Anführungszeichen oder zusätzliche Erklärungen.
 ''';
 
+      // Debug: log prompt length and a short preview
+      // ignore: avoid_print
+      print(
+          'GeminiAIService.generateTopUserStory prompt (len=${prompt.length}): ${prompt.substring(0, min(200, prompt.length)).replaceAll('\n', ' ')}');
       final response = await _model.generateContent([Content.text(prompt)]);
       final text = response.text?.trim();
 

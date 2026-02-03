@@ -149,6 +149,14 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
     if (users.isEmpty) return;
 
     final stories = await _storyService.getWeeklyStories(users);
+    // Debug logging to verify what the service returned
+    // ignore: avoid_print
+    print('StoryOfTheDay: fetched ${stories.length} stories');
+    if (stories.isNotEmpty) {
+      // ignore: avoid_print
+      print('StoryOfTheDay: sample -> ${stories.take(3).toList()}');
+    }
+
     if (mounted) {
       setState(() {
         _storiesOfTheWeek = stories;
@@ -894,7 +902,7 @@ class PublicUserCard extends StatelessWidget {
                   ],
                 ),
               ),
-                CircleAvatar(
+            CircleAvatar(
               backgroundColor: AppConstants.primaryColor,
               radius: 24,
               child: user.avatarUrl != null && user.avatarUrl!.isNotEmpty
