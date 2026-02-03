@@ -29,7 +29,7 @@ class MarkdownContentWidget extends StatelessWidget {
     }
 
     final lines = content.split('\n');
-    List<Widget> widgets = [];
+    final List<Widget> widgets = [];
 
     for (int i = 0; i < lines.length; i++) {
       final line = lines[i].trim();
@@ -66,7 +66,7 @@ class MarkdownContentWidget extends StatelessWidget {
       // List items
       else if (line.startsWith('- ')) {
         // Extract emoji and text
-        String listItem = line.substring(2);
+        final String listItem = line.substring(2);
         String emoji = '';
         String text = listItem;
 
@@ -89,7 +89,7 @@ class MarkdownContentWidget extends StatelessWidget {
                   width: 4,
                   height: 4,
                   margin: const EdgeInsets.only(top: 6, right: 8),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: AppConstants.primaryColor,
                     shape: BoxShape.circle,
                   ),

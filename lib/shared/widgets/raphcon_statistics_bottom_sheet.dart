@@ -61,7 +61,7 @@ class RaphconStatisticsBottomSheet extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   localizations.sortedByType,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                     color: AppConstants.subtitleColor,
                   ),
@@ -120,27 +120,27 @@ class RaphconStatisticsBottomSheet extends StatelessWidget {
       BuildContext context, AppLocalizations localizations) {
     if (statistics.isEmpty) {
       return Padding(
-        padding: EdgeInsets.all(32),
+        padding: const EdgeInsets.all(32),
         child: Column(
           children: [
-            Icon(
+            const Icon(
               Icons.check_circle_outline,
               size: 64,
               color: Colors.green,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               localizations.noProblemsReported,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
                 color: Colors.green,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               localizations.noTechnicalProblemsYet,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
                 color: Colors.grey,
               ),
@@ -258,8 +258,6 @@ class RaphconStatisticsBottomSheet extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      isDismissible: true,
-      enableDrag: true,
       builder: (context) => GestureDetector(
         onTap: () => Navigator.of(context).pop(),
         child: Container(

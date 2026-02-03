@@ -2,8 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../domain/usecases/check_admin_status.dart';
 import '../../domain/usecases/add_admin.dart';
+import '../../domain/usecases/check_admin_status.dart';
 
 // Events
 abstract class AdminEvent extends Equatable {

@@ -23,13 +23,20 @@ class StoryOfTheDayService {
           .subtract(Duration(days: daysFromMonday));
 
       // Get all active Raphcons from this week
-      final raphconsSnapshot = await _firestore
-          .collection('raphcons')
-          .where('createdAt',
-              isGreaterThanOrEqualTo: Timestamp.fromDate(startOfWeek))
-          .where('isActive', isEqualTo: true)
-          .get();
-
+      QuerySnapshot raphconsSnapshot;
+      try {
+        raphconsSnapshot = await _firestore
+            .collection('raphcons')
+            .where('createdAt',
+                isGreaterThanOrEqualTo: Timestamp.fromDate(startOfWeek))
+            .where('isActive', isEqualTo: true)
+            .get();
+      } catch (e, st) {
+        // Log the error and return default stories if the query fails
+        // ignore: avoid_print
+        print('Failed to fetch raphcons: $e\n$st');
+        return _getDefaultStories();
+      }
 
       if (raphconsSnapshot.docs.isEmpty) {
         return _getDefaultStories();
@@ -40,12 +47,11 @@ class StoryOfTheDayService {
       final Map<String, int> totalByUser = {};
 
       for (var doc in raphconsSnapshot.docs) {
-        final data = doc.data();
+        final data = doc.data() as Map<String, dynamic>;
         final userId = data['userId'] as String;
         final typeString = data['type'] as String? ?? 'other';
         final type = RaphconType.fromString(typeString);
         (data['createdAt'] as Timestamp).toDate();
-
 
         userStats.putIfAbsent(userId, () => {});
         userStats[userId]![type] = (userStats[userId]![type] ?? 0) + 1;
@@ -57,8 +63,7 @@ class StoryOfTheDayService {
 
         if (userStats[userId] != null) {
           // ignore: unused_local_variable
-          for (var typeEntry in userStats[userId]!.entries) {
-          }
+          for (var typeEntry in userStats[userId]!.entries) {}
         }
       }
 
@@ -74,13 +79,11 @@ class StoryOfTheDayService {
 
         if (topUser.value >= 3) {
           final story = await _generateTopUserStory(
-              user.initials, topUser.value,
-              variation: 0);
+              user.initials, topUser.value);
           if (story != null) {
             storiesSet.add(story);
           }
-        } else {
-        }
+        } else {}
       }
 
       // Find users with specific type issues (limit to most interesting ones)
@@ -120,11 +123,10 @@ class StoryOfTheDayService {
 
       // Convert Set to List and limit to max 5 stories
       final stories = storiesSet.toList();
-      final maxStories = 5;
+      const maxStories = 5;
       final finalStories = stories.length > maxStories
           ? stories.sublist(0, maxStories)
           : stories;
-
 
       if (finalStories.isEmpty) {
         final defaultStories = _getDefaultStories().take(maxStories).toList();
@@ -132,8 +134,7 @@ class StoryOfTheDayService {
       }
 
       // Return limited stories for rotation
-      for (int i = 0; i < finalStories.length; i++) {
-      }
+      for (int i = 0; i < finalStories.length; i++) {}
 
       return finalStories;
     } catch (e) {
@@ -146,13 +147,21 @@ class StoryOfTheDayService {
       {int variation = 0}) async {
     // Try Gemini AI first
     if (_geminiService.isAvailable) {
-      final aiStory = await _geminiService.generateTopUserStory(
-        userName: userName,
-        count: count,
-        variation: variation,
-      );
-      if (aiStory != null && aiStory.isNotEmpty) {
-        return aiStory;
+      try {
+        // Protect against hanging AI calls on web with a short timeout
+        final aiStory = await _geminiService
+            .generateTopUserStory(
+              userName: userName,
+              count: count,
+              variation: variation,
+            )
+            .timeout(const Duration(seconds: 3));
+
+        if (aiStory != null && aiStory.isNotEmpty) {
+          return aiStory;
+        }
+      } catch (e) {
+        // Timeout or error: fall through to template fallback
       }
     }
 
@@ -183,14 +192,21 @@ class StoryOfTheDayService {
     // Try Gemini AI first with variation
     if (_geminiService.isAvailable) {
       final problemType = _getGermanTypeName(type);
-      final aiStory = await _geminiService.generateStory(
-        userName: userName,
-        problemType: problemType,
-        count: count,
-        variation: variation,
-      );
-      if (aiStory != null && aiStory.isNotEmpty) {
-        return aiStory;
+      try {
+        final aiStory = await _geminiService
+            .generateStory(
+              userName: userName,
+              problemType: problemType,
+              count: count,
+              variation: variation,
+            )
+            .timeout(const Duration(seconds: 3));
+
+        if (aiStory != null && aiStory.isNotEmpty) {
+          return aiStory;
+        }
+      } catch (e) {
+        // Timeout or error: fall back to templates
       }
     }
 
@@ -230,7 +246,8 @@ class StoryOfTheDayService {
           '🎯 Mouse Highlighter AWOL bei $userName: ${count}x!',
           '💫 $userName\'s unsichtbarer Cursor: ${count}x verloren!'
         ];
-        return highlighterTemplates[random.nextInt(highlighterTemplates.length)];
+        return highlighterTemplates[
+            random.nextInt(highlighterTemplates.length)];
       case RaphconType.lateMeeting:
         final lateTemplates = [
           '⏰ $userName zu spät: ${count}x diese Woche verpasst!',

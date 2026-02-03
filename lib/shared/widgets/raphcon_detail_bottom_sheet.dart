@@ -1,8 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/enums/raphcon_type.dart';
@@ -45,7 +45,6 @@ class RaphconDetailBottomSheet extends StatefulWidget {
     final raphconBloc = context.read<RaphconBloc>();
     return showDialog<void>(
       context: context,
-      barrierDismissible: true,
       builder: (context) => Dialog(
         insetPadding: const EdgeInsets.all(16),
         child: Container(
@@ -263,7 +262,7 @@ class _RaphconDetailBottomSheetState extends State<RaphconDetailBottomSheet> {
                         const SizedBox(height: 4),
                         Text(
                           localizations.problemStatisticsFor(widget.userName),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14,
                             color: AppConstants.subtitleColor,
                           ),

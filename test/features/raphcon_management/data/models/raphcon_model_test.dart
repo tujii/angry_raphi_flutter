@@ -1,12 +1,12 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:angry_raphi/core/enums/raphcon_type.dart';
 import 'package:angry_raphi/features/raphcon_management/data/models/raphcon_model.dart';
 import 'package:angry_raphi/features/raphcon_management/domain/entities/raphcon_entity.dart';
-import 'package:angry_raphi/core/enums/raphcon_type.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('RaphconModel', () {
-    final testDate = DateTime(2024, 1, 1);
+    final testDate = DateTime(2024);
 
     test('fromMap creates model from map', () {
       final map = {
@@ -95,7 +95,6 @@ void main() {
         createdAt: testDate,
         comment: 'Test comment',
         type: RaphconType.webcam,
-        isActive: true,
       );
 
       final map = model.toMap();

@@ -1,6 +1,6 @@
+import 'package:angry_raphi/core/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:angry_raphi/core/constants/app_constants.dart';
 
 void main() {
   group('AppConstants', () {
