@@ -2,13 +2,15 @@ name: angry_raphi
 description: "AngryRaphi - Person rating app with raphcons"
 publish_to: 'none'
 
-version: 2.3.1+7
+version: 2.3.2+1
 
 environment:
   sdk: ^3.6.1
 
 dependencies:
   flutter:
+    sdk: flutter
+  flutter_web_plugins:
     sdk: flutter
   
   # Firebase

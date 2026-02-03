@@ -38,11 +38,24 @@ echo [SUCCESS] Flutter build completed successfully
 
 REM Step 5: Deploy to Firebase (Hosting + Firestore Rules and Indexes)
 echo [INFO] Deploying to Firebase (Hosting + Firestore)...
-call firebase deploy --only hosting,firestore
 
+REM Check whether 'firebase' CLI is available; if not, try 'npx firebase' as a fallback
+where firebase >nul 2>&1
 if errorlevel 1 (
-    echo [ERROR] Firebase deployment failed
-    exit /b 1
+    echo [WARN] 'firebase' not found in PATH. Attempting to use 'npx firebase' as a fallback.
+    call npx firebase deploy --only hosting,firestore
+    if errorlevel 1 (
+        echo [ERROR] Firebase deployment failed. Ensure Node.js is installed and either install firebase-tools globally:
+        echo [ERROR]   npm install -g firebase-tools
+        echo [ERROR] or run the deploy command manually with npx after installing Node.js.
+        exit /b 1
+    )
+) else (
+    call firebase deploy --only hosting,firestore
+    if errorlevel 1 (
+        echo [ERROR] Firebase deployment failed
+        exit /b 1
+    )
 )
 
 echo [SUCCESS] 🎉 Deployment completed successfully!

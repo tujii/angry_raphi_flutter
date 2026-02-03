@@ -1,4 +1,4 @@
-## 🆕 Version 2.3.1 (03.02.2026)
+## 🆕 Version 2.3.2 (03.02.2026)
 - 🐛 Bugfix: Story-Banner zeigt jetzt datenbasierte Stories (auch bei nur 1 Raphcon)
 - 🧩 Fix: RenderFlex-Overflow im Typ-Auswahl-Dialog behoben (respon­sive Höhe & Scroll)
 - 🛠️ Verbesserte Fehlerbehandlung und Debug-Logs für Story-Generierung
