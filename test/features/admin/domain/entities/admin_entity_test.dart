@@ -1,9 +1,9 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:angry_raphi/features/admin/domain/entities/admin_entity.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('AdminEntity', () {
-    final testDate = DateTime(2024, 1, 1);
+    final testDate = DateTime(2024);
 
     test('creates admin entity with all fields', () {
       final admin = AdminEntity(

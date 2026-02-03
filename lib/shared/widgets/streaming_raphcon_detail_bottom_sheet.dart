@@ -1,8 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../core/constants/app_constants.dart';
 import '../../core/enums/raphcon_type.dart';
@@ -46,7 +45,6 @@ class StreamingRaphconDetailBottomSheet extends StatefulWidget {
     final raphconBloc = context.read<RaphconBloc>();
     return showDialog<void>(
       context: context,
-      barrierDismissible: true,
       builder: (context) => Dialog(
         insetPadding: const EdgeInsets.all(16),
         child: Container(
@@ -226,7 +224,7 @@ class _StreamingRaphconDetailBottomSheetState
                         const SizedBox(height: 4),
                         Text(
                           localizations.problemStatisticsFor(widget.userName),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14,
                             color: AppConstants.subtitleColor,
                           ),
@@ -580,26 +578,16 @@ class _StreamingRaphconDetailBottomSheetState
 
   IconData _getIconForType(RaphconType type) {
     switch (type) {
-      case RaphconType.mouse:
-        return Icons.mouse;
-      case RaphconType.keyboard:
-        return Icons.keyboard;
-      case RaphconType.microphone:
-        return Icons.mic;
       case RaphconType.headset:
         return Icons.headset;
       case RaphconType.webcam:
         return Icons.videocam;
-      case RaphconType.speakers:
-        return Icons.volume_up;
-      case RaphconType.network:
-        return Icons.wifi_off;
-      case RaphconType.software:
-        return Icons.computer;
-      case RaphconType.hardware:
-        return Icons.hardware;
-      case RaphconType.other:
-        return Icons.help_outline;
+      case RaphconType.otherPeripherals:
+        return Icons.devices;
+      case RaphconType.mouseHighlighter:
+        return Icons.highlight_alt;
+      case RaphconType.lateMeeting:
+        return Icons.schedule;
     }
   }
 

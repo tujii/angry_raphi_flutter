@@ -1,8 +1,10 @@
+// ignore_for_file: prefer_single_quotes
+
 class AppExceptions implements Exception {
   final String message;
   final String prefix;
 
-  AppExceptions([this.message = "", this.prefix = ""]);
+  AppExceptions([this.message = '', this.prefix = '']);
 
   @override
   String toString() {
@@ -12,43 +14,43 @@ class AppExceptions implements Exception {
 
 class FetchDataException extends AppExceptions {
   FetchDataException([String? message])
-      : super(message ?? "", "Error During Communication: ");
+      : super(message ?? '', 'Error During Communication: ');
 }
 
 class BadRequestException extends AppExceptions {
-  BadRequestException([message]) : super(message, "Invalid Request: ");
+  BadRequestException([message]) : super(message, 'Invalid Request: ');
 }
 
 class UnauthorisedException extends AppExceptions {
-  UnauthorisedException([message]) : super(message, "Unauthorised: ");
+  UnauthorisedException([message]) : super(message, 'Unauthorised: ');
 }
 
 class InvalidInputException extends AppExceptions {
   InvalidInputException([String? message])
-      : super(message ?? "", "Invalid Input: ");
+      : super(message ?? '', 'Invalid Input: ');
 }
 
 class NoInternetConnectionException extends AppExceptions {
   NoInternetConnectionException([message])
-      : super(message, "No Internet Connection: ");
+      : super(message, 'No Internet Connection: ');
 }
 
 class TimeoutException extends AppExceptions {
-  TimeoutException([message]) : super(message, "Request Timeout: ");
+  TimeoutException([message]) : super(message, 'Request Timeout: ');
 }
 
 class ServerException extends AppExceptions {
-  ServerException([message]) : super(message, "Server Error: ");
+  ServerException([message]) : super(message, 'Server Error: ');
 }
 
 class CacheException extends AppExceptions {
-  CacheException([message]) : super(message, "Cache Error: ");
+  CacheException([message]) : super(message, 'Cache Error: ');
 }
 
 class AuthException extends AppExceptions {
-  AuthException([message]) : super(message, "Authentication Error: ");
+  AuthException([message]) : super(message, 'Authentication Error: ');
 }
 
 class FirebaseException extends AppExceptions {
-  FirebaseException([message]) : super(message, "Firebase Error: ");
+  FirebaseException([message]) : super(message, 'Firebase Error: ');
 }

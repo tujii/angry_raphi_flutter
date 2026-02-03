@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:angry_raphi/features/user/domain/entities/user.dart';
 import 'package:angry_raphi/features/user/presentation/widgets/public_user_list_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('PublicUserCard Rank Display', () {

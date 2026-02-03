@@ -1,6 +1,6 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:angry_raphi/features/user/domain/entities/user.dart';
 import 'package:angry_raphi/core/utils/ranking_utils.dart';
+import 'package:angry_raphi/features/user/domain/entities/user.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Bronze Badge BUG - FAILING TESTS', () {
@@ -70,7 +70,7 @@ void main() {
     test('BUG IDENTIFIED: I.G. gets badge indicator but wrong rank styling',
         () {
       // I.G. is at index 3
-      final igIndex = 3;
+      const igIndex = 3;
       final igRank = RankingUtils.calculateRank(testUsers, igIndex);
 
       // Badge logic says I.G. should get a badge
@@ -88,7 +88,7 @@ void main() {
     });
 
     test('FAILING EXPECTATION: I.G. should show BRONZE despite rank=4', () {
-      final igIndex = 3;
+      const igIndex = 3;
       final igRank = RankingUtils.calculateRank(testUsers, igIndex);
       final shouldHaveBadge = shouldShowBadge(testUsers, igIndex);
 

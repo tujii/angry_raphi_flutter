@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../../core/errors/failures.dart';
 import '../../../../core/enums/raphcon_type.dart';
+import '../../../../core/errors/failures.dart';
 import '../entities/raphcon_entity.dart';
 
 class AddRaphconParams {
@@ -14,7 +14,7 @@ class AddRaphconParams {
     required this.userId,
     required this.createdBy,
     this.comment,
-    this.type = RaphconType.other,
+    this.type = RaphconType.otherPeripherals,
   });
 }
 

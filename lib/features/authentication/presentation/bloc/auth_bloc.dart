@@ -1,11 +1,12 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../domain/repositories/auth_repository.dart';
+import '../../domain/usecases/get_current_user.dart';
 import '../../domain/usecases/sign_in_with_google.dart';
 import '../../domain/usecases/sign_out.dart';
-import '../../domain/usecases/get_current_user.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 

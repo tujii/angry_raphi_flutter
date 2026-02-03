@@ -9,7 +9,7 @@ class GetUsersUseCase {
   const GetUsersUseCase(this._repository);
 
   Future<List<User>> execute() async {
-    return await _repository.getUsers();
+    return _repository.getUsers();
   }
 }
 
@@ -42,7 +42,7 @@ class AddUserUseCase {
       throw ArgumentError('Invalid initials format. Expected format: A.B.');
     }
 
-    return await _repository.addUser(user);
+    return _repository.addUser(user);
   }
 }
 
@@ -56,7 +56,7 @@ class UpdateUserRaphconsUseCase {
     if (newCount < 0) {
       throw ArgumentError('Raphcon count cannot be negative');
     }
-    return await _repository.updateUserRaphcons(userId, newCount);
+    return _repository.updateUserRaphcons(userId, newCount);
   }
 }
 
@@ -70,6 +70,6 @@ class DeleteUserUseCase {
     if (userId.trim().isEmpty) {
       throw ArgumentError('User ID cannot be empty');
     }
-    return await _repository.deleteUser(userId);
+    return _repository.deleteUser(userId);
   }
 }

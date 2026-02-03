@@ -1,8 +1,8 @@
 // Basic routing test for GoRouter implementation
 
+import 'package:angry_raphi/core/routing/app_router.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:angry_raphi/core/routing/app_router.dart';
 
 void main() {
   group('AppRouter', () {

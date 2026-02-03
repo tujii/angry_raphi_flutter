@@ -1,36 +1,38 @@
 import 'dart:async';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-import '../../../../core/constants/app_constants.dart';
 import '../../../../core/config/ai_config.dart';
-import '../../../../core/routing/app_router.dart';
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/enums/raphcon_type.dart';
-import '../../domain/entities/user.dart' as user_entity;
+import '../../../../core/routing/app_router.dart';
+import '../../../../core/utils/ranking_utils.dart';
+import '../../../../core/utils/responsive_helper.dart';
+import '../../../../services/admin_config_service.dart';
+import '../../../../services/story_of_the_day_service.dart';
+import '../../../../shared/widgets/markdown_content_widget.dart';
+import '../../../../shared/widgets/raphcon_statistics_bottom_sheet.dart';
+import '../../../../shared/widgets/raphcon_type_selection_dialog.dart';
+import '../../../../shared/widgets/story_of_the_day_banner.dart';
+import '../../../../shared/widgets/streaming_raphcon_detail_bottom_sheet.dart';
+import '../../../../shared/widgets/user_ranking_search_delegate.dart';
 import '../../../admin/presentation/bloc/admin_bloc.dart';
-import '../../../raphcon_management/presentation/bloc/raphcon_bloc.dart';
 import '../../../authentication/presentation/bloc/auth_bloc.dart';
 import '../../../authentication/presentation/bloc/auth_event.dart';
 import '../../../authentication/presentation/bloc/auth_state.dart';
 import '../../../authentication/presentation/pages/login_page.dart';
+import '../../../raphcon_management/presentation/bloc/raphcon_bloc.dart';
+import '../../domain/entities/user.dart' as user_entity;
 import '../bloc/user_bloc.dart';
 import 'initials_add_user_dialog.dart';
-import '../../../../shared/widgets/raphcon_type_selection_dialog.dart';
-import '../../../../shared/widgets/raphcon_statistics_bottom_sheet.dart';
-import '../../../../shared/widgets/streaming_raphcon_detail_bottom_sheet.dart';
-import '../../../../services/admin_config_service.dart';
-import '../../../../services/story_of_the_day_service.dart';
-import '../../../../shared/widgets/user_ranking_search_delegate.dart';
-import '../../../../shared/widgets/markdown_content_widget.dart';
-import '../../../../shared/widgets/story_of_the_day_banner.dart';
-import '../../../../core/utils/responsive_helper.dart';
-import '../../../../core/utils/ranking_utils.dart';
 
 class PublicUserListPage extends StatefulWidget {
   const PublicUserListPage({super.key});
@@ -147,6 +149,14 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
     if (users.isEmpty) return;
 
     final stories = await _storyService.getWeeklyStories(users);
+    // Debug logging to verify what the service returned
+    // ignore: avoid_print
+    print('StoryOfTheDay: fetched ${stories.length} stories');
+    if (stories.isNotEmpty) {
+      // ignore: avoid_print
+      print('StoryOfTheDay: sample -> ${stories.take(3).toList()}');
+    }
+
     if (mounted) {
       setState(() {
         _storiesOfTheWeek = stories;
@@ -221,7 +231,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                   icon: CircleAvatar(
                     backgroundColor: Colors.white,
                     backgroundImage: authState.user.photoURL != null
-                        ? NetworkImage(authState.user.photoURL!)
+                        ? CachedNetworkImageProvider(authState.user.photoURL!)
                         : null,
                     child: authState.user.photoURL == null
                         ? Text(
@@ -264,8 +274,8 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                         value: 'settings',
                         child: Row(
                           children: [
-                            Icon(Icons.settings),
-                            SizedBox(width: 8),
+                            const Icon(Icons.settings),
+                            const SizedBox(width: 8),
                             Text(AppLocalizations.of(context)?.settings ??
                                 'Einstellungen'),
                           ],
@@ -276,8 +286,8 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                       value: 'logout',
                       child: Row(
                         children: [
-                          Icon(Icons.logout),
-                          SizedBox(width: 8),
+                          const Icon(Icons.logout),
+                          const SizedBox(width: 8),
                           Text(AppLocalizations.of(context)?.signOut ??
                               'Abmelden'),
                         ],
@@ -600,9 +610,9 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                     ),
                     const SizedBox(height: 20),
                     // App name
-                    Text(
+                    const Text(
                       AppConstants.appName,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: AppConstants.primaryColor,
@@ -835,7 +845,7 @@ class PublicUserCard extends StatelessWidget {
     Color? rankColor;
     const IconData rankIcon = Icons.emoji_events;
     final int? currentRank = rank;
-    
+
     if (currentRank != null && currentRank > 0 && currentRank <= 3) {
       switch (currentRank) {
         case 1:
@@ -884,7 +894,6 @@ class PublicUserCard extends StatelessWidget {
                             Shadow(
                               offset: Offset(0.5, 0.5),
                               blurRadius: 1.0,
-                              color: Colors.black,
                             ),
                           ],
                         ),
@@ -898,18 +907,21 @@ class PublicUserCard extends StatelessWidget {
               radius: 24,
               child: user.avatarUrl != null && user.avatarUrl!.isNotEmpty
                   ? ClipOval(
-                      child: Image.network(
-                        user.avatarUrl!,
+                      child: CachedNetworkImage(
+                        imageUrl: user.avatarUrl!,
                         width: 48,
                         height: 48,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(
-                            Icons.person,
-                            color: Colors.white,
-                            size: 24,
-                          );
-                        },
+                        placeholder: (context, url) => const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                        errorWidget: (context, url, error) => const Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: 24,
+                        ),
                       ),
                     )
                   : const Icon(

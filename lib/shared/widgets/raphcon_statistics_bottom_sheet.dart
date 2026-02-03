@@ -61,7 +61,7 @@ class RaphconStatisticsBottomSheet extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   localizations.sortedByType,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                     color: AppConstants.subtitleColor,
                   ),
@@ -120,27 +120,27 @@ class RaphconStatisticsBottomSheet extends StatelessWidget {
       BuildContext context, AppLocalizations localizations) {
     if (statistics.isEmpty) {
       return Padding(
-        padding: EdgeInsets.all(32),
+        padding: const EdgeInsets.all(32),
         child: Column(
           children: [
-            Icon(
+            const Icon(
               Icons.check_circle_outline,
               size: 64,
               color: Colors.green,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               localizations.noProblemsReported,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
                 color: Colors.green,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
               localizations.noTechnicalProblemsYet,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
                 color: Colors.grey,
               ),
@@ -222,26 +222,16 @@ class RaphconStatisticsBottomSheet extends StatelessWidget {
 
   IconData _getIconForType(RaphconType type) {
     switch (type) {
-      case RaphconType.mouse:
-        return Icons.mouse;
-      case RaphconType.keyboard:
-        return Icons.keyboard;
-      case RaphconType.microphone:
-        return Icons.mic;
       case RaphconType.headset:
         return Icons.headset;
       case RaphconType.webcam:
         return Icons.videocam;
-      case RaphconType.speakers:
-        return Icons.volume_up;
-      case RaphconType.network:
-        return Icons.wifi_off;
-      case RaphconType.software:
-        return Icons.computer;
-      case RaphconType.hardware:
-        return Icons.hardware;
-      case RaphconType.other:
-        return Icons.help_outline;
+      case RaphconType.otherPeripherals:
+        return Icons.devices;
+      case RaphconType.mouseHighlighter:
+        return Icons.highlight_alt;
+      case RaphconType.lateMeeting:
+        return Icons.schedule;
     }
   }
 
@@ -268,8 +258,6 @@ class RaphconStatisticsBottomSheet extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      isDismissible: true,
-      enableDrag: true,
       builder: (context) => GestureDetector(
         onTap: () => Navigator.of(context).pop(),
         child: Container(

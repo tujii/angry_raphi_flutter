@@ -1,44 +1,44 @@
-import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import 'core/constants/app_constants.dart';
+import 'core/network/network_info.dart';
 import 'core/routing/app_router.dart';
-import 'firebase_options.dart';
+import 'features/admin/data/datasources/admin_remote_datasource.dart';
+import 'features/admin/data/repositories/admin_repository_impl.dart';
+import 'features/admin/domain/usecases/add_admin.dart';
+import 'features/admin/domain/usecases/check_admin_status.dart';
+import 'features/admin/presentation/bloc/admin_bloc.dart';
+import 'features/authentication/data/datasources/auth_remote_datasource.dart';
+import 'features/authentication/data/repositories/auth_repository_impl.dart';
+import 'features/authentication/domain/usecases/get_current_user.dart';
+import 'features/authentication/domain/usecases/sign_in_with_google.dart';
+import 'features/authentication/domain/usecases/sign_out.dart';
+import 'features/authentication/presentation/bloc/auth_bloc.dart';
+import 'features/authentication/presentation/bloc/auth_event.dart';
+import 'features/raphcon_management/data/datasources/raphcons_remote_datasource.dart';
+import 'features/raphcon_management/data/repositories/raphcons_repository_impl.dart';
+import 'features/raphcon_management/domain/usecases/add_raphcon.dart';
+import 'features/raphcon_management/domain/usecases/delete_raphcon.dart';
+import 'features/raphcon_management/domain/usecases/get_user_raphcon_statistics.dart';
+import 'features/raphcon_management/domain/usecases/get_user_raphcons_by_type.dart';
+import 'features/raphcon_management/domain/usecases/get_user_raphcons_by_type_stream.dart';
+import 'features/raphcon_management/domain/usecases/get_user_raphcons_stream.dart';
+import 'features/raphcon_management/presentation/bloc/raphcon_bloc.dart';
 import 'features/user/data/repositories/firestore_user_repository.dart';
 import 'features/user/domain/usecases/user_usecases.dart';
 import 'features/user/presentation/bloc/user_bloc.dart';
+import 'firebase_options.dart';
 import 'services/admin_service.dart';
-import 'features/admin/data/repositories/admin_repository_impl.dart';
-import 'features/admin/data/datasources/admin_remote_datasource.dart';
-import 'features/admin/domain/usecases/check_admin_status.dart';
-import 'features/admin/domain/usecases/add_admin.dart';
-import 'features/admin/presentation/bloc/admin_bloc.dart';
-import 'features/raphcon_management/data/repositories/raphcons_repository_impl.dart';
-import 'features/raphcon_management/data/datasources/raphcons_remote_datasource.dart';
-import 'features/raphcon_management/domain/usecases/add_raphcon.dart';
-import 'features/raphcon_management/domain/usecases/get_user_raphcon_statistics.dart';
-import 'features/raphcon_management/domain/usecases/get_user_raphcons_by_type.dart';
-import 'features/raphcon_management/domain/usecases/get_user_raphcons_stream.dart';
-import 'features/raphcon_management/domain/usecases/get_user_raphcons_by_type_stream.dart';
-import 'features/raphcon_management/domain/usecases/delete_raphcon.dart';
-import 'features/raphcon_management/presentation/bloc/raphcon_bloc.dart';
-import 'features/authentication/data/repositories/auth_repository_impl.dart';
-import 'features/authentication/data/datasources/auth_remote_datasource.dart';
-import 'features/authentication/domain/usecases/sign_in_with_google.dart';
 import 'services/registered_users_service.dart';
-import 'features/authentication/domain/usecases/sign_out.dart';
-import 'features/authentication/domain/usecases/get_current_user.dart';
-import 'features/authentication/presentation/bloc/auth_bloc.dart';
-import 'features/authentication/presentation/bloc/auth_event.dart';
-import 'core/network/network_info.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -213,7 +213,6 @@ class AngryRaphiApp extends StatelessWidget {
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(
         seedColor: AppConstants.primaryColor,
-        brightness: Brightness.light,
       ),
       appBarTheme: const AppBarTheme(
         backgroundColor: AppConstants.primaryColor,

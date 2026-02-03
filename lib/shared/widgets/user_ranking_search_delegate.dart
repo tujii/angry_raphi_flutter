@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -259,18 +260,21 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
                   radius: 20,
                   child: user.avatarUrl != null && user.avatarUrl!.isNotEmpty
                       ? ClipOval(
-                          child: Image.network(
-                            user.avatarUrl!,
+                          child: CachedNetworkImage(
+                            imageUrl: user.avatarUrl!,
                             width: 40,
                             height: 40,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return const Icon(
-                                Icons.person,
-                                color: Colors.white,
-                                size: 20,
-                              );
-                            },
+                            placeholder: (context, url) => const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                            errorWidget: (context, url, error) => const Icon(
+                              Icons.person,
+                              color: Colors.white,
+                              size: 20,
+                            ),
                           ),
                         )
                       : const Icon(
@@ -480,7 +484,7 @@ class UserRankingSearchDelegate extends SearchDelegate<String> {
                     Expanded(
                       child: Text(
                         localizations.fullRanking,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,

@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/errors/failures.dart';
 import '../../../../core/enums/raphcon_type.dart';
+import '../../../../core/errors/failures.dart';
 import '../repositories/raphcons_repository.dart';
 
 /// Use case to get raphcon statistics for a specific user

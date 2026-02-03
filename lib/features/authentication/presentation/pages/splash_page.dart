@@ -21,8 +21,8 @@ class SplashPage extends StatelessWidget {
                 height: 200,
               ),
             ),
-            SizedBox(height: 24),
-            Text(
+            const SizedBox(height: 24),
+            const Text(
               AppConstants.appName,
               style: TextStyle(
                 fontSize: 32,
@@ -30,8 +30,8 @@ class SplashPage extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            SizedBox(height: 16),
-            CircularProgressIndicator(
+            const SizedBox(height: 16),
+            const CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
             ),
           ],

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/authentication/presentation/pages/login_page.dart';
-import '../../features/authentication/presentation/pages/terms_of_service_page.dart';
-import '../../features/authentication/presentation/pages/privacy_policy_page.dart';
 import '../../features/admin/presentation/pages/admin_settings_page.dart';
+import '../../features/authentication/presentation/pages/login_page.dart';
+import '../../features/authentication/presentation/pages/privacy_policy_page.dart';
+import '../../features/authentication/presentation/pages/terms_of_service_page.dart';
 import '../../shared/widgets/app_wrapper.dart';
 
 /// Application router configuration using GoRouter
-/// 
+///
 /// This class defines all the named routes for the application.
 /// Routes are organized hierarchically with meaningful URL paths.
 class AppRouter {
@@ -36,7 +36,7 @@ class AppRouter {
           pageBuilder: (context, state) {
             return MaterialPage(
               key: state.pageKey,
-              child: const LoginPage(isDialog: false),
+              child: const LoginPage(),
             );
           },
         ),

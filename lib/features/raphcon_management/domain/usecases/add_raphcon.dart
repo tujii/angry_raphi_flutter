@@ -11,6 +11,6 @@ class AddRaphcon {
   AddRaphcon(this.repository);
 
   Future<Either<Failure, void>> call(AddRaphconParams params) async {
-    return await repository.addRaphcon(params);
+    return repository.addRaphcon(params);
   }
 }

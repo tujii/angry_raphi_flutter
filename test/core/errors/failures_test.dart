@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:angry_raphi/core/errors/failures.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Failures', () {
