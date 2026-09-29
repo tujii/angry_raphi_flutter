@@ -14,6 +14,7 @@ abstract class SpacesRemoteDataSource {
   Future<void> updateSpace(String spaceId, String name, String? description);
   Future<void> deleteSpace(String spaceId);
   Stream<List<SpaceModel>> watchMySpaces(String uid);
+  Stream<SpaceModel?> watchSpace(String spaceId);
   Stream<SpaceMemberModel?> watchMembership(String spaceId, String uid);
   Stream<List<SpaceMemberModel>> watchMembers(String spaceId);
   Future<void> updateMemberRole(String spaceId, String uid, SpaceRole role);
@@ -113,6 +114,12 @@ class SpacesRemoteDataSourceImpl implements SpacesRemoteDataSource {
         ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
       return spaces;
     });
+  }
+
+  @override
+  Stream<SpaceModel?> watchSpace(String spaceId) {
+    return _spaces.doc(spaceId).snapshots().map(
+        (doc) => doc.exists ? SpaceModel.fromMap(doc.data()!, doc.id) : null);
   }
 
   @override

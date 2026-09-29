@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -5,6 +8,9 @@ import '../../features/admin/presentation/pages/admin_settings_page.dart';
 import '../../features/authentication/presentation/pages/login_page.dart';
 import '../../features/authentication/presentation/pages/privacy_policy_page.dart';
 import '../../features/authentication/presentation/pages/terms_of_service_page.dart';
+import '../../features/spaces/presentation/pages/create_space_page.dart';
+import '../../features/spaces/presentation/pages/space_home_page.dart';
+import '../../features/spaces/presentation/pages/spaces_page.dart';
 import '../../shared/widgets/app_wrapper.dart';
 
 /// Application router configuration using GoRouter
@@ -18,12 +24,31 @@ class AppRouter {
   static const String terms = '/terms';
   static const String privacy = '/privacy';
   static const String adminSettings = '/admin/settings';
+  static const String spaces = '/spaces';
+  static const String createSpace = '/spaces/new';
+  static const String spaceHome = '/s/:spaceId';
+
+  /// Location of the home page of the space with [spaceId]
+  static String space(String spaceId) => '/s/${Uri.encodeComponent(spaceId)}';
+
+  /// Query parameter on [login] holding the location to return to
+  static const String fromParam = 'from';
 
   /// Creates and configures the GoRouter instance
-  static GoRouter createRouter() {
+  ///
+  /// [isSignedIn] and [refreshListenable] default to Firebase Auth; tests can
+  /// pass their own. Space routes require a signed-in user; others are
+  /// redirected to [login] and brought back after signing in.
+  static GoRouter createRouter({
+    bool Function()? isSignedIn,
+    Listenable? refreshListenable,
+  }) {
+    final signedIn = isSignedIn ?? _firebaseSignedIn;
     return GoRouter(
       initialLocation: home,
       debugLogDiagnostics: true,
+      refreshListenable: refreshListenable,
+      redirect: (context, state) => redirect(state.uri, signedIn()),
       routes: [
         GoRoute(
           path: home,
@@ -59,6 +84,26 @@ class AppRouter {
               child: const PrivacyPolicyPage(),
             );
           },
+        ),
+        GoRoute(
+          path: spaces,
+          name: 'spaces',
+          builder: (context, state) => const SpacesPage(),
+          routes: [
+            GoRoute(
+              path: 'new',
+              name: 'create-space',
+              builder: (context, state) => const CreateSpacePage(),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: spaceHome,
+          name: 'space',
+          builder: (context, state) => SpaceHomePage(
+            key: ValueKey(state.pathParameters['spaceId']),
+            spaceId: state.pathParameters['spaceId']!,
+          ),
         ),
         GoRoute(
           path: adminSettings,
@@ -100,5 +145,49 @@ class AppRouter {
         ),
       ),
     );
+  }
+
+  static bool _firebaseSignedIn() {
+    try {
+      return FirebaseAuth.instance.currentUser != null;
+    } on Exception {
+      // Firebase not initialized (e.g. in tests): treat as signed out
+      return false;
+    }
+  }
+
+  /// Redirect logic, separated for testing. Returns `null` to stay on [uri].
+  static String? redirect(Uri uri, bool signedIn) {
+    final path = uri.path;
+    final needsAuth =
+        path == spaces || path.startsWith('$spaces/') || path.startsWith('/s/');
+    if (needsAuth && !signedIn) {
+      return Uri(path: login, queryParameters: {fromParam: uri.toString()})
+          .toString();
+    }
+    if (path == login && signedIn) {
+      final from = uri.queryParameters[fromParam];
+      // Only allow local targets (no open redirect)
+      if (from != null && from.startsWith('/') && !from.startsWith('//')) {
+        return from;
+      }
+      return home;
+    }
+    return null;
+  }
+}
+
+/// Notifies GoRouter whenever [stream] emits (e.g. auth state changes).
+class StreamListenable extends ChangeNotifier {
+  late final StreamSubscription<dynamic> _subscription;
+
+  StreamListenable(Stream<dynamic> stream) {
+    _subscription = stream.listen((_) => notifyListeners());
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
   }
 }

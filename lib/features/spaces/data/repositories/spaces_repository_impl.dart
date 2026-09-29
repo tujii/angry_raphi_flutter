@@ -70,6 +70,11 @@ class SpacesRepositoryImpl implements SpacesRepository {
   }
 
   @override
+  Stream<Either<Failure, SpaceEntity?>> watchSpace(String spaceId) {
+    return _guardStream(remoteDataSource.watchSpace(spaceId));
+  }
+
+  @override
   Stream<Either<Failure, SpaceMemberEntity?>> watchMembership(
       String spaceId, String uid) {
     return _guardStream(remoteDataSource.watchMembership(spaceId, uid));

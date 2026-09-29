@@ -12,6 +12,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../../core/config/ai_config.dart';
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/data/data_scope.dart';
 import '../../../../core/enums/raphcon_type.dart';
 import '../../../../core/routing/app_router.dart';
 import '../../../../core/utils/ranking_utils.dart';
@@ -30,12 +31,23 @@ import '../../../authentication/presentation/bloc/auth_event.dart';
 import '../../../authentication/presentation/bloc/auth_state.dart';
 import '../../../authentication/presentation/pages/login_page.dart';
 import '../../../raphcon_management/presentation/bloc/raphcon_bloc.dart';
+import '../../../spaces/domain/entities/space_entity.dart';
+import '../../../spaces/domain/entities/space_member_entity.dart';
+import '../../../spaces/presentation/widgets/space_role_badge.dart';
 import '../../domain/entities/user.dart' as user_entity;
 import '../bloc/user_bloc.dart';
 import 'initials_add_user_dialog.dart';
 
 class PublicUserListPage extends StatefulWidget {
-  const PublicUserListPage({super.key});
+  /// Space shown by this page; `null` for the legacy global list.
+  final SpaceEntity? space;
+
+  /// Membership of the signed-in user in [space]
+  final SpaceMemberEntity? member;
+
+  const PublicUserListPage({super.key, this.space, this.member})
+      : assert((space == null) == (member == null),
+            'space and member must be given together');
 
   @override
   State<PublicUserListPage> createState() => _PublicUserListPageState();
@@ -49,14 +61,27 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
   List<String> _storiesOfTheWeek = [];
   late StoryOfTheDayService _storyService;
 
+  bool get _inSpace => widget.space != null;
+
+  /// Whether the user may report raphcons: in a space depending on the role,
+  /// in the legacy list only admins.
+  bool get _canReport => _inSpace ? widget.member!.role.canReport : _isAdmin;
+
   @override
   void initState() {
     super.initState();
     _storyService = StoryOfTheDayService(
       FirebaseFirestore.instance,
       geminiApiKey: AIConfig.geminiApiKey,
+      scope: _inSpace ? DataScope.space(widget.space!.id) : DataScope.legacy,
     );
-    _checkAuthAndAdminStatus();
+    if (_inSpace) {
+      // Inside a space the role decides; global admin status is irrelevant.
+      _isLoggedIn = true;
+      _isAdmin = widget.member!.role.canManagePersons;
+    } else {
+      _checkAuthAndAdminStatus();
+    }
     _loadAppVersion();
     // Set initial localized content
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -68,6 +93,16 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
       }
     });
     _loadWhatsNewContent();
+  }
+
+  @override
+  void didUpdateWidget(covariant PublicUserListPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_inSpace && widget.member != oldWidget.member) {
+      setState(() {
+        _isAdmin = widget.member!.role.canManagePersons;
+      });
+    }
   }
 
   Future<void> _loadAppVersion() async {
@@ -182,11 +217,21 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: () => _showAppIconDialog(context),
-              child: const Text(AppConstants.appName),
+            Flexible(
+              child: GestureDetector(
+                onTap: () => _showAppIconDialog(context),
+                child: Text(
+                  _inSpace ? widget.space!.name : AppConstants.appName,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ),
-            if (_isAdmin)
+            if (_inSpace)
+              Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: SpaceRoleBadge(role: widget.member!.role),
+              )
+            else if (_isAdmin)
               Container(
                 margin: const EdgeInsets.only(left: 8),
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -206,6 +251,13 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
           ],
         ),
         actions: [
+          if (_inSpace)
+            IconButton(
+              icon: const Icon(Icons.swap_horiz),
+              tooltip: AppLocalizations.of(context)?.switchSpace ??
+                  'Bereich wechseln',
+              onPressed: () => context.go(AppRouter.spaces),
+            ),
           BlocBuilder<UserBloc, UserState>(
             builder: (context, state) {
               if (state is UserLoaded && state.users.isNotEmpty) {
@@ -250,6 +302,8 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                   onSelected: (value) {
                     if (value == 'logout') {
                       context.read<AuthBloc>().add(AuthSignOutRequested());
+                    } else if (value == 'spaces') {
+                      context.go(AppRouter.spaces);
                     } else if (value == 'settings') {
                       // Double check: only allow if user is authenticated and admin
                       final currentUser =
@@ -268,8 +322,19 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                     }
                   },
                   itemBuilder: (context) => [
-                    // Only show settings for admins
-                    if (_isAdmin)
+                    PopupMenuItem(
+                      value: 'spaces',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.workspaces_outline),
+                          const SizedBox(width: 8),
+                          Text(AppLocalizations.of(context)?.mySpaces ??
+                              'Meine Bereiche'),
+                        ],
+                      ),
+                    ),
+                    // Only show global settings for global admins
+                    if (_isAdmin && !_inSpace)
                       PopupMenuItem(
                         value: 'settings',
                         child: Row(
@@ -309,7 +374,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
         listeners: [
           BlocListener<AdminBloc, AdminState>(
             listener: (context, state) {
-              if (state is AdminStatusChecked && mounted) {
+              if (state is AdminStatusChecked && mounted && !_inSpace) {
                 setState(() {
                   _isAdmin = state.isAdmin;
                 });
@@ -317,6 +382,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
             },
           ),
           BlocListener<AuthBloc, AuthState>(
+            listenWhen: (_, __) => !_inSpace,
             listener: (context, state) {
               if (state is AuthAuthenticated && mounted) {
                 setState(() {
@@ -468,7 +534,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                         isAdmin: _isAdmin,
                         isLoggedIn: _isLoggedIn,
                         rank: rank,
-                        onNameTapped: _isAdmin
+                        onNameTapped: _canReport
                             ? () => _createRaphcon(users[index])
                             : null,
                         onLoginRequired: () => _showLoginDialog(context),
@@ -493,7 +559,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                         isAdmin: _isAdmin,
                         isLoggedIn: _isLoggedIn,
                         rank: rank,
-                        onNameTapped: _isAdmin
+                        onNameTapped: _canReport
                             ? () => _createRaphcon(users[index])
                             : null,
                         onLoginRequired: () => _showLoginDialog(context),
@@ -1019,13 +1085,14 @@ class PublicUserCard extends StatelessWidget {
                 ],
               ),
             ),
-            if (isAdmin) ...[
+            if (onNameTapped != null)
               IconButton(
                 icon: const Icon(Icons.add_circle,
                     color: AppConstants.primaryColor),
                 onPressed: onNameTapped,
                 tooltip: AppLocalizations.of(context)?.add ?? 'Hinzufügen',
               ),
+            if (isAdmin) ...[
               IconButton(
                 icon: const Icon(Icons.delete, color: Colors.red),
                 onPressed: () => _confirmDelete(context),

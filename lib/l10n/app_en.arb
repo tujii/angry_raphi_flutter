@@ -1142,5 +1142,19 @@
         "type": "String"
       }
     }
-  }
+  },
+  "mySpaces": "My spaces",
+  "createSpace": "Create space",
+  "spaceNameLabel": "Space name",
+  "spaceDescriptionLabel": "Description (optional)",
+  "spaceNameRequired": "Please enter a name",
+  "noSpacesYet": "You are not a member of any space yet.",
+  "noSpacesHint": "Create a space and invite others to report together.",
+  "spaceNoAccess": "This space does not exist or you do not have access.",
+  "backToSpaces": "Back to my spaces",
+  "switchSpace": "Switch space",
+  "spaceRoleOwner": "Owner",
+  "spaceRoleAdmin": "Admin",
+  "spaceRoleMember": "Member",
+  "spaceRoleViewer": "Viewer"
 }

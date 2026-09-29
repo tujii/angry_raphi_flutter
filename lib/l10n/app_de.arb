@@ -1131,5 +1131,19 @@
         "type": "String"
       }
     }
-  }
+  },
+  "mySpaces": "Meine Bereiche",
+  "createSpace": "Bereich anlegen",
+  "spaceNameLabel": "Name des Bereichs",
+  "spaceDescriptionLabel": "Beschreibung (optional)",
+  "spaceNameRequired": "Bitte gib einen Namen ein",
+  "noSpacesYet": "Du bist noch in keinem Bereich.",
+  "noSpacesHint": "Lege einen Bereich an und lade andere ein, um gemeinsam Meldungen zu machen.",
+  "spaceNoAccess": "Diesen Bereich gibt es nicht oder du hast keinen Zugriff.",
+  "backToSpaces": "Zurück zu meinen Bereichen",
+  "switchSpace": "Bereich wechseln",
+  "spaceRoleOwner": "Owner",
+  "spaceRoleAdmin": "Admin",
+  "spaceRoleMember": "Mitglied",
+  "spaceRoleViewer": "Betrachter"
 }

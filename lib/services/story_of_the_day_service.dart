@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
+import '../core/data/data_scope.dart';
 import '../core/enums/raphcon_type.dart';
 import '../features/user/domain/entities/user.dart';
 import 'gemini_ai_service.dart';
@@ -13,9 +14,14 @@ import 'gemini_ai_service.dart';
 class StoryOfTheDayService {
   final FirebaseFirestore _firestore;
   final GeminiAIService _geminiService;
+  final DataScope _scope;
 
-  StoryOfTheDayService(this._firestore, {String? geminiApiKey})
-      : _geminiService = GeminiAIService(geminiApiKey);
+  StoryOfTheDayService(
+    this._firestore, {
+    String? geminiApiKey,
+    DataScope scope = DataScope.legacy,
+  })  : _geminiService = GeminiAIService(geminiApiKey),
+        _scope = scope;
 
   /// Get multiple stories of the week based on this week's Raphcon data
   Future<List<String>> getWeeklyStories(List<User> users) async {
@@ -32,7 +38,7 @@ class StoryOfTheDayService {
       debugPrint('Fetching raphcons since $timestampStartOfWeek');
       // Build the query future first so we can attach an error handler
       final queryFuture = _firestore
-          .collection('raphcons')
+          .collection(_scope.raphconsPath)
           .where('createdAt', isGreaterThanOrEqualTo: timestampStartOfWeek)
           .where('isActive', isEqualTo: true)
           .get();

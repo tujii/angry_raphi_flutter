@@ -2,8 +2,9 @@
 
 Spaces make AngryRaphi multi-tenant: every space has its own persons and
 raphcons, and only its members can see them. This document describes the
-data model and permissions (phase 1). UI, invitation acceptance (Cloud
-Functions) and migration of the existing data follow in later phases.
+data model, permissions and the app integration (phases 1 and 2).
+Member management, invitation acceptance (Cloud Functions) and migration of
+the existing data follow in later phases.
 
 ## Data model
 
@@ -42,6 +43,26 @@ Admins create `invitations` documents (status `pending`). The invitee sees
 them by email and can decline. Accepting creates the membership and is done
 server-side (Cloud Function, phase 3), because the invitee is not yet allowed
 to write membership documents.
+
+## App integration
+
+| Route          | Page                                             |
+|----------------|--------------------------------------------------|
+| `/spaces`      | Spaces of the signed-in user, create new ones    |
+| `/spaces/new`  | Create a space (creator becomes owner)           |
+| `/s/:spaceId`  | Ranking of the space's persons (members only)    |
+
+These routes require sign-in; signed-out users are sent to
+`/login?from=...` and returned after signing in. `/` still shows the legacy
+global list until the data is migrated.
+
+Persons and raphcons are read through `DataScope`
+(`lib/core/data/data_scope.dart`): `DataScope.legacy` uses the global
+collections, `DataScope.space(id)` the subcollections of a space.
+`SpaceHomePage` watches the user's membership (`CurrentSpaceCubit`) and
+creates `UserBloc`/`RaphconBloc` for the space's scope. Inside a space the
+role decides what the list page offers: members report raphcons, admins
+and owners additionally manage persons.
 
 ## Tests
 

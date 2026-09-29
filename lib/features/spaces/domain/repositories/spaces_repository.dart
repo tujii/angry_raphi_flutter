@@ -55,6 +55,9 @@ abstract class SpacesRepository {
   /// All spaces the user with [uid] is a member of, sorted by name.
   Stream<Either<Failure, List<SpaceEntity>>> watchMySpaces(String uid);
 
+  /// The space with [spaceId]; `null` if it does not exist.
+  Stream<Either<Failure, SpaceEntity?>> watchSpace(String spaceId);
+
   /// The membership of [uid] in [spaceId]; `null` if not a member.
   Stream<Either<Failure, SpaceMemberEntity?>> watchMembership(
       String spaceId, String uid);

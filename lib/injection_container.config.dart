@@ -79,6 +79,8 @@ import 'package:angry_raphi/features/spaces/domain/usecases/watch_my_invitations
     as _i526;
 import 'package:angry_raphi/features/spaces/domain/usecases/watch_my_spaces.dart'
     as _i801;
+import 'package:angry_raphi/features/spaces/domain/usecases/watch_space.dart'
+    as _i91;
 import 'package:angry_raphi/features/spaces/domain/usecases/watch_space_members.dart'
     as _i257;
 import 'package:angry_raphi/injection_container_module.dart' as _i1023;
@@ -154,6 +156,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i788.UpdateMemberRole(gh<_i108.SpacesRepository>()));
     gh.factory<_i257.WatchSpaceMembers>(
         () => _i257.WatchSpaceMembers(gh<_i108.SpacesRepository>()));
+    gh.factory<_i91.WatchSpace>(
+        () => _i91.WatchSpace(gh<_i108.SpacesRepository>()));
     gh.factory<_i938.AuthRepository>(() => _i271.AuthRepositoryImpl(
           remoteDataSource: gh<_i306.AuthRemoteDataSource>(),
           networkInfo: gh<_i582.NetworkInfo>(),
