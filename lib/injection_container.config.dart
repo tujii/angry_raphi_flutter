@@ -59,6 +59,28 @@ import 'package:angry_raphi/features/raphcon_management/domain/usecases/get_user
     as _i1016;
 import 'package:angry_raphi/features/raphcon_management/presentation/bloc/raphcon_bloc.dart'
     as _i36;
+import 'package:angry_raphi/features/spaces/data/datasources/spaces_remote_datasource.dart'
+    as _i638;
+import 'package:angry_raphi/features/spaces/data/repositories/spaces_repository_impl.dart'
+    as _i257;
+import 'package:angry_raphi/features/spaces/domain/repositories/spaces_repository.dart'
+    as _i108;
+import 'package:angry_raphi/features/spaces/domain/usecases/create_space.dart'
+    as _i585;
+import 'package:angry_raphi/features/spaces/domain/usecases/invite_by_email.dart'
+    as _i680;
+import 'package:angry_raphi/features/spaces/domain/usecases/remove_member.dart'
+    as _i793;
+import 'package:angry_raphi/features/spaces/domain/usecases/update_member_role.dart'
+    as _i788;
+import 'package:angry_raphi/features/spaces/domain/usecases/watch_membership.dart'
+    as _i967;
+import 'package:angry_raphi/features/spaces/domain/usecases/watch_my_invitations.dart'
+    as _i526;
+import 'package:angry_raphi/features/spaces/domain/usecases/watch_my_spaces.dart'
+    as _i801;
+import 'package:angry_raphi/features/spaces/domain/usecases/watch_space_members.dart'
+    as _i257;
 import 'package:angry_raphi/injection_container_module.dart' as _i1023;
 import 'package:angry_raphi/services/admin_service.dart' as _i76;
 import 'package:angry_raphi/services/registered_users_service.dart' as _i451;
@@ -82,12 +104,12 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     final registerModule = _$RegisterModule();
-    gh.factory<_i227.ImageHelper>(() => _i227.ImageHelper());
     gh.factory<_i59.FirebaseAuth>(() => registerModule.firebaseAuth);
     gh.factory<_i974.FirebaseFirestore>(() => registerModule.firestore);
     gh.factory<_i457.FirebaseStorage>(() => registerModule.firebaseStorage);
     gh.factory<_i116.GoogleSignIn>(() => registerModule.googleSignIn);
     gh.factory<_i895.Connectivity>(() => registerModule.connectivity);
+    gh.factory<_i227.ImageHelper>(() => _i227.ImageHelper());
     gh.factory<_i652.AdminRemoteDataSource>(
         () => _i652.AdminRemoteDataSourceImpl(gh<_i974.FirebaseFirestore>()));
     gh.factory<_i582.NetworkInfo>(
@@ -96,10 +118,12 @@ extension GetItInjectableX on _i174.GetIt {
           remoteDataSource: gh<_i652.AdminRemoteDataSource>(),
           networkInfo: gh<_i582.NetworkInfo>(),
         ));
-    gh.factory<_i534.CheckAdminStatus>(
-        () => _i534.CheckAdminStatus(gh<_i618.AdminRepository>()));
+    gh.factory<_i638.SpacesRemoteDataSource>(
+        () => _i638.SpacesRemoteDataSourceImpl(gh<_i974.FirebaseFirestore>()));
     gh.factory<_i446.AddAdmin>(
         () => _i446.AddAdmin(gh<_i618.AdminRepository>()));
+    gh.factory<_i534.CheckAdminStatus>(
+        () => _i534.CheckAdminStatus(gh<_i618.AdminRepository>()));
     gh.factory<_i42.RaphconsRemoteDataSource>(
         () => _i42.RaphconsRemoteDataSourceImpl(gh<_i974.FirebaseFirestore>()));
     gh.factory<_i451.RegisteredUsersService>(
@@ -110,6 +134,26 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i974.FirebaseFirestore>(),
           gh<_i451.RegisteredUsersService>(),
         ));
+    gh.factory<_i108.SpacesRepository>(() => _i257.SpacesRepositoryImpl(
+          remoteDataSource: gh<_i638.SpacesRemoteDataSource>(),
+          networkInfo: gh<_i582.NetworkInfo>(),
+        ));
+    gh.factory<_i526.WatchMyInvitations>(
+        () => _i526.WatchMyInvitations(gh<_i108.SpacesRepository>()));
+    gh.factory<_i793.RemoveMember>(
+        () => _i793.RemoveMember(gh<_i108.SpacesRepository>()));
+    gh.factory<_i801.WatchMySpaces>(
+        () => _i801.WatchMySpaces(gh<_i108.SpacesRepository>()));
+    gh.factory<_i585.CreateSpace>(
+        () => _i585.CreateSpace(gh<_i108.SpacesRepository>()));
+    gh.factory<_i680.InviteByEmail>(
+        () => _i680.InviteByEmail(gh<_i108.SpacesRepository>()));
+    gh.factory<_i967.WatchMembership>(
+        () => _i967.WatchMembership(gh<_i108.SpacesRepository>()));
+    gh.factory<_i788.UpdateMemberRole>(
+        () => _i788.UpdateMemberRole(gh<_i108.SpacesRepository>()));
+    gh.factory<_i257.WatchSpaceMembers>(
+        () => _i257.WatchSpaceMembers(gh<_i108.SpacesRepository>()));
     gh.factory<_i938.AuthRepository>(() => _i271.AuthRepositoryImpl(
           remoteDataSource: gh<_i306.AuthRemoteDataSource>(),
           networkInfo: gh<_i582.NetworkInfo>(),
@@ -118,25 +162,25 @@ extension GetItInjectableX on _i174.GetIt {
           remoteDataSource: gh<_i42.RaphconsRemoteDataSource>(),
           networkInfo: gh<_i582.NetworkInfo>(),
         ));
-    gh.factory<_i383.DeleteRaphcon>(
-        () => _i383.DeleteRaphcon(gh<_i158.RaphconsRepository>()));
-    gh.factory<_i717.GetUserRaphconStatistics>(
-        () => _i717.GetUserRaphconStatistics(gh<_i158.RaphconsRepository>()));
     gh.factory<_i154.GetUserRaphconsByType>(
         () => _i154.GetUserRaphconsByType(gh<_i158.RaphconsRepository>()));
+    gh.factory<_i383.DeleteRaphcon>(
+        () => _i383.DeleteRaphcon(gh<_i158.RaphconsRepository>()));
+    gh.factory<_i1016.GetUserRaphconsStream>(
+        () => _i1016.GetUserRaphconsStream(gh<_i158.RaphconsRepository>()));
     gh.factory<_i661.AddRaphcon>(
         () => _i661.AddRaphcon(gh<_i158.RaphconsRepository>()));
     gh.factory<_i985.GetUserRaphconsByTypeStream>(() =>
         _i985.GetUserRaphconsByTypeStream(gh<_i158.RaphconsRepository>()));
-    gh.factory<_i1016.GetUserRaphconsStream>(
-        () => _i1016.GetUserRaphconsStream(gh<_i158.RaphconsRepository>()));
     gh.factory<_i389.GetAllRaphconsStream>(
         () => _i389.GetAllRaphconsStream(gh<_i158.RaphconsRepository>()));
-    gh.factory<_i456.SignOut>(() => _i456.SignOut(gh<_i938.AuthRepository>()));
-    gh.factory<_i153.SignInWithGoogle>(
-        () => _i153.SignInWithGoogle(gh<_i938.AuthRepository>()));
+    gh.factory<_i717.GetUserRaphconStatistics>(
+        () => _i717.GetUserRaphconStatistics(gh<_i158.RaphconsRepository>()));
     gh.factory<_i660.GetCurrentUser>(
         () => _i660.GetCurrentUser(gh<_i938.AuthRepository>()));
+    gh.factory<_i153.SignInWithGoogle>(
+        () => _i153.SignInWithGoogle(gh<_i938.AuthRepository>()));
+    gh.factory<_i456.SignOut>(() => _i456.SignOut(gh<_i938.AuthRepository>()));
     gh.factory<_i100.AdminBloc>(() => _i100.AdminBloc(
           gh<_i534.CheckAdminStatus>(),
           gh<_i446.AddAdmin>(),
@@ -152,7 +196,6 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i383.DeleteRaphcon>(),
           gh<_i1016.GetUserRaphconsStream>(),
           gh<_i985.GetUserRaphconsByTypeStream>(),
-
         ));
     gh.factory<_i670.AuthBloc>(() => _i670.AuthBloc(
           gh<_i153.SignInWithGoogle>(),

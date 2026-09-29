@@ -1,0 +1,14 @@
+{
+  "name": "angry-raphi-firestore-rules-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "firebase emulators:exec --project demo-angry-raphi --only firestore --config ../firebase.json \"node --test\"",
+    "test:only": "node --test"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^4.0.1",
+    "firebase": "^11.0.0",
+    "firebase-tools": "^14.0.0"
+  }
+}
