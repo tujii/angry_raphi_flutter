@@ -77,3 +77,15 @@ npm test
 
 Legacy collections (`users`, `raphcons`, ...) keep their current rules until
 the data is migrated.
+
+## Deployment
+
+Rules and indexes are deployed by the `deploy-firestore` job of the CI/CD
+pipeline (`.github/workflows/ci-cd.yml`) on release tags (`v*`), after the
+rules tests passed and before the web app goes live. It uses the
+`FIREBASE_SERVICE_ACCOUNT` secret; that service account needs the roles
+**Firebase Rules Admin** and **Cloud Datastore Index Admin** in addition to
+the hosting roles.
+
+Manual deployment: `firebase deploy --only firestore:rules,firestore:indexes`.
+
