@@ -60,10 +60,9 @@ jobs:
       contents: read
       pull-requests: write
       checks: write
-    # Deploy preview for PRs and all branch pushes (not tags)
-    if: >
-      github.event_name == 'pull_request' ||
-      (github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/'))
+    # Deploy preview only for PRs: the Firebase action derives the preview
+    # channel from the PR number, so branch pushes have no channel to deploy to
+    if: github.event_name == 'pull_request'
 
     steps:
       - name: Checkout code
