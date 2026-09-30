@@ -1142,5 +1142,100 @@
         "type": "String"
       }
     }
-  }
+  },
+  "mySpaces": "My spaces",
+  "createSpace": "Create space",
+  "spaceNameLabel": "Space name",
+  "spaceDescriptionLabel": "Description (optional)",
+  "spaceNameRequired": "Please enter a name",
+  "noSpacesYet": "You are not a member of any space yet.",
+  "noSpacesHint": "Create a space and invite others to report together.",
+  "spaceNoAccess": "This space does not exist or you do not have access.",
+  "backToSpaces": "Back to my spaces",
+  "switchSpace": "Switch space",
+  "spaceRoleOwner": "Owner",
+  "spaceRoleAdmin": "Admin",
+  "spaceRoleMember": "Member",
+  "spaceRoleViewer": "Viewer",
+  "members": "Members",
+  "youSuffix": "(you)",
+  "changeRole": "Change role",
+  "removeMember": "Remove",
+  "removeMemberConfirm": "Remove {name} from this space?",
+  "@removeMemberConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "leaveSpace": "Leave space",
+  "leaveSpaceConfirm": "Do you really want to leave this space?",
+  "inviteLinks": "Invite links",
+  "createInviteLink": "Create link",
+  "inviteLinkRole": "Role for new members",
+  "inviteLinkValidity": "Valid for",
+  "validity7Days": "7 days",
+  "validity30Days": "30 days",
+  "validityForever": "Unlimited",
+  "inviteLinkCopied": "Link copied to clipboard",
+  "copyLink": "Copy link",
+  "deactivateLink": "Deactivate",
+  "noActiveInviteLinks": "No active invite links",
+  "expiresOn": "expires {date}",
+  "@expiresOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "neverExpires": "never expires",
+  "inviteByEmail": "Invite by email",
+  "emailLabel": "Email address",
+  "sendInvitation": "Invite",
+  "invitationCreated": "Invitation created. {email} will see it after signing in.",
+  "@invitationCreated": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "pendingInvitations": "Pending invitations",
+  "revokeInvitation": "Revoke",
+  "deleteSpace": "Delete space",
+  "deleteSpaceConfirm": "Delete \"{name}\" with all persons and reports? This cannot be undone.",
+  "@deleteSpaceConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "joinSpaceTitle": "Join space",
+  "joinSpaceQuestion": "You have been invited to \"{name}\" as {role}.",
+  "@joinSpaceQuestion": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "joinSpaceButton": "Join",
+  "inviteLinkInvalid": "This invite link is invalid or has expired.",
+  "yourInvitations": "Your invitations",
+  "invitedAs": "Invited as {role}",
+  "@invitedAs": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "acceptInvitation": "Accept",
+  "declineInvitation": "Decline"
 }

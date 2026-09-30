@@ -12,11 +12,11 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../../core/config/ai_config.dart';
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/data/data_scope.dart';
 import '../../../../core/enums/raphcon_type.dart';
 import '../../../../core/routing/app_router.dart';
 import '../../../../core/utils/ranking_utils.dart';
 import '../../../../core/utils/responsive_helper.dart';
-import '../../../../services/admin_config_service.dart';
 import '../../../../services/story_of_the_day_service.dart';
 import '../../../../shared/widgets/markdown_content_widget.dart';
 import '../../../../shared/widgets/raphcon_statistics_bottom_sheet.dart';
@@ -24,30 +24,47 @@ import '../../../../shared/widgets/raphcon_type_selection_dialog.dart';
 import '../../../../shared/widgets/story_of_the_day_banner.dart';
 import '../../../../shared/widgets/streaming_raphcon_detail_bottom_sheet.dart';
 import '../../../../shared/widgets/user_ranking_search_delegate.dart';
-import '../../../admin/presentation/bloc/admin_bloc.dart';
 import '../../../authentication/presentation/bloc/auth_bloc.dart';
 import '../../../authentication/presentation/bloc/auth_event.dart';
 import '../../../authentication/presentation/bloc/auth_state.dart';
-import '../../../authentication/presentation/pages/login_page.dart';
 import '../../../raphcon_management/presentation/bloc/raphcon_bloc.dart';
+import '../../../spaces/domain/entities/space_entity.dart';
+import '../../../spaces/domain/entities/space_member_entity.dart';
+import '../../../spaces/presentation/widgets/space_role_badge.dart';
 import '../../domain/entities/user.dart' as user_entity;
 import '../bloc/user_bloc.dart';
 import 'initials_add_user_dialog.dart';
 
+/// Ranking of the persons of a space.
+///
+/// Expects [UserBloc] and [RaphconBloc] scoped to [space] above it.
 class PublicUserListPage extends StatefulWidget {
-  const PublicUserListPage({super.key});
+  final SpaceEntity space;
+
+  /// Membership of the signed-in user in [space]; decides what they may do
+  final SpaceMemberEntity member;
+
+  const PublicUserListPage({
+    super.key,
+    required this.space,
+    required this.member,
+  });
 
   @override
   State<PublicUserListPage> createState() => _PublicUserListPageState();
 }
 
 class _PublicUserListPageState extends State<PublicUserListPage> {
-  bool _isAdmin = false;
-  bool _isLoggedIn = false;
   String _appVersion = '1.0.0';
   String _whatsNewContent = '';
   List<String> _storiesOfTheWeek = [];
   late StoryOfTheDayService _storyService;
+
+  /// Whether the user may manage persons and delete raphcons
+  bool get _isAdmin => widget.member.role.canManagePersons;
+
+  /// Whether the user may report raphcons
+  bool get _canReport => widget.member.role.canReport;
 
   @override
   void initState() {
@@ -55,8 +72,8 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
     _storyService = StoryOfTheDayService(
       FirebaseFirestore.instance,
       geminiApiKey: AIConfig.geminiApiKey,
+      scope: DataScope.space(widget.space.id),
     );
-    _checkAuthAndAdminStatus();
     _loadAppVersion();
     // Set initial localized content
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -112,39 +129,6 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
     }
   }
 
-  void _checkAuthAndAdminStatus() async {
-    final currentUser = firebase_auth.FirebaseAuth.instance.currentUser;
-    if (currentUser != null) {
-      if (mounted) {
-        setState(() {
-          _isLoggedIn = true;
-        });
-      }
-
-      // Check if user is admin from CSV configuration
-      final isAdminUser = await AdminConfigService.isAdmin(currentUser.email!);
-
-      if (mounted) {
-        if (isAdminUser) {
-          final displayName =
-              await AdminConfigService.getAdminDisplayName(currentUser.email!);
-          if (mounted) {
-            context.read<AdminBloc>().add(EnsureCurrentUserIsAdminEvent(
-                  userId: currentUser.uid,
-                  email: currentUser.email!,
-                  displayName: currentUser.displayName ?? displayName,
-                ));
-          }
-        } else {
-          // For other users, just check admin status
-          context
-              .read<AdminBloc>()
-              .add(CheckAdminStatusEvent(currentUser.email ?? ''));
-        }
-      }
-    }
-  }
-
   Future<void> _loadStoryOfTheDay(List<user_entity.User> users) async {
     if (users.isEmpty) return;
 
@@ -182,30 +166,34 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: () => _showAppIconDialog(context),
-              child: const Text(AppConstants.appName),
-            ),
-            if (_isAdmin)
-              Container(
-                margin: const EdgeInsets.only(left: 8),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Text(
-                  'ADMIN',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                  ),
+            Flexible(
+              child: GestureDetector(
+                onTap: () => _showAppIconDialog(context),
+                child: Text(
+                  widget.space.name,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: SpaceRoleBadge(role: widget.member.role),
+            ),
           ],
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.group),
+            tooltip: AppLocalizations.of(context)?.members ?? 'Mitglieder',
+            onPressed: () =>
+                context.go(AppRouter.spaceMembers(widget.space.id)),
+          ),
+          IconButton(
+            icon: const Icon(Icons.swap_horiz),
+            tooltip:
+                AppLocalizations.of(context)?.switchSpace ?? 'Bereich wechseln',
+            onPressed: () => context.go(AppRouter.spaces),
+          ),
           BlocBuilder<UserBloc, UserState>(
             builder: (context, state) {
               if (state is UserLoaded && state.users.isNotEmpty) {
@@ -250,26 +238,26 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                   onSelected: (value) {
                     if (value == 'logout') {
                       context.read<AuthBloc>().add(AuthSignOutRequested());
+                    } else if (value == 'spaces') {
+                      context.go(AppRouter.spaces);
                     } else if (value == 'settings') {
-                      // Double check: only allow if user is authenticated and admin
-                      final currentUser =
-                          firebase_auth.FirebaseAuth.instance.currentUser;
-                      if (currentUser != null && _isAdmin) {
-                        context.go(AppRouter.adminSettings);
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                                'Zugriff verweigert. Sie müssen als Administrator angemeldet sein.'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
+                      context.go(AppRouter.adminSettings);
                     }
                   },
                   itemBuilder: (context) => [
-                    // Only show settings for admins
-                    if (_isAdmin)
+                    PopupMenuItem(
+                      value: 'spaces',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.workspaces_outline),
+                          const SizedBox(width: 8),
+                          Text(AppLocalizations.of(context)?.mySpaces ??
+                              'Meine Bereiche'),
+                        ],
+                      ),
+                    ),
+                    // Global app settings, only for app administrators
+                    if (authState.user.isAdmin)
                       PopupMenuItem(
                         value: 'settings',
                         child: Row(
@@ -295,46 +283,15 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                     ),
                   ],
                 );
-              } else {
-                return IconButton(
-                  icon: const Icon(Icons.login),
-                  onPressed: () => _showLoginDialog(context),
-                );
               }
+              // Space pages require sign-in; the router handles sign-out.
+              return const SizedBox.shrink();
             },
           ),
         ],
       ),
       body: MultiBlocListener(
         listeners: [
-          BlocListener<AdminBloc, AdminState>(
-            listener: (context, state) {
-              if (state is AdminStatusChecked && mounted) {
-                setState(() {
-                  _isAdmin = state.isAdmin;
-                });
-              }
-            },
-          ),
-          BlocListener<AuthBloc, AuthState>(
-            listener: (context, state) {
-              if (state is AuthAuthenticated && mounted) {
-                setState(() {
-                  _isLoggedIn = true;
-                });
-                // Check admin status after login
-                context
-                    .read<AdminBloc>()
-                    .add(CheckAdminStatusEvent(state.user.email));
-                Navigator.of(context).pop(); // Close login dialog
-              } else if (state is AuthUnauthenticated && mounted) {
-                setState(() {
-                  _isLoggedIn = false;
-                  _isAdmin = false;
-                });
-              }
-            },
-          ),
           BlocListener<RaphconBloc, RaphconState>(
             listener: (context, state) {
               if (state is RaphconAdded) {
@@ -466,12 +423,11 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                       return PublicUserCard(
                         user: users[index],
                         isAdmin: _isAdmin,
-                        isLoggedIn: _isLoggedIn,
+                        isLoggedIn: true,
                         rank: rank,
-                        onNameTapped: _isAdmin
+                        onNameTapped: _canReport
                             ? () => _createRaphcon(users[index])
                             : null,
-                        onLoginRequired: () => _showLoginDialog(context),
                         onShowStatistics: () =>
                             _showStatisticsBottomSheet(users[index]),
                       );
@@ -491,12 +447,11 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
                       return PublicUserCard(
                         user: users[index],
                         isAdmin: _isAdmin,
-                        isLoggedIn: _isLoggedIn,
+                        isLoggedIn: true,
                         rank: rank,
-                        onNameTapped: _isAdmin
+                        onNameTapped: _canReport
                             ? () => _createRaphcon(users[index])
                             : null,
-                        onLoginRequired: () => _showLoginDialog(context),
                         onShowStatistics: () =>
                             _showStatisticsBottomSheet(users[index]),
                       );
@@ -697,34 +652,9 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
     );
   }
 
-  void _showLoginDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext dialogContext) {
-        return BlocProvider.value(
-          value: context.read<AuthBloc>(),
-          child: Dialog(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                minWidth: 300,
-                maxWidth: 400,
-                minHeight: 200,
-                maxHeight: 600,
-              ),
-              child: const LoginPage(isDialog: true),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   void _createRaphcon(user_entity.User user) {
     final currentUser = firebase_auth.FirebaseAuth.instance.currentUser;
-    if (currentUser == null) {
-      _showLoginDialog(context);
-      return;
-    }
+    if (currentUser == null) return;
 
     showDialog(
       context: context,
@@ -803,6 +733,7 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
       userId: user.id,
       type: type,
       isAdmin: _isAdmin,
+      spaceId: widget.space.id,
       onBackPressed: () {
         Navigator.of(context).pop(); // Close detail sheet
         // Show statistics sheet again
@@ -1019,13 +950,14 @@ class PublicUserCard extends StatelessWidget {
                 ],
               ),
             ),
-            if (isAdmin) ...[
+            if (onNameTapped != null)
               IconButton(
                 icon: const Icon(Icons.add_circle,
                     color: AppConstants.primaryColor),
                 onPressed: onNameTapped,
                 tooltip: AppLocalizations.of(context)?.add ?? 'Hinzufügen',
               ),
+            if (isAdmin) ...[
               IconButton(
                 icon: const Icon(Icons.delete, color: Colors.red),
                 onPressed: () => _confirmDelete(context),

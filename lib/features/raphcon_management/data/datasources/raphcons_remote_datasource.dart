@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/data/data_scope.dart';
 import '../../../../core/enums/raphcon_type.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../models/raphcon_model.dart';
@@ -24,14 +25,18 @@ abstract class RaphconsRemoteDataSource {
 @Injectable(as: RaphconsRemoteDataSource)
 class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
   final FirebaseFirestore firestore;
+  final DataScope scope;
 
-  RaphconsRemoteDataSourceImpl(this.firestore);
+  RaphconsRemoteDataSourceImpl(
+    this.firestore, {
+    @ignoreParam this.scope = DataScope.legacy,
+  });
 
   @override
   Future<List<RaphconModel>> getUserRaphcons(String userId) async {
     try {
       final querySnapshot = await firestore
-          .collection('raphcons')
+          .collection(scope.raphconsPath)
           .where('userId', isEqualTo: userId)
           .where('isActive', isEqualTo: true)
           .orderBy('createdAt', descending: true)
@@ -50,7 +55,7 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
       String userId, RaphconType type) async {
     try {
       final querySnapshot = await firestore
-          .collection('raphcons')
+          .collection(scope.raphconsPath)
           .where('userId', isEqualTo: userId)
           .where('type', isEqualTo: type.name)
           .where('isActive', isEqualTo: true)
@@ -70,7 +75,7 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
   Future<List<RaphconModel>> getAllRaphcons() async {
     try {
       final querySnapshot = await firestore
-          .collection('raphcons')
+          .collection(scope.raphconsPath)
           .where('isActive', isEqualTo: true)
           .orderBy('createdAt', descending: true)
           .get();
@@ -100,11 +105,11 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
       final batch = firestore.batch();
 
       // Add the raphcon
-      final raphconRef = firestore.collection('raphcons').doc();
+      final raphconRef = firestore.collection(scope.raphconsPath).doc();
       batch.set(raphconRef, raphconModel.toMap());
 
       // Update user's raphcon count and lastRaphconAt
-      final userRef = firestore.collection('users').doc(userId);
+      final userRef = firestore.collection(scope.personsPath).doc(userId);
       batch.update(userRef, {
         'raphconCount': FieldValue.increment(1),
         'lastRaphconAt': FieldValue.serverTimestamp(),
@@ -121,7 +126,7 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
     try {
       // Get the raphcon to find its userId before deleting
       final raphconDoc =
-          await firestore.collection('raphcons').doc(raphconId).get();
+          await firestore.collection(scope.raphconsPath).doc(raphconId).get();
 
       if (!raphconDoc.exists) {
         throw ServerException('Raphcon not found');
@@ -133,12 +138,12 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
       final batch = firestore.batch();
 
       // Soft delete: set isActive to false instead of hard delete
-      batch.update(firestore.collection('raphcons').doc(raphconId), {
+      batch.update(firestore.collection(scope.raphconsPath).doc(raphconId), {
         'isActive': false,
       });
 
       // Decrement user's raphcon count
-      batch.update(firestore.collection('users').doc(userId), {
+      batch.update(firestore.collection(scope.personsPath).doc(userId), {
         'raphconCount': FieldValue.increment(-1),
       });
 
@@ -151,7 +156,7 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
   @override
   Stream<List<RaphconModel>> getUserRaphconsStream(String userId) {
     return firestore
-        .collection('raphcons')
+        .collection(scope.raphconsPath)
         .where('userId', isEqualTo: userId)
         .where('isActive', isEqualTo: true)
         .orderBy('createdAt', descending: true)
@@ -169,7 +174,7 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
   Stream<List<RaphconModel>> getUserRaphconsByTypeStream(
       String userId, RaphconType type) {
     return firestore
-        .collection('raphcons')
+        .collection(scope.raphconsPath)
         .where('userId', isEqualTo: userId)
         .where('type', isEqualTo: type.name)
         .where('isActive', isEqualTo: true)
@@ -187,7 +192,7 @@ class RaphconsRemoteDataSourceImpl implements RaphconsRemoteDataSource {
   @override
   Stream<List<RaphconModel>> getAllRaphconsStream() {
     return firestore
-        .collection('raphcons')
+        .collection(scope.raphconsPath)
         .where('isActive', isEqualTo: true)
         .orderBy('createdAt', descending: true)
         .snapshots()

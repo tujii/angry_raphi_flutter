@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'core/constants/app_constants.dart';
@@ -24,18 +25,9 @@ import 'features/authentication/domain/usecases/sign_in_with_google.dart';
 import 'features/authentication/domain/usecases/sign_out.dart';
 import 'features/authentication/presentation/bloc/auth_bloc.dart';
 import 'features/authentication/presentation/bloc/auth_event.dart';
-import 'features/raphcon_management/data/datasources/raphcons_remote_datasource.dart';
-import 'features/raphcon_management/data/repositories/raphcons_repository_impl.dart';
-import 'features/raphcon_management/domain/usecases/add_raphcon.dart';
-import 'features/raphcon_management/domain/usecases/delete_raphcon.dart';
-import 'features/raphcon_management/domain/usecases/get_user_raphcon_statistics.dart';
-import 'features/raphcon_management/domain/usecases/get_user_raphcons_by_type.dart';
-import 'features/raphcon_management/domain/usecases/get_user_raphcons_by_type_stream.dart';
-import 'features/raphcon_management/domain/usecases/get_user_raphcons_stream.dart';
-import 'features/raphcon_management/presentation/bloc/raphcon_bloc.dart';
-import 'features/user/data/repositories/firestore_user_repository.dart';
-import 'features/user/domain/usecases/user_usecases.dart';
-import 'features/user/presentation/bloc/user_bloc.dart';
+import 'features/spaces/data/datasources/spaces_remote_datasource.dart';
+import 'features/spaces/data/repositories/spaces_repository_impl.dart';
+import 'features/spaces/domain/repositories/spaces_repository.dart';
 import 'firebase_options.dart';
 import 'services/admin_service.dart';
 import 'services/registered_users_service.dart';
@@ -82,31 +74,46 @@ Future<void> _initializeAdmin() async {
   }
 }
 
-class AngryRaphiApp extends StatelessWidget {
+class AngryRaphiApp extends StatefulWidget {
   const AngryRaphiApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final router = AppRouter.createRouter();
+  State<AngryRaphiApp> createState() => _AngryRaphiAppState();
+}
 
+class _AngryRaphiAppState extends State<AngryRaphiApp> {
+  late final StreamListenable _authChanges;
+  late final GoRouter _router;
+
+  @override
+  void initState() {
+    super.initState();
+    _authChanges = StreamListenable(FirebaseAuth.instance.authStateChanges());
+    _router = AppRouter.createRouter(refreshListenable: _authChanges);
+  }
+
+  @override
+  void dispose() {
+    _router.dispose();
+    _authChanges.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RepositoryProvider<SpacesRepository>(
+      create: (_) => SpacesRepositoryImpl(
+        remoteDataSource:
+            SpacesRemoteDataSourceImpl(FirebaseFirestore.instance),
+        networkInfo: NetworkInfoImpl(Connectivity()),
+      ),
+      child: _buildBlocs(context),
+    );
+  }
+
+  Widget _buildBlocs(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (_) {
-            final repository =
-                FirestoreUserRepository(FirebaseFirestore.instance);
-            final getUsersUseCase = GetUsersUseCase(repository);
-            final getUsersStreamUseCase = GetUsersStreamUseCase(repository);
-            final addUserUseCase = AddUserUseCase(repository);
-            final deleteUserUseCase = DeleteUserUseCase(repository);
-            return UserBloc(
-              getUsersUseCase: getUsersUseCase,
-              getUsersStreamUseCase: getUsersStreamUseCase,
-              addUserUseCase: addUserUseCase,
-              deleteUserUseCase: deleteUserUseCase,
-            );
-          },
-        ),
         BlocProvider(
           create: (_) {
             final firestore = FirebaseFirestore.instance;
@@ -121,37 +128,6 @@ class AngryRaphiApp extends StatelessWidget {
             final addAdmin = AddAdmin(adminRepository);
 
             return AdminBloc(checkAdminStatus, addAdmin);
-          },
-        ),
-        BlocProvider(
-          create: (_) {
-            final firestore = FirebaseFirestore.instance;
-            final connectivity = Connectivity();
-            final networkInfo = NetworkInfoImpl(connectivity);
-            final raphconDataSource = RaphconsRemoteDataSourceImpl(firestore);
-            final raphconRepository = RaphconsRepositoryImpl(
-              remoteDataSource: raphconDataSource,
-              networkInfo: networkInfo,
-            );
-            final addRaphcon = AddRaphcon(raphconRepository);
-            final getUserRaphconStatistics =
-                GetUserRaphconStatistics(raphconRepository);
-            final getUserRaphconsByType =
-                GetUserRaphconsByType(raphconRepository);
-            final deleteRaphcon = DeleteRaphcon(raphconRepository);
-            final getUserRaphconsStream =
-                GetUserRaphconsStream(raphconRepository);
-            final getUserRaphconsByTypeStream =
-                GetUserRaphconsByTypeStream(raphconRepository);
-
-            return RaphconBloc(
-              addRaphcon,
-              getUserRaphconStatistics,
-              getUserRaphconsByType,
-              deleteRaphcon,
-              getUserRaphconsStream,
-              getUserRaphconsByTypeStream,
-            );
           },
         ),
         BlocProvider(
@@ -203,7 +179,7 @@ class AngryRaphiApp extends StatelessWidget {
           Locale('en'),
           Locale('de'),
         ],
-        routerConfig: router,
+        routerConfig: _router,
       ),
     );
   }

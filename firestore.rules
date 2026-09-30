@@ -13,33 +13,17 @@ service cloud.firestore {
              exists(/databases/$(database)/documents/adminEmails/$(request.auth.token.email));
     }
     
-    function isValidUser(data) {
-      return data.keys().hasAll(['name', 'createdAt']) &&
-             data.name is string &&
-             data.name.size() > 0 &&
-             data.name.size() <= 50 &&
-             data.createdAt is timestamp;
-    }
-    
-    function isValidRaphcon(data) {
-      return data.keys().hasAll(['userId', 'createdAt', 'createdBy']) &&
-             data.userId is string &&
-             data.createdAt is timestamp &&
-             data.createdBy == request.auth.uid;
-    }
-    
-    // Users Collection - Read for all (guests and authenticated), Write only for Admins
+    // Legacy global collections. Their data was migrated to spaces
+    // (tools/migrate-to-spaces); they stay readable for app administrators
+    // until they are deleted.
     match /users/{userId} {
-      allow read: if true; // Everyone can read the user list
-      allow create, update: if isAdmin() && isValidUser(request.resource.data);
-      allow delete: if isAdmin();
+      allow read: if isAdmin();
+      allow write: if false;
     }
 
-    // Raphcons Collection - Read for all, Create for authenticated users, Modify only for Admins
     match /raphcons/{raphconId} {
-      allow read: if true; // Everyone can read raphcons count
-      allow create: if isAuthenticated() && isValidRaphcon(request.resource.data);
-      allow update, delete: if isAdmin();
+      allow read: if isAdmin();
+      allow write: if false;
     }
     
     // Admins Collection - Anyone can read display names, only Admins can write
@@ -64,6 +48,305 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
     
+    // ------------------------------------------------------------------
+    // Spaces (multi-tenant)
+    //
+    // spaces/{spaceId}                 space metadata
+    // spaces/{spaceId}/members/{uid}   membership + role
+    // spaces/{spaceId}/persons/{id}    rated persons of the space
+    // spaces/{spaceId}/raphcons/{id}   reports of the space
+    // invitations/{id}                 email invitations into a space
+    //
+    // Roles (cumulative): viewer < member < admin < owner
+    // ------------------------------------------------------------------
+
+    function spacePath(spaceId) {
+      return /databases/$(database)/documents/spaces/$(spaceId);
+    }
+
+    function memberPath(spaceId, uid) {
+      return /databases/$(database)/documents/spaces/$(spaceId)/members/$(uid);
+    }
+
+    function isMember(spaceId) {
+      return isAuthenticated() && exists(memberPath(spaceId, request.auth.uid));
+    }
+
+    function myRole(spaceId) {
+      return get(memberPath(spaceId, request.auth.uid)).data.role;
+    }
+
+    function hasRole(spaceId, roles) {
+      return isMember(spaceId) && myRole(spaceId) in roles;
+    }
+
+    function canReport(spaceId) {
+      return hasRole(spaceId, ['member', 'admin', 'owner']);
+    }
+
+    function canManage(spaceId) {
+      return hasRole(spaceId, ['admin', 'owner']);
+    }
+
+    function isOwner(spaceId) {
+      return hasRole(spaceId, ['owner']);
+    }
+
+    // Roles an admin may hand out; owners may additionally appoint owners
+    function assignableRoles(spaceId) {
+      return isOwner(spaceId)
+        ? ['viewer', 'member', 'admin', 'owner']
+        : ['viewer', 'member', 'admin'];
+    }
+
+    function isValidSpace(data) {
+      return data.keys().hasAll(['name', 'createdBy', 'createdAt']) &&
+             data.keys().hasOnly(['name', 'description', 'createdBy', 'createdAt']) &&
+             data.name is string &&
+             data.name.size() > 0 &&
+             data.name.size() <= 50 &&
+             (!('description' in data) || data.description == null ||
+               (data.description is string && data.description.size() <= 200)) &&
+             data.createdBy is string &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidMember(data, spaceId, uid) {
+      return data.keys().hasAll(['uid', 'spaceId', 'role', 'displayName', 'joinedAt']) &&
+             data.keys().hasOnly(['uid', 'spaceId', 'role', 'displayName', 'email', 'photoUrl', 'joinedAt',
+                                  'inviteCode', 'invitationId']) &&
+             data.uid == uid &&
+             data.spaceId == spaceId &&
+             data.role in ['viewer', 'member', 'admin', 'owner'] &&
+             data.displayName is string &&
+             data.displayName.size() <= 100 &&
+             data.joinedAt is timestamp;
+    }
+
+    function isValidPerson(data) {
+      return data.keys().hasAll(['initials', 'createdAt']) &&
+             data.initials is string &&
+             data.initials.size() > 0 &&
+             data.initials.size() <= 50 &&
+             data.createdAt is timestamp &&
+             (!('raphconCount' in data) || data.raphconCount is int) &&
+             (!('isActive' in data) || data.isActive is bool);
+    }
+
+    function isValidSpaceRaphcon(data, spaceId) {
+      return data.keys().hasAll(['userId', 'createdBy', 'createdAt']) &&
+             data.userId is string &&
+             exists(/databases/$(database)/documents/spaces/$(spaceId)/persons/$(data.userId)) &&
+             data.createdBy == request.auth.uid &&
+             data.createdAt is timestamp &&
+             (!('comment' in data) || data.comment == null ||
+               (data.comment is string && data.comment.size() <= 500)) &&
+             (!('isActive' in data) || data.isActive == true);
+    }
+
+    function inviteCodePath(spaceId, code) {
+      return /databases/$(database)/documents/spaces/$(spaceId)/inviteCodes/$(code);
+    }
+
+    function invitationPath(invitationId) {
+      return /databases/$(database)/documents/invitations/$(invitationId);
+    }
+
+    function hasVerifiedEmail() {
+      return isAuthenticated() &&
+             request.auth.token.email != null &&
+             request.auth.token.email_verified == true;
+    }
+
+    // Joining with an invite link: the code must exist, be active, not be
+    // expired and grant exactly the requested role.
+    function isValidCodeJoin(spaceId, data) {
+      let code = get(inviteCodePath(spaceId, data.inviteCode)).data;
+      return data.inviteCode is string &&
+             exists(inviteCodePath(spaceId, data.inviteCode)) &&
+             code.active == true &&
+             (code.expiresAt == null || code.expiresAt > request.time) &&
+             data.role == code.role;
+    }
+
+    // Accepting an email invitation: it must be pending, addressed to the
+    // user's verified email, grant exactly the requested role and be marked
+    // accepted in the same batch.
+    function isValidInvitationJoin(spaceId, data) {
+      let invitation = get(invitationPath(data.invitationId)).data;
+      return data.invitationId is string &&
+             hasVerifiedEmail() &&
+             exists(invitationPath(data.invitationId)) &&
+             invitation.spaceId == spaceId &&
+             invitation.status == 'pending' &&
+             invitation.email == request.auth.token.email.lower() &&
+             data.role == invitation.role &&
+             getAfter(invitationPath(data.invitationId)).data.status == 'accepted';
+    }
+
+    function changedOnly(keys) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);
+    }
+
+    match /spaces/{spaceId} {
+      allow read: if isMember(spaceId) || isAdmin();
+
+      // Created together with the creator's owner membership (batch)
+      allow create: if isAuthenticated() &&
+                       isValidSpace(request.resource.data) &&
+                       request.resource.data.createdBy == request.auth.uid &&
+                       getAfter(memberPath(spaceId, request.auth.uid)).data.role == 'owner';
+
+      allow update: if canManage(spaceId) &&
+                       isValidSpace(request.resource.data) &&
+                       changedOnly(['name', 'description']);
+
+      allow delete: if isOwner(spaceId);
+
+      match /members/{uid} {
+        allow read: if isMember(spaceId) || isAdmin();
+
+        // 1) Bootstrap: creator becomes owner while creating the space
+        // 2) Admins/owners add members with a role they may assign
+        // 3) A user joins with an invite link
+        // 4) A user accepts an email invitation
+        allow create: if isValidMember(request.resource.data, spaceId, uid) && (
+                         (uid == request.auth.uid &&
+                          request.resource.data.role == 'owner' &&
+                          !exists(spacePath(spaceId)) &&
+                          getAfter(spacePath(spaceId)).data.createdBy == request.auth.uid) ||
+                         (canManage(spaceId) &&
+                          request.resource.data.role in assignableRoles(spaceId)) ||
+                         (uid == request.auth.uid &&
+                          exists(spacePath(spaceId)) &&
+                          'inviteCode' in request.resource.data &&
+                          isValidCodeJoin(spaceId, request.resource.data)) ||
+                         (uid == request.auth.uid &&
+                          exists(spacePath(spaceId)) &&
+                          'invitationId' in request.resource.data &&
+                          isValidInvitationJoin(spaceId, request.resource.data))
+                       );
+
+        // Role changes: never your own; admins cannot touch owners
+        allow update: if canManage(spaceId) &&
+                         uid != request.auth.uid &&
+                         isValidMember(request.resource.data, spaceId, uid) &&
+                         changedOnly(['role', 'displayName', 'photoUrl']) &&
+                         resource.data.role in assignableRoles(spaceId) &&
+                         request.resource.data.role in assignableRoles(spaceId);
+
+        // Removing others (not owners, unless you are owner) or leaving
+        // yourself (owners must hand over ownership first, unless the space
+        // is deleted in the same batch)
+        allow delete: if (canManage(spaceId) &&
+                          uid != request.auth.uid &&
+                          resource.data.role in assignableRoles(spaceId)) ||
+                         (isAuthenticated() &&
+                          uid == request.auth.uid &&
+                          resource.data.role != 'owner') ||
+                         (isOwner(spaceId) &&
+                          uid == request.auth.uid &&
+                          !existsAfter(spacePath(spaceId)));
+      }
+
+      // Invite links. The code (document id) is the secret: anyone signed in
+      // who knows it may read it to see what they are joining, but only
+      // admins may list the codes of a space.
+      match /inviteCodes/{code} {
+        allow get: if isAuthenticated();
+        allow list: if canManage(spaceId);
+
+        allow create: if canManage(spaceId) &&
+                         code.size() >= 20 &&
+                         request.resource.data.keys().hasAll(
+                           ['spaceId', 'spaceName', 'role', 'createdBy', 'createdAt', 'expiresAt', 'active']) &&
+                         request.resource.data.keys().hasOnly(
+                           ['spaceId', 'spaceName', 'role', 'createdBy', 'createdAt', 'expiresAt', 'active']) &&
+                         request.resource.data.spaceId == spaceId &&
+                         request.resource.data.spaceName is string &&
+                         request.resource.data.role in ['viewer', 'member', 'admin'] &&
+                         request.resource.data.role in assignableRoles(spaceId) &&
+                         request.resource.data.createdBy == request.auth.uid &&
+                         request.resource.data.createdAt is timestamp &&
+                         (request.resource.data.expiresAt == null ||
+                          request.resource.data.expiresAt is timestamp) &&
+                         request.resource.data.active == true;
+
+        // Only deactivation
+        allow update: if canManage(spaceId) &&
+                         changedOnly(['active']) &&
+                         request.resource.data.active == false;
+
+        allow delete: if canManage(spaceId);
+      }
+
+      match /persons/{personId} {
+        allow read: if isMember(spaceId) || isAdmin();
+        allow create: if canManage(spaceId) && isValidPerson(request.resource.data);
+        allow update: if (canManage(spaceId) && isValidPerson(request.resource.data)) ||
+                         // Reporters keep the counter in sync (+1 / -1)
+                         (canReport(spaceId) &&
+                          changedOnly(['raphconCount', 'lastRaphconAt']) &&
+                          request.resource.data.raphconCount is int &&
+                          (request.resource.data.raphconCount == resource.data.get('raphconCount', 0) + 1 ||
+                           request.resource.data.raphconCount == resource.data.get('raphconCount', 0) - 1));
+        allow delete: if canManage(spaceId);
+      }
+
+      match /raphcons/{raphconId} {
+        allow read: if isMember(spaceId) || isAdmin();
+        allow create: if canReport(spaceId) &&
+                         isValidSpaceRaphcon(request.resource.data, spaceId);
+        allow update: if canManage(spaceId) ||
+                         // Reporters may withdraw (soft delete) their own report
+                         (canReport(spaceId) &&
+                          resource.data.createdBy == request.auth.uid &&
+                          changedOnly(['isActive']) &&
+                          request.resource.data.isActive == false);
+        allow delete: if canManage(spaceId);
+      }
+    }
+
+    // Collection-group lookup "which spaces am I in?"
+    // Query must filter on uid == own uid.
+    match /{path=**}/members/{uid} {
+      allow read: if isAuthenticated() && resource.data.uid == request.auth.uid;
+    }
+
+    match /invitations/{invitationId} {
+      function isInvitee() {
+        return isAuthenticated() &&
+               request.auth.token.email != null &&
+               resource.data.email == request.auth.token.email.lower();
+      }
+
+      allow read: if isInvitee() || canManage(resource.data.spaceId);
+
+      allow create: if canManage(request.resource.data.spaceId) &&
+                       request.resource.data.keys().hasOnly(
+                         ['spaceId', 'spaceName', 'email', 'role', 'invitedBy', 'status', 'createdAt']) &&
+                       request.resource.data.email is string &&
+                       request.resource.data.email == request.resource.data.email.lower() &&
+                       request.resource.data.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$') &&
+                       request.resource.data.spaceName is string &&
+                       request.resource.data.role in ['viewer', 'member', 'admin'] &&
+                       request.resource.data.invitedBy == request.auth.uid &&
+                       request.resource.data.status == 'pending' &&
+                       request.resource.data.createdAt is timestamp;
+
+      // Only status transitions from pending. Accepting is only possible
+      // together with creating the membership that references it.
+      allow update: if resource.data.status == 'pending' &&
+                       changedOnly(['status']) &&
+                       ((isInvitee() && request.resource.data.status == 'declined') ||
+                        (isInvitee() && hasVerifiedEmail() &&
+                         request.resource.data.status == 'accepted' &&
+                         getAfter(memberPath(resource.data.spaceId, request.auth.uid)).data.invitationId == invitationId) ||
+                        (canManage(resource.data.spaceId) && request.resource.data.status == 'revoked'));
+
+      allow delete: if canManage(resource.data.spaceId);
+    }
+
     // Statistics - Read only for Admins
     match /statistics/{statId} {
       allow read: if isAdmin();
