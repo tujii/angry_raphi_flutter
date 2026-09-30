@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../core/data/data_scope.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/user_repository.dart';
 
@@ -7,9 +9,15 @@ import '../../domain/repositories/user_repository.dart';
 /// Data layer implementation following Clean Architecture
 class FirestoreUserRepository implements UserRepository {
   final FirebaseFirestore _firestore;
-  static const String _usersCollection = 'users';
+  final DataScope _scope;
 
-  const FirestoreUserRepository(this._firestore);
+  const FirestoreUserRepository(
+    this._firestore, {
+    DataScope scope = DataScope.legacy,
+  }) : _scope = scope;
+
+  String get _usersCollection => _scope.personsPath;
+  String get _raphconsCollection => _scope.raphconsPath;
 
   @override
   Future<List<User>> getUsers() async {
@@ -29,7 +37,7 @@ class FirestoreUserRepository implements UserRepository {
       // Get all raphcons to calculate accurate counts
       try {
         final allRaphcons = await _firestore
-            .collection('raphcons')
+            .collection(_raphconsCollection)
             .where('isActive', isEqualTo: true)
             .get(const GetOptions(source: Source.server));
 
@@ -130,7 +138,7 @@ class FirestoreUserRepository implements UserRepository {
       // Get all raphcons to calculate accurate counts
       try {
         final allRaphcons = await _firestore
-            .collection('raphcons')
+            .collection(_raphconsCollection)
             .where('isActive', isEqualTo: true)
             .get(const GetOptions(source: Source.server));
 
@@ -217,7 +225,7 @@ class FirestoreUserRepository implements UserRepository {
     try {
       // First, delete all raphcons for this user
       final raphconQuery = await _firestore
-          .collection('raphcons')
+          .collection(_raphconsCollection)
           .where('userId', isEqualTo: userId)
           .get();
 

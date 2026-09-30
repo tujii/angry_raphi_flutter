@@ -1,0 +1,63 @@
+name: Migrate to Spaces
+
+# One-off migration of the legacy global collections into a space.
+# Start it manually: first as dry run, then with "apply" checked.
+on:
+  workflow_dispatch:
+    inputs:
+      owners:
+        description: 'Owner email(s), comma-separated (must have signed in before)'
+        required: true
+        type: string
+      default_role:
+        description: 'Role for users who are not app admins'
+        required: true
+        default: viewer
+        type: choice
+        options:
+          - viewer
+          - member
+      apply:
+        description: 'Write the changes (unchecked = dry run)'
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  migrate:
+    name: Migrate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: tools/migrate-to-spaces
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: tools/migrate-to-spaces/package-lock.json
+      - run: npm ci --omit=dev
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+
+      - name: Run migration
+        env:
+          OWNERS: ${{ inputs.owners }}
+          DEFAULT_ROLE: ${{ inputs.default_role }}
+          APPLY: ${{ inputs.apply }}
+        run: |
+          args=(--project angryraphi --default-role "$DEFAULT_ROLE")
+          IFS=',' read -ra owners <<< "$OWNERS"
+          for owner in "${owners[@]}"; do
+            args+=(--owner "$(echo "$owner" | xargs)")
+          done
+          if [ "$APPLY" = "true" ]; then
+            args+=(--apply)
+          fi
+          node migrate.js "${args[@]}"

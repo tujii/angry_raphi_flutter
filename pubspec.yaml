@@ -2,7 +2,7 @@ name: angry_raphi
 description: "AngryRaphi - Person rating app with raphcons"
 publish_to: 'none'
 
-version: 2.3.3+1
+version: 3.0.0+2
 
 environment:
   sdk: ^3.6.1

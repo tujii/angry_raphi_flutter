@@ -1,7 +1,11 @@
-## 🆕 Version 2.3.3 (30.09.2026)
-- 🔧 Interne Verbesserungen an der Build- und Deployment-Pipeline
+## 🆕 Version 3.0.0 (30.09.2026)
+- 🏠 Bereiche: Lege eigene Bereiche an – jeder mit eigenen Personen und Raphcons
+- 👥 Mitglieder & Rollen: Owner, Admin, Mitglied und Betrachter pro Bereich
+- 🔗 Einladungen: Per Link (mit Ablaufdatum) oder per E-Mail in einen Bereich einladen
+- 🔐 Login erforderlich: Bereiche sind privat und nur für ihre Mitglieder sichtbar
+- 📦 Die bisherige Rangliste lebt im Bereich „AngryRaphi Original“ weiter
 
-**Version 2.3.2 (03.02.2026)**
+## 🆕 Version 2.3.2 (03.02.2026)
 - 🐛 Bugfix: Story-Banner zeigt jetzt datenbasierte Stories (auch bei nur 1 Raphcon)
 - 🧩 Fix: RenderFlex-Overflow im Typ-Auswahl-Dialog behoben (respon­sive Höhe & Scroll)
 - 🛠️ Verbesserte Fehlerbehandlung und Debug-Logs für Story-Generierung

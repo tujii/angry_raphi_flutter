@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/constants/app_constants.dart';
+import '../../core/constants/firebase_constants.dart';
 import '../../core/enums/raphcon_type.dart';
 import '../../features/raphcon_management/domain/entities/raphcon_entity.dart';
 import '../../features/raphcon_management/presentation/bloc/raphcon_bloc.dart';
@@ -19,6 +20,10 @@ class StreamingRaphconDetailBottomSheet extends StatefulWidget {
   final bool isAdmin;
   final VoidCallback onBackPressed;
 
+  /// Space of the raphcons; creators are looked up among its members.
+  /// Without a space they are looked up among the app admins.
+  final String? spaceId;
+
   const StreamingRaphconDetailBottomSheet({
     super.key,
     required this.userName,
@@ -26,6 +31,7 @@ class StreamingRaphconDetailBottomSheet extends StatefulWidget {
     required this.type,
     required this.isAdmin,
     required this.onBackPressed,
+    this.spaceId,
   });
 
   @override
@@ -40,6 +46,7 @@ class StreamingRaphconDetailBottomSheet extends StatefulWidget {
     required RaphconType type,
     required bool isAdmin,
     required VoidCallback onBackPressed,
+    String? spaceId,
   }) {
     final userBloc = context.read<UserBloc>();
     final raphconBloc = context.read<RaphconBloc>();
@@ -63,6 +70,7 @@ class StreamingRaphconDetailBottomSheet extends StatefulWidget {
               type: type,
               isAdmin: isAdmin,
               onBackPressed: onBackPressed,
+              spaceId: spaceId,
             ),
           ),
         ),
@@ -113,9 +121,14 @@ class _StreamingRaphconDetailBottomSheetState
     if (_adminUserCache.containsKey(adminId)) return;
 
     try {
-      final doc = await FirebaseFirestore.instance
-          .collection('admins')
-          .doc(adminId)
+      final spaceId = widget.spaceId;
+      final doc = await (spaceId != null
+              ? FirebaseFirestore.instance
+                  .collection(FirebaseConstants.spacesCollection)
+                  .doc(spaceId)
+                  .collection(FirebaseConstants.spaceMembersCollection)
+                  .doc(adminId)
+              : FirebaseFirestore.instance.collection('admins').doc(adminId))
           .get();
       if (doc.exists) {
         final data = doc.data()!;
