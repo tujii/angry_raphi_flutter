@@ -2,9 +2,10 @@
 
 Spaces make AngryRaphi multi-tenant: every space has its own persons and
 raphcons, and only its members can see them. This document describes the
-data model, permissions and the app integration (phases 1 and 2).
-Member management, invitation acceptance (Cloud Functions) and migration of
-the existing data follow in later phases.
+data model, permissions, the app integration and invitations (phases 1–3).
+Migrating the existing data follows in phase 4. Everything works on the
+free Spark plan: there are no Cloud Functions, all checks are security
+rules.
 
 ## Data model
 
@@ -13,6 +14,7 @@ spaces/{spaceId}                   name, description, createdBy, createdAt
 spaces/{spaceId}/members/{uid}     uid, spaceId, role, displayName, email, photoUrl, joinedAt
 spaces/{spaceId}/persons/{id}      same fields as the legacy /users documents
 spaces/{spaceId}/raphcons/{id}     same fields as the legacy /raphcons documents
+spaces/{spaceId}/inviteCodes/{code} spaceId, spaceName, role, createdBy, createdAt, expiresAt, active
 invitations/{id}                   spaceId, spaceName, email (lower case), role, invitedBy, status, createdAt
 ```
 
@@ -39,10 +41,28 @@ in one batch).
 
 ## Invitations
 
-Admins create `invitations` documents (status `pending`). The invitee sees
-them by email and can decline. Accepting creates the membership and is done
-server-side (Cloud Function, phase 3), because the invitee is not yet allowed
-to write membership documents.
+Both ways of joining are checked by the security rules alone:
+
+**Invite links** (`/join/{spaceId}/{code}`): admins create
+`inviteCodes/{code}` with a random 24-character code, a role and an
+optional expiry. Anyone signed in who knows the code may read that one
+document (to see what they join); listing codes is admin-only. To join, the
+user writes their own membership with `inviteCode`; the rules require the
+code to exist, be active, not be expired and grant exactly that role.
+Admins deactivate links instead of deleting them.
+
+**Email invitations**: admins create `invitations` documents (status
+`pending`). The invitee sees them on `/spaces` and accepts by writing their
+membership with `invitationId` and setting the invitation to `accepted` in
+one batch. The rules require the invitation to be pending, for this space,
+addressed to the user's **verified** email and to grant exactly that role.
+Invitees can also decline; admins can revoke. No email is sent – share the
+link or tell the person to sign in.
+
+**Deleting a space**: the owner's app deletes raphcons, persons, invite
+links, invitations and other memberships in batches, then the space
+together with the owner's own membership (the rules only allow owners to
+drop their membership in the same batch that deletes the space).
 
 ## App integration
 
@@ -51,6 +71,8 @@ to write membership documents.
 | `/spaces`      | Spaces of the signed-in user, create new ones    |
 | `/spaces/new`  | Create a space (creator becomes owner)           |
 | `/s/:spaceId`  | Ranking of the space's persons (members only)    |
+| `/s/:spaceId/members` | Members, roles, invite links, email invitations, leave/delete |
+| `/join/:spaceId/:code` | Join a space with an invite link        |
 
 These routes require sign-in; signed-out users are sent to
 `/login?from=...` and returned after signing in. `/` still shows the legacy

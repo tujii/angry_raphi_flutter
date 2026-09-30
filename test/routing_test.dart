@@ -33,7 +33,7 @@ void main() {
       expect(router, isA<GoRouter>());
       expect(router.configuration.routes, isNotEmpty);
       expect(router.configuration.routes.length,
-          equals(7)); // home, login, terms, privacy, spaces, space, admin
+          equals(8)); // home, login, terms, privacy, spaces, space, join, admin
     });
 
     test('Routes are properly configured in GoRouter', () {
@@ -41,7 +41,7 @@ void main() {
 
       // Test that we have the correct number of routes configured
       final routes = router.configuration.routes;
-      expect(routes.length, equals(7));
+      expect(routes.length, equals(8));
 
       // Cast to GoRoute to access path property
       final goRoutes = routes.whereType<GoRoute>().toList();
@@ -54,6 +54,7 @@ void main() {
       expect(routePaths, contains('/admin/settings'));
       expect(routePaths, contains('/spaces'));
       expect(routePaths, contains('/s/:spaceId'));
+      expect(routePaths, contains('/join/:spaceId/:code'));
     });
 
     test('Route navigation works correctly', () {
@@ -101,6 +102,10 @@ void main() {
         AppRouter.redirect(Uri.parse('/spaces/new'), false),
         '/login?from=%2Fspaces%2Fnew',
       );
+      expect(
+        AppRouter.redirect(Uri.parse('/join/abc/code123'), false),
+        '/login?from=%2Fjoin%2Fabc%2Fcode123',
+      );
     });
 
     test('signed-in users can open space routes', () {
@@ -134,8 +139,10 @@ void main() {
       );
     });
 
-    test('space location encodes the id', () {
+    test('space locations encode their parameters', () {
       expect(AppRouter.space('abc'), '/s/abc');
+      expect(AppRouter.spaceMembers('abc'), '/s/abc/members');
+      expect(AppRouter.join('abc', 'x/y'), '/join/abc/x%2Fy');
     });
   });
 }

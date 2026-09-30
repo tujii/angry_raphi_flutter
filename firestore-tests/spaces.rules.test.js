@@ -8,6 +8,7 @@ import {
   initializeTestEnvironment,
 } from '@firebase/rules-unit-testing';
 import {
+  Timestamp,
   collection,
   collectionGroup,
   deleteDoc,
@@ -25,6 +26,8 @@ import {
 
 const SPACE = 'space1';
 const OTHER_SPACE = 'space2';
+const CODE = 'abcdefghijklmnopqrstuvwx';
+const EXPIRED_CODE = 'expiredexpiredexpired123';
 
 let env;
 
@@ -36,8 +39,14 @@ const users = {
   outsider: { uid: 'outsider', email: 'Outsider@Example.com' },
 };
 
-const db = (name) =>
-  env.authenticatedContext(users[name].uid, { email: users[name].email }).firestore();
+const db = (name, token = {}) =>
+  env
+    .authenticatedContext(users[name].uid, {
+      email: users[name].email,
+      email_verified: true,
+      ...token,
+    })
+    .firestore();
 const anon = () => env.unauthenticatedContext().firestore();
 
 const memberData = (spaceId, uid, role) => ({
@@ -93,6 +102,24 @@ beforeEach(async () => {
       createdAt: new Date(),
       type: 'headset',
       isActive: true,
+    });
+    await setDoc(doc(fs, `spaces/${SPACE}/inviteCodes/${CODE}`), {
+      spaceId: SPACE,
+      spaceName: SPACE,
+      role: 'member',
+      createdBy: 'admin',
+      createdAt: new Date(),
+      expiresAt: null,
+      active: true,
+    });
+    await setDoc(doc(fs, `spaces/${SPACE}/inviteCodes/${EXPIRED_CODE}`), {
+      spaceId: SPACE,
+      spaceName: SPACE,
+      role: 'member',
+      createdBy: 'admin',
+      createdAt: new Date(),
+      expiresAt: new Date(Date.now() - 1000),
+      active: true,
     });
     await setDoc(doc(fs, 'invitations/inv1'), {
       spaceId: SPACE,
@@ -172,6 +199,34 @@ describe('spaces', () => {
   test('only owners can delete a space', async () => {
     await assertFails(deleteDoc(doc(db('admin'), `spaces/${SPACE}`)));
     await assertSucceeds(deleteDoc(doc(db('owner'), `spaces/${SPACE}`)));
+  });
+
+  test('owner can delete the space with all its content', async () => {
+    const fs = db('owner');
+    const content = writeBatch(fs);
+    for (const path of [
+      `spaces/${SPACE}/raphcons/r-member`,
+      `spaces/${SPACE}/raphcons/r-admin`,
+      `spaces/${SPACE}/persons/p1`,
+      `spaces/${SPACE}/inviteCodes/${CODE}`,
+      `spaces/${SPACE}/inviteCodes/${EXPIRED_CODE}`,
+      'invitations/inv1',
+      `spaces/${SPACE}/members/admin`,
+      `spaces/${SPACE}/members/member`,
+      `spaces/${SPACE}/members/viewer`,
+    ]) {
+      content.delete(doc(fs, path));
+    }
+    await assertSucceeds(content.commit());
+
+    const last = writeBatch(fs);
+    last.delete(doc(fs, `spaces/${SPACE}`));
+    last.delete(doc(fs, `spaces/${SPACE}/members/owner`));
+    await assertSucceeds(last.commit());
+  });
+
+  test('owner cannot drop own membership while the space exists', async () => {
+    await assertFails(deleteDoc(doc(db('owner'), `spaces/${SPACE}/members/owner`)));
   });
 });
 
@@ -397,6 +452,154 @@ describe('invitations', () => {
 
   test('admins can revoke', async () => {
     await assertSucceeds(updateDoc(doc(db('admin'), 'invitations/inv1'), { status: 'revoked' }));
+  });
+});
+
+describe('invite links', () => {
+  const joinWith = (name, code, role = 'member') =>
+    setDoc(doc(db(name), `spaces/${SPACE}/members/${users[name].uid}`), {
+      ...memberData(SPACE, users[name].uid, role),
+      inviteCode: code,
+    });
+
+  const newCode = (overrides = {}) => ({
+    spaceId: SPACE,
+    spaceName: SPACE,
+    role: 'member',
+    createdBy: 'admin',
+    createdAt: serverTimestamp(),
+    expiresAt: null,
+    active: true,
+    ...overrides,
+  });
+
+  test('anyone signed in can read a code they know, not list codes', async () => {
+    await assertSucceeds(getDoc(doc(db('outsider'), `spaces/${SPACE}/inviteCodes/${CODE}`)));
+    await assertFails(getDoc(doc(anon(), `spaces/${SPACE}/inviteCodes/${CODE}`)));
+    await assertFails(getDocs(collection(db('outsider'), `spaces/${SPACE}/inviteCodes`)));
+    await assertFails(getDocs(collection(db('member'), `spaces/${SPACE}/inviteCodes`)));
+    await assertSucceeds(getDocs(collection(db('admin'), `spaces/${SPACE}/inviteCodes`)));
+  });
+
+  test('admins create codes, members cannot', async () => {
+    const id = 'x'.repeat(24);
+    await assertSucceeds(setDoc(doc(db('admin'), `spaces/${SPACE}/inviteCodes/${id}`), newCode()));
+    await assertFails(
+      setDoc(doc(db('member'), `spaces/${SPACE}/inviteCodes/${'y'.repeat(24)}`), newCode({ createdBy: 'member' })),
+    );
+  });
+
+  test('codes must be long, not grant owner and start active', async () => {
+    await assertFails(setDoc(doc(db('admin'), `spaces/${SPACE}/inviteCodes/short`), newCode()));
+    await assertFails(
+      setDoc(doc(db('owner'), `spaces/${SPACE}/inviteCodes/${'a'.repeat(24)}`), newCode({ createdBy: 'owner', role: 'owner' })),
+    );
+    await assertFails(
+      setDoc(doc(db('admin'), `spaces/${SPACE}/inviteCodes/${'b'.repeat(24)}`), newCode({ active: false })),
+    );
+  });
+
+  test('admins can deactivate but not re-activate or change codes', async () => {
+    const ref = doc(db('admin'), `spaces/${SPACE}/inviteCodes/${CODE}`);
+    await assertFails(updateDoc(ref, { role: 'admin' }));
+    await assertSucceeds(updateDoc(ref, { active: false }));
+    await assertFails(updateDoc(ref, { active: true }));
+  });
+
+  test('a user joins with a valid code', async () => {
+    await assertSucceeds(joinWith('outsider', CODE));
+  });
+
+  test('joining requires the role of the code', async () => {
+    await assertFails(joinWith('outsider', CODE, 'admin'));
+  });
+
+  test('unknown, expired and deactivated codes are rejected', async () => {
+    await assertFails(joinWith('outsider', 'nonexistentnonexistent00'));
+    await assertFails(joinWith('outsider', EXPIRED_CODE));
+    await updateDoc(doc(db('admin'), `spaces/${SPACE}/inviteCodes/${CODE}`), { active: false });
+    await assertFails(joinWith('outsider', CODE));
+  });
+
+  test('a code only works for its own space', async () => {
+    await assertFails(
+      setDoc(doc(db('outsider'), `spaces/${OTHER_SPACE}/members/outsider`), {
+        ...memberData(OTHER_SPACE, 'outsider', 'member'),
+        inviteCode: CODE,
+      }),
+    );
+  });
+
+  test('a code cannot add someone else', async () => {
+    await assertFails(
+      setDoc(doc(db('outsider'), `spaces/${SPACE}/members/stranger`), {
+        ...memberData(SPACE, 'stranger', 'member'),
+        inviteCode: CODE,
+      }),
+    );
+  });
+
+  test('members cannot upgrade themselves with a code', async () => {
+    await assertFails(
+      setDoc(doc(db('viewer'), `spaces/${SPACE}/members/viewer`), {
+        ...memberData(SPACE, 'viewer', 'member'),
+        inviteCode: CODE,
+      }),
+    );
+  });
+});
+
+describe('accepting email invitations', () => {
+  const accept = (fs, { role = 'member', status = 'accepted', invitationId = 'inv1', spaceId = SPACE } = {}) => {
+    const batch = writeBatch(fs);
+    batch.set(doc(fs, `spaces/${spaceId}/members/outsider`), {
+      ...memberData(spaceId, 'outsider', role),
+      invitationId,
+    });
+    if (status) {
+      batch.update(doc(fs, `invitations/${invitationId}`), { status });
+    }
+    return batch.commit();
+  };
+
+  test('the invitee accepts', async () => {
+    await assertSucceeds(accept(db('outsider')));
+  });
+
+  test('the invitation must be marked accepted in the same batch', async () => {
+    await assertFails(accept(db('outsider'), { status: null }));
+  });
+
+  test('the role must match the invitation', async () => {
+    await assertFails(accept(db('outsider'), { role: 'admin' }));
+  });
+
+  test('the email must be verified', async () => {
+    await assertFails(accept(db('outsider', { email_verified: false })));
+  });
+
+  test('others cannot use the invitation', async () => {
+    const fs = db('member', { email: 'someone@example.com' });
+    const batch = writeBatch(fs);
+    batch.set(doc(fs, `spaces/${OTHER_SPACE}/members/member`), {
+      ...memberData(OTHER_SPACE, 'member', 'member'),
+      invitationId: 'inv1',
+    });
+    batch.update(doc(fs, 'invitations/inv1'), { status: 'accepted' });
+    await assertFails(batch.commit());
+  });
+
+  test('the invitation only works for its space', async () => {
+    await assertFails(accept(db('outsider'), { spaceId: OTHER_SPACE }));
+  });
+
+  test('revoked invitations cannot be accepted', async () => {
+    await updateDoc(doc(db('admin'), 'invitations/inv1'), { status: 'revoked' });
+    await assertFails(accept(db('outsider')));
+  });
+
+  test('accepting without joining is not possible', async () => {
+    await assertFails(updateDoc(doc(db('outsider'), 'invitations/inv1'), { status: 'accepted' }));
   });
 });
 

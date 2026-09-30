@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
 
@@ -5,6 +7,7 @@ import '../../../../core/constants/firebase_constants.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../domain/entities/space_invitation_entity.dart';
 import '../../domain/entities/space_role.dart';
+import '../models/invite_code_model.dart';
 import '../models/space_invitation_model.dart';
 import '../models/space_member_model.dart';
 import '../models/space_model.dart';
@@ -12,7 +15,7 @@ import '../models/space_model.dart';
 abstract class SpacesRemoteDataSource {
   Future<String> createSpace(SpaceModel space, SpaceMemberModel owner);
   Future<void> updateSpace(String spaceId, String name, String? description);
-  Future<void> deleteSpace(String spaceId);
+  Future<void> deleteSpace(String spaceId, String ownerUid);
   Stream<List<SpaceModel>> watchMySpaces(String uid);
   Stream<SpaceModel?> watchSpace(String spaceId);
   Stream<SpaceMemberModel?> watchMembership(String spaceId, String uid);
@@ -24,6 +27,13 @@ abstract class SpacesRemoteDataSource {
       String invitationId, InvitationStatus status);
   Stream<List<SpaceInvitationModel>> watchSpaceInvitations(String spaceId);
   Stream<List<SpaceInvitationModel>> watchMyInvitations(String email);
+  Future<String> createInviteCode(InviteCodeModel invite);
+  Stream<List<InviteCodeModel>> watchInviteCodes(String spaceId);
+  Future<void> deactivateInviteCode(String spaceId, String code);
+  Future<InviteCodeModel?> getInviteCode(String spaceId, String code);
+  Future<void> joinWithInviteCode(
+      String spaceId, String code, SpaceMemberModel member);
+  Future<void> acceptInvitation(String invitationId, SpaceMemberModel member);
 }
 
 @Injectable(as: SpacesRemoteDataSource)
@@ -40,6 +50,23 @@ class SpacesRemoteDataSourceImpl implements SpacesRemoteDataSource {
 
   CollectionReference<Map<String, dynamic>> _members(String spaceId) =>
       _spaces.doc(spaceId).collection(FirebaseConstants.spaceMembersCollection);
+
+  CollectionReference<Map<String, dynamic>> _inviteCodes(String spaceId) =>
+      _spaces
+          .doc(spaceId)
+          .collection(FirebaseConstants.spaceInviteCodesCollection);
+
+  /// Firestore allows at most 500 writes per batch
+  static const int _maxBatchWrites = 450;
+
+  static const String _codeAlphabet =
+      'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+  static const int _codeLength = 24;
+  static final Random _random = Random.secure();
+
+  /// Random, unguessable invite code (~138 bits)
+  static String generateInviteCode() => List.generate(_codeLength,
+      (_) => _codeAlphabet[_random.nextInt(_codeAlphabet.length)]).join();
 
   @override
   Future<String> createSpace(SpaceModel space, SpaceMemberModel owner) async {
@@ -85,10 +112,36 @@ class SpacesRemoteDataSourceImpl implements SpacesRemoteDataSource {
   }
 
   @override
-  Future<void> deleteSpace(String spaceId) async {
-    // TODO(spaces): delete subcollections server-side (Cloud Function).
+  Future<void> deleteSpace(String spaceId, String ownerUid) async {
     try {
-      await _spaces.doc(spaceId).delete();
+      final space = _spaces.doc(spaceId);
+      final ownerMembership = _members(spaceId).doc(ownerUid);
+      final content = await Future.wait([
+        space.collection(FirebaseConstants.spaceRaphconsCollection).get(),
+        space.collection(FirebaseConstants.spacePersonsCollection).get(),
+        _inviteCodes(spaceId).get(),
+        _invitations.where('spaceId', isEqualTo: spaceId).get(),
+        _members(spaceId).get(),
+      ]);
+      final refs = content
+          .expand((snapshot) => snapshot.docs)
+          .map((doc) => doc.reference)
+          .where((ref) => ref.path != ownerMembership.path)
+          .toList();
+
+      for (var i = 0; i < refs.length; i += _maxBatchWrites) {
+        final batch = firestore.batch();
+        for (final ref in refs.skip(i).take(_maxBatchWrites)) {
+          batch.delete(ref);
+        }
+        await batch.commit();
+      }
+
+      // The owner's membership can only be removed together with the space.
+      final last = firestore.batch()
+        ..delete(space)
+        ..delete(ownerMembership);
+      await last.commit();
     } catch (e) {
       throw ServerException('Failed to delete space: ${e.toString()}');
     }
@@ -212,5 +265,81 @@ class SpacesRemoteDataSourceImpl implements SpacesRemoteDataSource {
         .map((doc) => SpaceInvitationModel.fromMap(doc.data(), doc.id))
         .toList()
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+  }
+
+  @override
+  Future<String> createInviteCode(InviteCodeModel invite) async {
+    try {
+      final code = generateInviteCode();
+      await _inviteCodes(invite.spaceId).doc(code).set({
+        ...invite.toMap(),
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+      return code;
+    } catch (e) {
+      throw ServerException('Failed to create invite link: ${e.toString()}');
+    }
+  }
+
+  @override
+  Stream<List<InviteCodeModel>> watchInviteCodes(String spaceId) {
+    return _inviteCodes(spaceId).snapshots().map((snapshot) => snapshot.docs
+        .map((doc) => InviteCodeModel.fromMap(doc.data(), doc.id))
+        .toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt)));
+  }
+
+  @override
+  Future<void> deactivateInviteCode(String spaceId, String code) async {
+    try {
+      await _inviteCodes(spaceId).doc(code).update({'active': false});
+    } catch (e) {
+      throw ServerException(
+          'Failed to deactivate invite link: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<InviteCodeModel?> getInviteCode(String spaceId, String code) async {
+    try {
+      final doc = await _inviteCodes(spaceId).doc(code).get();
+      return doc.exists ? InviteCodeModel.fromMap(doc.data()!, doc.id) : null;
+    } catch (e) {
+      throw ServerException('Failed to load invite link: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<void> joinWithInviteCode(
+      String spaceId, String code, SpaceMemberModel member) async {
+    try {
+      await _members(spaceId).doc(member.uid).set({
+        ...member.toMap(),
+        'inviteCode': code,
+        'joinedAt': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      throw ServerException('Failed to join space: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<void> acceptInvitation(
+      String invitationId, SpaceMemberModel member) async {
+    try {
+      // Membership and status change must be written together: the rules
+      // accept each of them only with the other.
+      final batch = firestore.batch()
+        ..set(_members(member.spaceId).doc(member.uid), {
+          ...member.toMap(),
+          'invitationId': invitationId,
+          'joinedAt': FieldValue.serverTimestamp(),
+        })
+        ..update(_invitations.doc(invitationId),
+            {'status': InvitationStatus.accepted.value});
+      await batch.commit();
+    } catch (e) {
+      throw ServerException('Failed to accept invitation: ${e.toString()}');
+    }
   }
 }

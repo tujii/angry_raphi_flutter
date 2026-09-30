@@ -10,6 +10,7 @@ import 'package:angry_raphi/features/authentication/presentation/bloc/auth_bloc.
 import 'package:angry_raphi/features/authentication/presentation/bloc/auth_event.dart';
 import 'package:angry_raphi/features/spaces/domain/repositories/spaces_repository.dart';
 import 'package:angry_raphi/features/spaces/presentation/pages/create_space_page.dart';
+import 'package:angry_raphi/features/spaces/presentation/pages/join_space_page.dart';
 import 'package:angry_raphi/features/spaces/presentation/pages/space_home_page.dart';
 import 'package:angry_raphi/features/spaces/presentation/pages/spaces_page.dart';
 import 'package:dartz/dartz.dart';
@@ -85,6 +86,13 @@ void main() {
           path: '/s/:spaceId',
           builder: (_, state) =>
               SpaceHomePage(spaceId: state.pathParameters['spaceId']!),
+        ),
+        GoRoute(
+          path: '/join/:spaceId/:code',
+          builder: (_, state) => JoinSpacePage(
+            spaceId: state.pathParameters['spaceId']!,
+            code: state.pathParameters['code']!,
+          ),
         ),
         GoRoute(path: '/', builder: (_, __) => const Text('home')),
       ],
@@ -196,6 +204,60 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 500));
       expect(find.byType(SpacesPage), findsOneWidget);
+    });
+  });
+  group('JoinSpacePage', () {
+    testWidgets('joins with a valid link', (tester) async {
+      await pumpApp(tester, '/join/space1/abcdefghijklmnopqrstuvwx');
+      spacesRepository.inviteCode = Right(testInvite());
+      spacesRepository.membership.add(const Right(null));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(
+        find.text('Du wurdest in „Team Rocket“ als Mitglied eingeladen.'),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text('Beitreten'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(spacesRepository.joinedWith, testInvite());
+      expect(spacesRepository.joinedAs!.uid, 'uid1');
+      expect(find.byType(SpaceHomePage), findsOneWidget);
+    });
+
+    testWidgets('explains invalid links', (tester) async {
+      await pumpApp(tester, '/join/space1/unknown');
+      spacesRepository.membership.add(const Right(null));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(
+        find.text('Dieser Einladungslink ist ungültig oder abgelaufen.'),
+        findsOneWidget,
+      );
+    });
+  });
+
+  group('SpacesPage invitations', () {
+    testWidgets('accepting an invitation opens the space', (tester) async {
+      await pumpApp(tester, '/spaces');
+      spacesRepository.mySpaces.add(const Right([]));
+      spacesRepository.myInvitations.add(Right([testInvitation]));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(find.text('Deine Einladungen'), findsOneWidget);
+      expect(find.text('Eingeladen als Mitglied'), findsOneWidget);
+
+      await tester.tap(find.text('Annehmen'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+
+      expect(spacesRepository.accepted, testInvitation);
+      expect(find.byType(SpaceHomePage), findsOneWidget);
     });
   });
 }

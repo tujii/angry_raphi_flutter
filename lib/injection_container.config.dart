@@ -69,6 +69,8 @@ import 'package:angry_raphi/features/spaces/domain/usecases/create_space.dart'
     as _i585;
 import 'package:angry_raphi/features/spaces/domain/usecases/invite_by_email.dart'
     as _i680;
+import 'package:angry_raphi/features/spaces/domain/usecases/invite_usecases.dart'
+    as _i1056;
 import 'package:angry_raphi/features/spaces/domain/usecases/remove_member.dart'
     as _i793;
 import 'package:angry_raphi/features/spaces/domain/usecases/update_member_role.dart'
@@ -158,6 +160,26 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i257.WatchSpaceMembers(gh<_i108.SpacesRepository>()));
     gh.factory<_i91.WatchSpace>(
         () => _i91.WatchSpace(gh<_i108.SpacesRepository>()));
+    gh.factory<_i1056.CreateInviteLink>(
+        () => _i1056.CreateInviteLink(gh<_i108.SpacesRepository>()));
+    gh.factory<_i1056.WatchInviteCodes>(
+        () => _i1056.WatchInviteCodes(gh<_i108.SpacesRepository>()));
+    gh.factory<_i1056.DeactivateInviteCode>(
+        () => _i1056.DeactivateInviteCode(gh<_i108.SpacesRepository>()));
+    gh.factory<_i1056.GetInviteCode>(
+        () => _i1056.GetInviteCode(gh<_i108.SpacesRepository>()));
+    gh.factory<_i1056.JoinSpaceWithCode>(
+        () => _i1056.JoinSpaceWithCode(gh<_i108.SpacesRepository>()));
+    gh.factory<_i1056.AcceptInvitation>(
+        () => _i1056.AcceptInvitation(gh<_i108.SpacesRepository>()));
+    gh.factory<_i1056.DeclineInvitation>(
+        () => _i1056.DeclineInvitation(gh<_i108.SpacesRepository>()));
+    gh.factory<_i1056.RevokeInvitation>(
+        () => _i1056.RevokeInvitation(gh<_i108.SpacesRepository>()));
+    gh.factory<_i1056.WatchSpaceInvitations>(
+        () => _i1056.WatchSpaceInvitations(gh<_i108.SpacesRepository>()));
+    gh.factory<_i1056.DeleteSpace>(
+        () => _i1056.DeleteSpace(gh<_i108.SpacesRepository>()));
     gh.factory<_i938.AuthRepository>(() => _i271.AuthRepositoryImpl(
           remoteDataSource: gh<_i306.AuthRemoteDataSource>(),
           networkInfo: gh<_i582.NetworkInfo>(),

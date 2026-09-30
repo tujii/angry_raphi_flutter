@@ -9,6 +9,7 @@ class FirebaseConstants {
   static const String spaceMembersCollection = 'members';
   static const String spacePersonsCollection = 'persons';
   static const String spaceRaphconsCollection = 'raphcons';
+  static const String spaceInviteCodesCollection = 'inviteCodes';
   static const String invitationsCollection = 'invitations';
 
   static const String userImagesPath = 'users';

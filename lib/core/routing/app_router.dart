@@ -9,7 +9,9 @@ import '../../features/authentication/presentation/pages/login_page.dart';
 import '../../features/authentication/presentation/pages/privacy_policy_page.dart';
 import '../../features/authentication/presentation/pages/terms_of_service_page.dart';
 import '../../features/spaces/presentation/pages/create_space_page.dart';
+import '../../features/spaces/presentation/pages/join_space_page.dart';
 import '../../features/spaces/presentation/pages/space_home_page.dart';
+import '../../features/spaces/presentation/pages/space_members_page.dart';
 import '../../features/spaces/presentation/pages/spaces_page.dart';
 import '../../shared/widgets/app_wrapper.dart';
 
@@ -27,9 +29,17 @@ class AppRouter {
   static const String spaces = '/spaces';
   static const String createSpace = '/spaces/new';
   static const String spaceHome = '/s/:spaceId';
+  static const String joinSpace = '/join/:spaceId/:code';
 
   /// Location of the home page of the space with [spaceId]
   static String space(String spaceId) => '/s/${Uri.encodeComponent(spaceId)}';
+
+  /// Location of the members page of the space with [spaceId]
+  static String spaceMembers(String spaceId) => '${space(spaceId)}/members';
+
+  /// Location of an invite link
+  static String join(String spaceId, String code) =>
+      '/join/${Uri.encodeComponent(spaceId)}/${Uri.encodeComponent(code)}';
 
   /// Query parameter on [login] holding the location to return to
   static const String fromParam = 'from';
@@ -104,6 +114,23 @@ class AppRouter {
             key: ValueKey(state.pathParameters['spaceId']),
             spaceId: state.pathParameters['spaceId']!,
           ),
+          routes: [
+            GoRoute(
+              path: 'members',
+              name: 'space-members',
+              builder: (context, state) => SpaceMembersPage(
+                spaceId: state.pathParameters['spaceId']!,
+              ),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: joinSpace,
+          name: 'join-space',
+          builder: (context, state) => JoinSpacePage(
+            spaceId: state.pathParameters['spaceId']!,
+            code: state.pathParameters['code']!,
+          ),
         ),
         GoRoute(
           path: adminSettings,
@@ -159,8 +186,10 @@ class AppRouter {
   /// Redirect logic, separated for testing. Returns `null` to stay on [uri].
   static String? redirect(Uri uri, bool signedIn) {
     final path = uri.path;
-    final needsAuth =
-        path == spaces || path.startsWith('$spaces/') || path.startsWith('/s/');
+    final needsAuth = path == spaces ||
+        path.startsWith('$spaces/') ||
+        path.startsWith('/s/') ||
+        path.startsWith('/join/');
     if (needsAuth && !signedIn) {
       return Uri(path: login, queryParameters: {fromParam: uri.toString()})
           .toString();

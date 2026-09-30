@@ -6,12 +6,14 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/network/network_info.dart';
+import '../../domain/entities/invite_code_entity.dart';
 import '../../domain/entities/space_entity.dart';
 import '../../domain/entities/space_invitation_entity.dart';
 import '../../domain/entities/space_member_entity.dart';
 import '../../domain/entities/space_role.dart';
 import '../../domain/repositories/spaces_repository.dart';
 import '../datasources/spaces_remote_datasource.dart';
+import '../models/invite_code_model.dart';
 import '../models/space_invitation_model.dart';
 import '../models/space_member_model.dart';
 import '../models/space_model.dart';
@@ -60,8 +62,8 @@ class SpacesRepositoryImpl implements SpacesRepository {
   }
 
   @override
-  Future<Either<Failure, void>> deleteSpace(String spaceId) {
-    return _guard(() => remoteDataSource.deleteSpace(spaceId));
+  Future<Either<Failure, void>> deleteSpace(String spaceId, String ownerUid) {
+    return _guard(() => remoteDataSource.deleteSpace(spaceId, ownerUid));
   }
 
   @override
@@ -132,6 +134,65 @@ class SpacesRepositoryImpl implements SpacesRepository {
   Stream<Either<Failure, List<SpaceInvitationEntity>>> watchMyInvitations(
       String email) {
     return _guardStream(remoteDataSource.watchMyInvitations(email));
+  }
+
+  @override
+  Future<Either<Failure, String>> createInviteCode(
+      CreateInviteCodeParams params) {
+    return _guard(() => remoteDataSource.createInviteCode(InviteCodeModel(
+          code: '',
+          spaceId: params.spaceId,
+          spaceName: params.spaceName,
+          role: params.role,
+          createdBy: params.createdBy,
+          createdAt: DateTime.now(),
+          expiresAt: params.expiresAt,
+        )));
+  }
+
+  @override
+  Stream<Either<Failure, List<InviteCodeEntity>>> watchInviteCodes(
+      String spaceId) {
+    return _guardStream(remoteDataSource.watchInviteCodes(spaceId));
+  }
+
+  @override
+  Future<Either<Failure, void>> deactivateInviteCode(
+      String spaceId, String code) {
+    return _guard(() => remoteDataSource.deactivateInviteCode(spaceId, code));
+  }
+
+  @override
+  Future<Either<Failure, InviteCodeEntity?>> getInviteCode(
+      String spaceId, String code) {
+    return _guard(() => remoteDataSource.getInviteCode(spaceId, code));
+  }
+
+  @override
+  Future<Either<Failure, void>> joinWithInviteCode(
+      InviteCodeEntity invite, MemberProfile profile) {
+    return _guard(() => remoteDataSource.joinWithInviteCode(invite.spaceId,
+        invite.code, _member(invite.spaceId, invite.role, profile)));
+  }
+
+  @override
+  Future<Either<Failure, void>> acceptInvitation(
+      SpaceInvitationEntity invitation, MemberProfile profile) {
+    return _guard(() => remoteDataSource.acceptInvitation(
+        invitation.id, _member(invitation.spaceId, invitation.role, profile)));
+  }
+
+  SpaceMemberModel _member(
+      String spaceId, SpaceRole role, MemberProfile profile) {
+    return SpaceMemberModel(
+      uid: profile.uid,
+      spaceId: spaceId,
+      role: role,
+      displayName: profile.displayName,
+      email: profile.email?.toLowerCase(),
+      photoUrl: profile.photoUrl,
+      joinedAt: DateTime.now(),
+    );
   }
 
   Future<Either<Failure, T>> _guard<T>(Future<T> Function() action) async {

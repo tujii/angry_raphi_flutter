@@ -129,7 +129,8 @@ service cloud.firestore {
 
     function isValidMember(data, spaceId, uid) {
       return data.keys().hasAll(['uid', 'spaceId', 'role', 'displayName', 'joinedAt']) &&
-             data.keys().hasOnly(['uid', 'spaceId', 'role', 'displayName', 'email', 'photoUrl', 'joinedAt']) &&
+             data.keys().hasOnly(['uid', 'spaceId', 'role', 'displayName', 'email', 'photoUrl', 'joinedAt',
+                                  'inviteCode', 'invitationId']) &&
              data.uid == uid &&
              data.spaceId == spaceId &&
              data.role in ['viewer', 'member', 'admin', 'owner'] &&
@@ -159,6 +160,46 @@ service cloud.firestore {
              (!('isActive' in data) || data.isActive == true);
     }
 
+    function inviteCodePath(spaceId, code) {
+      return /databases/$(database)/documents/spaces/$(spaceId)/inviteCodes/$(code);
+    }
+
+    function invitationPath(invitationId) {
+      return /databases/$(database)/documents/invitations/$(invitationId);
+    }
+
+    function hasVerifiedEmail() {
+      return isAuthenticated() &&
+             request.auth.token.email != null &&
+             request.auth.token.email_verified == true;
+    }
+
+    // Joining with an invite link: the code must exist, be active, not be
+    // expired and grant exactly the requested role.
+    function isValidCodeJoin(spaceId, data) {
+      let code = get(inviteCodePath(spaceId, data.inviteCode)).data;
+      return data.inviteCode is string &&
+             exists(inviteCodePath(spaceId, data.inviteCode)) &&
+             code.active == true &&
+             (code.expiresAt == null || code.expiresAt > request.time) &&
+             data.role == code.role;
+    }
+
+    // Accepting an email invitation: it must be pending, addressed to the
+    // user's verified email, grant exactly the requested role and be marked
+    // accepted in the same batch.
+    function isValidInvitationJoin(spaceId, data) {
+      let invitation = get(invitationPath(data.invitationId)).data;
+      return data.invitationId is string &&
+             hasVerifiedEmail() &&
+             exists(invitationPath(data.invitationId)) &&
+             invitation.spaceId == spaceId &&
+             invitation.status == 'pending' &&
+             invitation.email == request.auth.token.email.lower() &&
+             data.role == invitation.role &&
+             getAfter(invitationPath(data.invitationId)).data.status == 'accepted';
+    }
+
     function changedOnly(keys) {
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);
     }
@@ -183,14 +224,23 @@ service cloud.firestore {
 
         // 1) Bootstrap: creator becomes owner while creating the space
         // 2) Admins/owners add members with a role they may assign
-        // Joining via invitation happens server-side (Cloud Function).
+        // 3) A user joins with an invite link
+        // 4) A user accepts an email invitation
         allow create: if isValidMember(request.resource.data, spaceId, uid) && (
                          (uid == request.auth.uid &&
                           request.resource.data.role == 'owner' &&
                           !exists(spacePath(spaceId)) &&
                           getAfter(spacePath(spaceId)).data.createdBy == request.auth.uid) ||
                          (canManage(spaceId) &&
-                          request.resource.data.role in assignableRoles(spaceId))
+                          request.resource.data.role in assignableRoles(spaceId)) ||
+                         (uid == request.auth.uid &&
+                          exists(spacePath(spaceId)) &&
+                          'inviteCode' in request.resource.data &&
+                          isValidCodeJoin(spaceId, request.resource.data)) ||
+                         (uid == request.auth.uid &&
+                          exists(spacePath(spaceId)) &&
+                          'invitationId' in request.resource.data &&
+                          isValidInvitationJoin(spaceId, request.resource.data))
                        );
 
         // Role changes: never your own; admins cannot touch owners
@@ -202,13 +252,48 @@ service cloud.firestore {
                          request.resource.data.role in assignableRoles(spaceId);
 
         // Removing others (not owners, unless you are owner) or leaving
-        // yourself (owners must hand over ownership first)
+        // yourself (owners must hand over ownership first, unless the space
+        // is deleted in the same batch)
         allow delete: if (canManage(spaceId) &&
                           uid != request.auth.uid &&
                           resource.data.role in assignableRoles(spaceId)) ||
                          (isAuthenticated() &&
                           uid == request.auth.uid &&
-                          resource.data.role != 'owner');
+                          resource.data.role != 'owner') ||
+                         (isOwner(spaceId) &&
+                          uid == request.auth.uid &&
+                          !existsAfter(spacePath(spaceId)));
+      }
+
+      // Invite links. The code (document id) is the secret: anyone signed in
+      // who knows it may read it to see what they are joining, but only
+      // admins may list the codes of a space.
+      match /inviteCodes/{code} {
+        allow get: if isAuthenticated();
+        allow list: if canManage(spaceId);
+
+        allow create: if canManage(spaceId) &&
+                         code.size() >= 20 &&
+                         request.resource.data.keys().hasAll(
+                           ['spaceId', 'spaceName', 'role', 'createdBy', 'createdAt', 'expiresAt', 'active']) &&
+                         request.resource.data.keys().hasOnly(
+                           ['spaceId', 'spaceName', 'role', 'createdBy', 'createdAt', 'expiresAt', 'active']) &&
+                         request.resource.data.spaceId == spaceId &&
+                         request.resource.data.spaceName is string &&
+                         request.resource.data.role in ['viewer', 'member', 'admin'] &&
+                         request.resource.data.role in assignableRoles(spaceId) &&
+                         request.resource.data.createdBy == request.auth.uid &&
+                         request.resource.data.createdAt is timestamp &&
+                         (request.resource.data.expiresAt == null ||
+                          request.resource.data.expiresAt is timestamp) &&
+                         request.resource.data.active == true;
+
+        // Only deactivation
+        allow update: if canManage(spaceId) &&
+                         changedOnly(['active']) &&
+                         request.resource.data.active == false;
+
+        allow delete: if canManage(spaceId);
       }
 
       match /persons/{personId} {
@@ -265,10 +350,14 @@ service cloud.firestore {
                        request.resource.data.status == 'pending' &&
                        request.resource.data.createdAt is timestamp;
 
-      // Only status transitions from pending; accepting is done server-side
+      // Only status transitions from pending. Accepting is only possible
+      // together with creating the membership that references it.
       allow update: if resource.data.status == 'pending' &&
                        changedOnly(['status']) &&
                        ((isInvitee() && request.resource.data.status == 'declined') ||
+                        (isInvitee() && hasVerifiedEmail() &&
+                         request.resource.data.status == 'accepted' &&
+                         getAfter(memberPath(resource.data.spaceId, request.auth.uid)).data.invitationId == invitationId) ||
                         (canManage(resource.data.spaceId) && request.resource.data.status == 'revoked'));
 
       allow delete: if canManage(resource.data.spaceId);

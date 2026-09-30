@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/failures.dart';
+import '../entities/invite_code_entity.dart';
 import '../entities/space_entity.dart';
 import '../entities/space_invitation_entity.dart';
 import '../entities/space_member_entity.dart';
@@ -40,6 +41,37 @@ class InviteByEmailParams {
   });
 }
 
+/// Profile of the signed-in user, copied into their membership.
+class MemberProfile {
+  final String uid;
+  final String displayName;
+  final String? email;
+  final String? photoUrl;
+
+  const MemberProfile({
+    required this.uid,
+    required this.displayName,
+    this.email,
+    this.photoUrl,
+  });
+}
+
+class CreateInviteCodeParams {
+  final String spaceId;
+  final String spaceName;
+  final SpaceRole role;
+  final String createdBy;
+  final DateTime? expiresAt;
+
+  const CreateInviteCodeParams({
+    required this.spaceId,
+    required this.spaceName,
+    required this.role,
+    required this.createdBy,
+    this.expiresAt,
+  });
+}
+
 abstract class SpacesRepository {
   /// Creates a space and makes the creator its owner. Returns the new space id.
   Future<Either<Failure, String>> createSpace(CreateSpaceParams params);
@@ -50,7 +82,10 @@ abstract class SpacesRepository {
     String? description,
   });
 
-  Future<Either<Failure, void>> deleteSpace(String spaceId);
+  /// Deletes the space with all persons, raphcons, invitations and
+  /// memberships. [ownerUid] is the owner performing the deletion; their
+  /// membership is removed last, together with the space.
+  Future<Either<Failure, void>> deleteSpace(String spaceId, String ownerUid);
 
   /// All spaces the user with [uid] is a member of, sorted by name.
   Stream<Either<Failure, List<SpaceEntity>>> watchMySpaces(String uid);
@@ -83,4 +118,27 @@ abstract class SpacesRepository {
   /// Pending invitations addressed to [email] (for the invitee).
   Stream<Either<Failure, List<SpaceInvitationEntity>>> watchMyInvitations(
       String email);
+
+  /// Creates an invite link and returns its code.
+  Future<Either<Failure, String>> createInviteCode(
+      CreateInviteCodeParams params);
+
+  /// Invite links of a space (for its admins), newest first.
+  Stream<Either<Failure, List<InviteCodeEntity>>> watchInviteCodes(
+      String spaceId);
+
+  Future<Either<Failure, void>> deactivateInviteCode(
+      String spaceId, String code);
+
+  /// The invite link; `null` if it does not exist.
+  Future<Either<Failure, InviteCodeEntity?>> getInviteCode(
+      String spaceId, String code);
+
+  /// Joins [invite]'s space with the role of the link.
+  Future<Either<Failure, void>> joinWithInviteCode(
+      InviteCodeEntity invite, MemberProfile profile);
+
+  /// Joins the invitation's space and marks the invitation accepted.
+  Future<Either<Failure, void>> acceptInvitation(
+      SpaceInvitationEntity invitation, MemberProfile profile);
 }

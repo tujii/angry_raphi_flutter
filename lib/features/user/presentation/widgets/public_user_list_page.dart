@@ -253,6 +253,13 @@ class _PublicUserListPageState extends State<PublicUserListPage> {
         actions: [
           if (_inSpace)
             IconButton(
+              icon: const Icon(Icons.group),
+              tooltip: AppLocalizations.of(context)?.members ?? 'Mitglieder',
+              onPressed: () =>
+                  context.go(AppRouter.spaceMembers(widget.space!.id)),
+            ),
+          if (_inSpace)
+            IconButton(
               icon: const Icon(Icons.swap_horiz),
               tooltip: AppLocalizations.of(context)?.switchSpace ??
                   'Bereich wechseln',
