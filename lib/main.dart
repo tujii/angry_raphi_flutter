@@ -11,7 +11,6 @@ import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'core/constants/app_constants.dart';
-import 'core/data/data_scope.dart';
 import 'core/network/network_info.dart';
 import 'core/routing/app_router.dart';
 import 'features/admin/data/datasources/admin_remote_datasource.dart';
@@ -32,7 +31,6 @@ import 'features/spaces/domain/repositories/spaces_repository.dart';
 import 'firebase_options.dart';
 import 'services/admin_service.dart';
 import 'services/registered_users_service.dart';
-import 'shared/scoped_blocs.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -117,10 +115,6 @@ class _AngryRaphiAppState extends State<AngryRaphiApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) =>
-              createUserBloc(FirebaseFirestore.instance, DataScope.legacy),
-        ),
-        BlocProvider(
           create: (_) {
             final firestore = FirebaseFirestore.instance;
             final connectivity = Connectivity();
@@ -135,10 +129,6 @@ class _AngryRaphiAppState extends State<AngryRaphiApp> {
 
             return AdminBloc(checkAdminStatus, addAdmin);
           },
-        ),
-        BlocProvider(
-          create: (_) =>
-              createRaphconBloc(FirebaseFirestore.instance, DataScope.legacy),
         ),
         BlocProvider(
           create: (_) {

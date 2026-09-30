@@ -13,33 +13,17 @@ service cloud.firestore {
              exists(/databases/$(database)/documents/adminEmails/$(request.auth.token.email));
     }
     
-    function isValidUser(data) {
-      return data.keys().hasAll(['name', 'createdAt']) &&
-             data.name is string &&
-             data.name.size() > 0 &&
-             data.name.size() <= 50 &&
-             data.createdAt is timestamp;
-    }
-    
-    function isValidRaphcon(data) {
-      return data.keys().hasAll(['userId', 'createdAt', 'createdBy']) &&
-             data.userId is string &&
-             data.createdAt is timestamp &&
-             data.createdBy == request.auth.uid;
-    }
-    
-    // Users Collection - Read for all (guests and authenticated), Write only for Admins
+    // Legacy global collections. Their data was migrated to spaces
+    // (tools/migrate-to-spaces); they stay readable for app administrators
+    // until they are deleted.
     match /users/{userId} {
-      allow read: if true; // Everyone can read the user list
-      allow create, update: if isAdmin() && isValidUser(request.resource.data);
-      allow delete: if isAdmin();
+      allow read: if isAdmin();
+      allow write: if false;
     }
 
-    // Raphcons Collection - Read for all, Create for authenticated users, Modify only for Admins
     match /raphcons/{raphconId} {
-      allow read: if true; // Everyone can read raphcons count
-      allow create: if isAuthenticated() && isValidRaphcon(request.resource.data);
-      allow update, delete: if isAdmin();
+      allow read: if isAdmin();
+      allow write: if false;
     }
     
     // Admins Collection - Anyone can read display names, only Admins can write

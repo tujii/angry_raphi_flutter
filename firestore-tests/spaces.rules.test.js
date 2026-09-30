@@ -603,9 +603,34 @@ describe('accepting email invitations', () => {
   });
 });
 
-describe('legacy collections stay unchanged', () => {
-  test('users and raphcons are still publicly readable', async () => {
-    await assertSucceeds(getDocs(collection(anon(), 'users')));
-    await assertSucceeds(getDocs(collection(anon(), 'raphcons')));
+describe('legacy collections are locked', () => {
+  beforeEach(async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      const fs = ctx.firestore();
+      await setDoc(doc(fs, 'users/u1'), { initials: 'M.M.', createdAt: new Date() });
+      await setDoc(doc(fs, 'raphcons/r1'), { userId: 'u1', createdBy: 'admin', createdAt: new Date() });
+      await setDoc(doc(fs, `adminEmails/${users.admin.email}`), { isAdmin: true });
+    });
+  });
+
+  test('guests and users can no longer read them', async () => {
+    await assertFails(getDocs(collection(anon(), 'users')));
+    await assertFails(getDocs(collection(anon(), 'raphcons')));
+    await assertFails(getDoc(doc(db('member'), 'users/u1')));
+    await assertFails(getDoc(doc(db('member'), 'raphcons/r1')));
+  });
+
+  test('app administrators can still read them', async () => {
+    await assertSucceeds(getDocs(collection(db('admin'), 'users')));
+    await assertSucceeds(getDocs(collection(db('admin'), 'raphcons')));
+  });
+
+  test('nobody can write them anymore', async () => {
+    await assertFails(setDoc(doc(db('admin'), 'users/u2'), { initials: 'X', createdAt: new Date() }));
+    await assertFails(updateDoc(doc(db('admin'), 'users/u1'), { initials: 'Y' }));
+    await assertFails(
+      setDoc(doc(db('member'), 'raphcons/r2'), { userId: 'u1', createdBy: 'member', createdAt: new Date() }),
+    );
+    await assertFails(deleteDoc(doc(db('admin'), 'raphcons/r1')));
   });
 });

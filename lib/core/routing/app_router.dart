@@ -13,7 +13,6 @@ import '../../features/spaces/presentation/pages/join_space_page.dart';
 import '../../features/spaces/presentation/pages/space_home_page.dart';
 import '../../features/spaces/presentation/pages/space_members_page.dart';
 import '../../features/spaces/presentation/pages/spaces_page.dart';
-import '../../shared/widgets/app_wrapper.dart';
 
 /// Application router configuration using GoRouter
 ///
@@ -60,10 +59,12 @@ class AppRouter {
       refreshListenable: refreshListenable,
       redirect: (context, state) => redirect(state.uri, signedIn()),
       routes: [
+        // Entry point only: the top-level redirect sends users to their
+        // spaces or to the login page; this is just the fallback.
         GoRoute(
           path: home,
           name: 'home',
-          builder: (context, state) => const AppWrapper(),
+          redirect: (context, state) => login,
         ),
         GoRoute(
           path: login,
@@ -184,8 +185,14 @@ class AppRouter {
   }
 
   /// Redirect logic, separated for testing. Returns `null` to stay on [uri].
+  ///
+  /// `/` leads to the user's spaces or to the login page; space pages
+  /// require sign-in.
   static String? redirect(Uri uri, bool signedIn) {
     final path = uri.path;
+    if (path == home) {
+      return signedIn ? spaces : login;
+    }
     final needsAuth = path == spaces ||
         path.startsWith('$spaces/') ||
         path.startsWith('/s/') ||
@@ -200,7 +207,7 @@ class AppRouter {
       if (from != null && from.startsWith('/') && !from.startsWith('//')) {
         return from;
       }
-      return home;
+      return spaces;
     }
     return null;
   }

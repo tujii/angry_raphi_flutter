@@ -2,8 +2,8 @@
 
 Spaces make AngryRaphi multi-tenant: every space has its own persons and
 raphcons, and only its members can see them. This document describes the
-data model, permissions, the app integration and invitations (phases 1–3).
-Migrating the existing data follows in phase 4. Everything works on the
+data model, permissions, the app integration, invitations and the
+migration of the former global data (phases 1–4). Everything works on the
 free Spark plan: there are no Cloud Functions, all checks are security
 rules.
 
@@ -75,8 +75,8 @@ drop their membership in the same batch that deletes the space).
 | `/join/:spaceId/:code` | Join a space with an invite link        |
 
 These routes require sign-in; signed-out users are sent to
-`/login?from=...` and returned after signing in. `/` still shows the legacy
-global list until the data is migrated.
+`/login?from=...` and returned after signing in. `/` leads to `/spaces`
+(or to `/login`); there is no public view anymore.
 
 Persons and raphcons are read through `DataScope`
 (`lib/core/data/data_scope.dart`): `DataScope.legacy` uses the global
@@ -97,8 +97,53 @@ npm ci
 npm test
 ```
 
-Legacy collections (`users`, `raphcons`, ...) keep their current rules until
-the data is migrated.
+The migration tool has its own emulator tests, which also check that the
+migrated data works with the rules:
+
+```sh
+cd tools/migrate-to-spaces
+npm ci
+npm test
+```
+
+## Migration of the legacy data (phase 4)
+
+Before spaces, persons and raphcons lived in the global `users` and
+`raphcons` collections and were publicly readable. `tools/migrate-to-spaces`
+copies them into the space `spaces/angryraphi` ("AngryRaphi Original"):
+
+| Legacy                         | Space                                         |
+|--------------------------------|-----------------------------------------------|
+| `users/{id}`                   | `persons/{id}` (same id)                      |
+| `raphcons/{id}`                | `raphcons/{id}` (same id, `userId` unchanged) |
+| `--owner` emails               | members with role `owner`                     |
+| app admins (`admins`, `adminEmails`) who signed in | members with role `admin` |
+| other `registeredUsers`        | members with `--default-role` (default `viewer`, as before only admins could report) |
+| app admins who never signed in | pending email invitation as `admin`           |
+
+The tool is idempotent: it copies persons and raphcons again but never
+touches existing memberships or invitations. Without `--apply` it only
+prints a summary.
+
+Afterwards the legacy `users` and `raphcons` are locked: only app admins
+can still read them, nobody can write. They can be deleted once the
+migration is confirmed.
+
+### Rollout
+
+1. Merge the spaces branch (do not tag a release yet).
+2. Run the **Migrate to Spaces** workflow (Actions → Migrate to Spaces)
+   with your owner email(s), first as dry run, check the summary, then with
+   *apply*. The service account in `FIREBASE_SERVICE_ACCOUNT` needs the
+   role **Cloud Datastore User**. Locally:
+   `node migrate.js --project angryraphi --owner you@example.com [--apply]`
+   with `GOOGLE_APPLICATION_CREDENTIALS` or `gcloud auth application-default login`.
+3. Tag the release (`v…`). CI deploys the new rules (locking the legacy
+   collections) and indexes, then the web app.
+4. Run the migration once more right after the release. Raphcons reported
+   in the old app between steps 2 and 3 are copied as well; nothing is
+   duplicated.
+
 
 ## Deployment
 

@@ -6,11 +6,13 @@ on:
     paths:
       - 'firestore.rules'
       - 'firestore-tests/**'
+      - 'tools/migrate-to-spaces/**'
       - '.github/workflows/firestore-rules.yml'
   pull_request:
     paths:
       - 'firestore.rules'
       - 'firestore-tests/**'
+      - 'tools/migrate-to-spaces/**'
       - '.github/workflows/firestore-rules.yml'
 jobs:
   rules-tests:
@@ -28,6 +30,28 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: firestore-tests/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm ci
+      - run: npm test
+
+  migration-tests:
+    name: Migration tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: tools/migrate-to-spaces
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: tools/migrate-to-spaces/package-lock.json
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

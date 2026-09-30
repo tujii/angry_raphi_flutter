@@ -73,7 +73,7 @@ void main() {
       router.go('/login');
       expect(router.routeInformationProvider.value.uri.path, '/login');
 
-      // Navigate back to home
+      // Navigate back to home (redirects are covered by the tests below)
       router.go('/');
       expect(router.routeInformationProvider.value.uri.path, '/');
     });
@@ -108,13 +108,18 @@ void main() {
       );
     });
 
+    test('home leads to the spaces or the login page', () {
+      expect(AppRouter.redirect(Uri.parse('/'), true), '/spaces');
+      expect(AppRouter.redirect(Uri.parse('/'), false), '/login');
+    });
+
     test('signed-in users can open space routes', () {
       expect(AppRouter.redirect(Uri.parse('/spaces'), true), isNull);
       expect(AppRouter.redirect(Uri.parse('/s/abc'), true), isNull);
     });
 
     test('public routes stay accessible without sign-in', () {
-      for (final path in ['/', '/login', '/terms', '/privacy']) {
+      for (final path in ['/login', '/terms', '/privacy']) {
         expect(AppRouter.redirect(Uri.parse(path), false), isNull);
       }
     });
@@ -124,18 +129,18 @@ void main() {
         AppRouter.redirect(Uri.parse('/login?from=%2Fs%2Fabc'), true),
         '/s/abc',
       );
-      expect(AppRouter.redirect(Uri.parse('/login'), true), '/');
+      expect(AppRouter.redirect(Uri.parse('/login'), true), '/spaces');
     });
 
     test('login ignores external targets', () {
       expect(
         AppRouter.redirect(
             Uri.parse('/login?from=https%3A%2F%2Fevil.example'), true),
-        '/',
+        '/spaces',
       );
       expect(
         AppRouter.redirect(Uri.parse('/login?from=%2F%2Fevil.example'), true),
-        '/',
+        '/spaces',
       );
     });
 
